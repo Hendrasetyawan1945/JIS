@@ -37,8 +37,8 @@ return [
 
     'llm' => [
         'base_url' => env('LLM_BASE_URL', 'https://router.kaorustore.web.id/v1'),
-        'api_key'  => env('LLM_API_KEY'),
-        'model'    => env('LLM_MODEL', 'deepseek-v4-flash'),
+        'api_key' => env('LLM_API_KEY'),
+        'model' => env('LLM_MODEL', 'deepseek-v4-flash'),
     ],
 
 ];

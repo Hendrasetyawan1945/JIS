@@ -9,11 +9,25 @@ class Wisata extends Model
 {
     protected $table = 'wisata';
 
+    // Nilai yang diizinkan untuk status_operasional
+    const STATUS_LIST = [
+        'normal',
+        'tutup_sementara',
+        'renovasi',
+        'banjir',
+        'longsor',
+        'akses_terbatas',
+    ];
+
+    // Status yang dianggap "tidak aman" — chatbot akan sarankan alternatif
+    const STATUS_TIDAK_AMAN = ['banjir', 'longsor', 'tutup_sementara', 'renovasi', 'akses_terbatas'];
+
     protected $fillable = [
         'kategori_id',
         'nama',
         'deskripsi',
         'alamat',
+        'telepon',
         'lat',
         'lng',
         'harga_tiket',
@@ -22,6 +36,8 @@ class Wisata extends Model
         'rating',
         'foto',
         'status_aktif',
+        'status_operasional',
+        'catatan_status',
     ];
 
     protected function casts(): array
@@ -33,6 +49,12 @@ class Wisata extends Model
             'rating' => 'float',
             'status_aktif' => 'boolean',
         ];
+    }
+
+    /** Apakah wisata ini sedang tidak bisa dikunjungi / berbahaya. */
+    public function tidakAman(): bool
+    {
+        return in_array($this->status_operasional, self::STATUS_TIDAK_AMAN);
     }
 
     public function kategori(): BelongsTo

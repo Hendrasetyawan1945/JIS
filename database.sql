@@ -1,70 +1,68 @@
 -- Sistem Pariwisata Kota Padang — Chatbot AI Rekomendasi (Fase 1)
--- MySQL 8.x
+-- PostgreSQL 15 (jalankan via Laravel migration: php artisan migrate)
+-- Data contoh via seeder: php artisan db:seed --class=WisataSeeder
 
 CREATE TABLE kategori (
-  id   INT AUTO_INCREMENT PRIMARY KEY,
-  nama VARCHAR(50) NOT NULL UNIQUE
+  id         BIGSERIAL PRIMARY KEY,
+  nama       VARCHAR(50) NOT NULL UNIQUE,
+  created_at TIMESTAMP,
+  updated_at TIMESTAMP
 );
 
 CREATE TABLE wisata (
-  id          INT AUTO_INCREMENT PRIMARY KEY,
-  kategori_id INT NOT NULL,
-  nama        VARCHAR(100) NOT NULL,
-  deskripsi   TEXT,
-  alamat      VARCHAR(255),
-  lat         DECIMAL(10,7) NOT NULL,
-  lng         DECIMAL(10,7) NOT NULL,
-  harga_tiket DECIMAL(12,0) NOT NULL DEFAULT 0,
-  jam_buka    TIME,
-  jam_tutup   TIME,
-  rating      DECIMAL(2,1) NOT NULL DEFAULT 0,
-  foto        VARCHAR(255),
-  status_aktif TINYINT(1) NOT NULL DEFAULT 1,
-  created_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT fk_wisata_kategori FOREIGN KEY (kategori_id) REFERENCES kategori(id),
-  INDEX idx_wisata_kategori (kategori_id),
-  INDEX idx_wisata_aktif (status_aktif)
+  id                 BIGSERIAL PRIMARY KEY,
+  kategori_id        BIGINT NOT NULL,
+  nama               VARCHAR(100) NOT NULL,
+  deskripsi          TEXT,
+  alamat             VARCHAR(255),
+  telepon           VARCHAR(30),
+  lat                NUMERIC(10,7) NOT NULL,
+  lng                NUMERIC(10,7) NOT NULL,
+  harga_tiket        NUMERIC(12,0) NOT NULL DEFAULT 0,
+  jam_buka           TIME,
+  jam_tutup          TIME,
+  rating             NUMERIC(2,1) NOT NULL DEFAULT 0,
+  foto               TEXT,
+  status_aktif       BOOLEAN NOT NULL DEFAULT TRUE,
+  status_operasional VARCHAR(30) NOT NULL DEFAULT 'normal',
+  catatan_status     TEXT,
+  created_at         TIMESTAMP,
+  updated_at         TIMESTAMP,
+  CONSTRAINT fk_wisata_kategori FOREIGN KEY (kategori_id) REFERENCES kategori(id)
 );
 
+CREATE INDEX idx_wisata_kategori ON wisata (kategori_id);
+CREATE INDEX idx_wisata_aktif ON wisata (status_aktif);
+
 CREATE TABLE users (
-  id            INT AUTO_INCREMENT PRIMARY KEY,
-  nama          VARCHAR(100) NOT NULL,
-  email         VARCHAR(100) NOT NULL UNIQUE,
-  password_hash VARCHAR(255) NOT NULL,
-  role          ENUM('admin') NOT NULL DEFAULT 'admin',
-  created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  id            BIGSERIAL PRIMARY KEY,
+  name          VARCHAR(255) NOT NULL,
+  email         VARCHAR(255) NOT NULL UNIQUE,
+  password      VARCHAR(255) NOT NULL,
+  role          VARCHAR(20) NOT NULL DEFAULT 'user',
+  remember_token VARCHAR(100),
+  created_at    TIMESTAMP,
+  updated_at    TIMESTAMP
 );
 
 CREATE TABLE chat_sessions (
-  id            INT AUTO_INCREMENT PRIMARY KEY,
+  id            BIGSERIAL PRIMARY KEY,
   session_token VARCHAR(64) NOT NULL UNIQUE,
-  lat           DECIMAL(10,7),
-  lng           DECIMAL(10,7),
-  created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  lat           NUMERIC(10,7),
+  lng           NUMERIC(10,7),
+  created_at    TIMESTAMP,
+  updated_at    TIMESTAMP
 );
 
 CREATE TABLE chat_messages (
-  id         INT AUTO_INCREMENT PRIMARY KEY,
-  session_id INT NOT NULL,
-  role       ENUM('user','assistant') NOT NULL,
+  id         BIGSERIAL PRIMARY KEY,
+  session_id BIGINT NOT NULL,
+  role       VARCHAR(10) NOT NULL CHECK (role IN ('user', 'assistant')),
   pesan      TEXT NOT NULL,
-  intent_json JSON,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_msg_session FOREIGN KEY (session_id) REFERENCES chat_sessions(id) ON DELETE CASCADE,
-  INDEX idx_msg_session (session_id)
+  intent_json JSONB,
+  created_at TIMESTAMP,
+  updated_at TIMESTAMP,
+  CONSTRAINT fk_msg_session FOREIGN KEY (session_id) REFERENCES chat_sessions(id) ON DELETE CASCADE
 );
 
-INSERT INTO kategori (nama) VALUES
-  ('Pantai'),
-  ('Pulau'),
-  ('Alam'),
-  ('Museum'),
-  ('Sejarah'),
-  ('Kuliner');
-
--- Contoh data dummy (koordinat ilustrasi, ganti dengan data asli dari OpenStreetMap)
-INSERT INTO wisata (kategori_id, nama, deskripsi, alamat, lat, lng, harga_tiket, jam_buka, jam_tutup, rating) VALUES
-  (1, 'Pantai Air Manis', 'Pantai berpasir dengan legenda Batu Malin Kundang.', 'Kec. Padang Selatan', -0.9746000, 100.3626000, 10000, '07:00:00', '18:00:00', 4.5),
-  (4, 'Museum Adityawarman', 'Museum provinsi dengan koleksi budaya Minangkabau.', 'Jl. Diponegoro, Padang', -0.9621000, 100.3617000, 5000, '08:00:00', '16:00:00', 4.3),
-  (2, 'Pulau Sikuai', 'Pulau dengan resort dan spot snorkeling.', 'Kepulauan Bungus', -1.1650000, 100.3510000, 250000, '07:00:00', '17:00:00', 4.6);
+CREATE INDEX idx_msg_session ON chat_messages (session_id);

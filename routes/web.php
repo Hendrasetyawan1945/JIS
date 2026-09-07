@@ -10,4 +10,4 @@ Route::get('/', function () {
 
 // Chat API
 Route::post('/chat/session', [ChatController::class, 'session']);
-Route::post('/chat', [ChatController::class, 'kirim']);
+Route::post('/chat', [ChatController::class, 'kirim'])->middleware('throttle:60,1');

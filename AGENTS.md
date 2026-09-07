@@ -9,7 +9,7 @@ Sistem Pariwisata Kota Padang dengan chatbot AI rekomendasi berbasis SQL. Untuk 
 ## Stack (terkunci)
 
 - Backend: PHP Laravel
-- DB: MySQL (skema di `database.sql`)
+- DB: PostgreSQL (skema referensi di `database.sql`); migration & seeder di `database/migrations` dan `database/seeders`
 - Frontend: Blade + Vite, Leaflet + OpenStreetMap, rute via OSRM
 - AI: LLM API — ekstrak intent + rangkai jawaban, fakta wajib dari hasil query SQL
 
@@ -22,17 +22,13 @@ Sistem Pariwisata Kota Padang dengan chatbot AI rekomendasi berbasis SQL. Untuk 
 
 ## Status progress
 
-Selesai: scaffold Laravel 12, `.env` (MySQL `pariwisata_padang`, locale id), DB + migration default jalan, halaman depan peta Padang + panel chat placeholder (`resources/views/pariwisata.blade.php`), migration + model + seeder poin 1 (kategori, wisata, chat_sessions, chat_messages, role admin; 6 kategori + 5 wisata contoh).
+Selesai: scaffold Laravel 12, `.env` (PostgreSQL `pariwisata_padang`, locale id), halaman depan peta + panel chat, migration + seeder (22 wisata Padang asli, 6 kategori, chat_sessions, chat_messages, role admin), alur chat backend (intent → query SQL → cuaca + status → jawaban grounding via LLM), filter SQL (kategori, harga, buka 24 jam, jam sekarang, wilayah, kata kunci, urutan, nama fuzzy), rute OSRM di peta.
 
 Berikutnya (urutan):
-1. Seeder data wisata Padang asli (data asli dari OpenStreetMap)
-2. Integrasi LLM (API key dari user)
-3. Alur chat backend: intent → query SQL → jawaban grounding
-4. Rute OSRM di peta
-5. Admin panel CRUD wisata
-6. Uji + data evaluasi jurnal
+1. Admin panel CRUD wisata
+2. Uji + data evaluasi jurnal
 
-Cara jalan: nyalakan MySQL (XAMPP) → `php artisan serve`.
+Cara jalan: nyalakan PostgreSQL → `php artisan migrate --seed` → `php artisan serve`.
 
 ## Aturan
 
