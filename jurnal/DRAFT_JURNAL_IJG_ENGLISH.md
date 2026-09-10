@@ -114,6 +114,8 @@ This study followed an engineering **Prototyping Model** consisting of four stru
        │  └───────────────────────────────────────────────────────┘  │
        └─────────────────────────────────────────────────────────────┘
 ```
+![Figure 1. The 5-Stage Grounded Conversational Web GIS Architecture](images/gambar1_arsitektur_sistem.svg)
+
 *Figure 1. The 5-Stage Grounded Conversational Web GIS Architecture.*
 
 ### 3.2 Curated POI Spatial Data Governance
@@ -176,7 +178,17 @@ The frontend renders an integrated response: fluent conversational text, interac
 ## 4. RESULTS AND DISCUSSION
 
 ### 4.1 Implementation Artifacts
-The application was deployed as a responsive Web GIS. The client interface harmoniously couples a full-viewport Leaflet map with a non-intrusive floating conversational drawer. When a user requests a recommendation (e.g., *"Find the nearest beach with calm waves"*), the map smoothly pans to the selected POI, displays an interactive popup with real-time operational status, and renders the OSRM road trajectory while the chat assistant articulates a grounded narrative explanation.
+The application was deployed as a responsive Web GIS. The client interface harmoniously couples a full-viewport Leaflet map with a non-intrusive floating conversational drawer (Figure 2).
+
+![Figure 2. Main Web GIS Tourism Application Interface](images/gambar2_antarmuka_webgis.png)
+
+*Figure 2. Main Web GIS Tourism Application Interface for Padang City (Interactive Leaflet OSM Map, Tourism POI Drawer, and Conversational AI Panel).*
+
+When a user requests a recommendation (e.g., *"Find the nearest beach with calm waves"*), the map smoothly pans to the selected POI, displays an interactive popup with real-time operational status, and renders the OSRM road trajectory while the chat assistant articulates a grounded narrative explanation (Figure 3).
+
+![Figure 3. Conversational Tourism Recommendation with Interactive Road Network Routing](images/gambar3_rute_navigasi.png)
+
+*Figure 3. Conversational Tourism Recommendation with Interactive Road Network Routing and Real-Time POI Metadata Popup.*
 
 ### 4.2 Benchmark Evaluation on 40 Scenarios
 To assess system robustness, a rigorous benchmark suite of 40 natural language scenarios was developed, categorized into 7 operational groups. Table 1 summarizes the performance metrics across all test cases.
@@ -211,7 +223,11 @@ A primary scientific novelty of this architecture is the verifiable elimination 
 1. *"Recommend places for snow skiing in Padang"* (geographically impossible in tropical West Sumatra).
 2. *"Where can I visit ancient Hindu temples in Padang City?"* (historically absent in Padang municipality).
 
-In both cases, the SQL Query Engine returned an empty result set (`count = 0`). Under the strict grounding prompt, the NLG module delivered an honest, helpful fallback: *"We apologize, but there are no snow skiing or Hindu temple destinations recorded in the official Padang City tourism database."* No synthetic venues or misleading distances were generated, achieving an absolute **Zero Hallucination Rate**.
+In both cases, the SQL Query Engine returned an empty result set (`count = 0`). Under the strict grounding prompt, the NLG module delivered an honest, helpful fallback: *"We apologize, but there are no snow skiing or Hindu temple destinations recorded in the official Padang City tourism database."* No synthetic venues or misleading distances were generated, achieving an absolute **Zero Hallucination Rate** as illustrated in Figure 4.
+
+![Figure 4. Comparative Evaluation of Conversational Robustness (Negative Boundary Fallback vs. Multi-Constraint Factual Grounding)](images/gambar4_evaluasi_halusinasi.png)
+
+*Figure 4. Comparative Evaluation of Conversational Robustness (Negative Boundary Fallback vs. Multi-Constraint Factual Grounding).*
 
 ### 4.4 Latency Profile and Computational Efficiency
 Latency is a critical dimension of user experience in conversational Web GIS. Real-time logging measured execution time across every pipeline stage over the 40 benchmark iterations.
