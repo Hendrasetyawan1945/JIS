@@ -1,0 +1,2 @@
+id,grup,prompt,expected_kategori,predicted_kategori,kategori_match,filter_match,is_accurate,is_grounded,t_total_ms
+1,"Kategori - Pantai Eksplisit","Rekomendasikan pantai yang bagus di Padang",Pantai,-,0,1,0,1,52922.92

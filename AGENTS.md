@@ -36,3 +36,4 @@ Cara jalan: nyalakan PostgreSQL → `php artisan migrate --seed` → `php artisa
 - Ikuti scope Fase 1 di `DESAIN.md` — jangan tambah fitur Fase 2/3 (booking, cuaca, chatbot proaktif, ulasan).
 - Jangan commit kecuali diminta.
 - Ikuti konvensi kode yang sudah ada di repo.
+- Gunakan Context7 (MCP) untuk mengambil dokumentasi dan sintaks versi terbaru saat mengimplementasikan fitur, library, atau konfigurasi (seperti Laravel 12, Leaflet, Vite, dll.).

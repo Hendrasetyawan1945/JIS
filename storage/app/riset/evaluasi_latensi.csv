@@ -1,0 +1,2 @@
+id,prompt,t_intent_ms,t_sql_ms,t_weather_ms,t_llm_ms,t_total_ms
+1,"Rekomendasikan pantai yang bagus di Padang",8514.39,2.28,3330.01,41071.81,52922.92

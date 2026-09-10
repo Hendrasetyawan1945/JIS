@@ -202,28 +202,55 @@ class WisataSeeder extends Seeder
     }
 
     /**
-     * Generate inline SVG placeholder (data URI) untuk foto wisata.
-     * Menghindari dependency ke Wikimedia/CDN eksternal.
-     * Ponytail: deterministic — color dan icon berdasarkan kategori, bukan random.
+     * Generate inline SVG modern dengan gradient premium dan icon travel vektor tajam.
+     * Didesain khusus agar sangat tajam dan jelas di thumbnail ukuran 44x44px.
      */
     private function placeholderSvg(string $nama, string $kategori): string
     {
-        $palette = [
-            'Pantai' => ['bg' => '#0ea5e9', 'fg' => '#fff', 'icon' => '🏖'],
-            'Pulau' => ['bg' => '#06b6d4', 'fg' => '#fff', 'icon' => '🏝'],
-            'Alam' => ['bg' => '#16a34a', 'fg' => '#fff', 'icon' => '🌳'],
-            'Museum' => ['bg' => '#a16207', 'fg' => '#fff', 'icon' => '🏛'],
-            'Sejarah' => ['bg' => '#7c3aed', 'fg' => '#fff', 'icon' => '⛩'],
-            'Kuliner' => ['bg' => '#dc2626', 'fg' => '#fff', 'icon' => '🍽'],
+        $palettes = [
+            'Pantai' => [
+                'c1' => '#0284c7', 'c2' => '#0c4a6e',
+                'icon' => '<circle cx="60" cy="40" r="14" fill="#fed7aa"/><path d="M18 78 C 34 68, 50 68, 66 78 C 82 88, 98 88, 106 82" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/><path d="M14 92 C 30 82, 46 82, 62 92 C 78 102, 94 102, 106 96" fill="none" stroke="#7dd3fc" stroke-width="4" stroke-linecap="round"/>',
+            ],
+            'Pulau' => [
+                'c1' => '#0891b2', 'c2' => '#164e63',
+                'icon' => '<path d="M16 94 Q 60 76 104 94" fill="#fde68a" stroke="#f59e0b" stroke-width="2"/><path d="M60 84 Q 54 50 66 36" fill="none" stroke="#78350f" stroke-width="5" stroke-linecap="round"/><path d="M66 36 Q 40 30 32 44 M 66 36 Q 48 16 58 12 M 66 36 Q 84 16 94 26 M 66 36 Q 92 34 84 48" fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round"/>',
+            ],
+            'Alam' => [
+                'c1' => '#059669', 'c2' => '#064e3b',
+                'icon' => '<polygon points="24,92 56,38 88,92" fill="#15803d"/><polygon points="52,92 78,46 104,92" fill="#166534"/><polygon points="56,38 48,52 64,52" fill="#dcfce7"/>',
+            ],
+            'Museum' => [
+                'c1' => '#b45309', 'c2' => '#451a03',
+                'icon' => '<polygon points="60,24 20,44 100,44" fill="#fef3c7"/><rect x="22" y="44" width="76" height="6" rx="2" fill="#fde68a"/><rect x="28" y="50" width="8" height="36" rx="2" fill="#fff"/><rect x="46" y="50" width="8" height="36" rx="2" fill="#fff"/><rect x="66" y="50" width="8" height="36" rx="2" fill="#fff"/><rect x="84" y="50" width="8" height="36" rx="2" fill="#fff"/><rect x="18" y="86" width="84" height="8" rx="2" fill="#fde68a"/>',
+            ],
+            'Sejarah' => [
+                'c1' => '#4f46e5', 'c2' => '#1e1b4b',
+                'icon' => '<path d="M22 92 L22 46 L38 32 L54 46 L54 92 Z" fill="#e0e7ff"/><path d="M66 92 L66 46 L82 32 L98 46 L98 92 Z" fill="#c7d2fe"/><rect x="42" y="54" width="36" height="38" rx="2" fill="#818cf8"/><path d="M50 92 A10 10 0 0 1 70 92" fill="#1e1b4b"/>',
+            ],
+            'Kuliner' => [
+                'c1' => '#e11d48', 'c2' => '#4c0519',
+                'icon' => '<path d="M30 68 A30 30 0 0 1 90 68 Z" fill="#ffe4e6"/><rect x="22" y="68" width="76" height="6" rx="3" fill="#fda4af"/><circle cx="60" cy="34" r="5" fill="#fda4af"/><line x1="20" y1="84" x2="100" y2="84" stroke="#fecdd3" stroke-width="4" stroke-linecap="round"/>',
+            ],
         ];
-        $p = $palette[$kategori] ?? ['bg' => '#64748b', 'fg' => '#fff', 'icon' => '📍'];
-        // Escape nama untuk XML
-        $namaXml = htmlspecialchars(mb_strtoupper(mb_substr($nama, 0, 18)), ENT_XML1, 'UTF-8');
-        $icon = $p['icon'];
-        $svg = sprintf(
-            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360"><rect width="640" height="360" fill="%s"/><text x="50%%" y="48%%" font-size="160" text-anchor="middle" fill="%s" font-family="sans-serif">%s</text><text x="50%%" y="86%%" font-size="22" text-anchor="middle" fill="%s" font-family="sans-serif" font-weight="600">%s</text></svg>',
-            $p['bg'], $p['fg'], $icon, $p['fg'], $namaXml
-        );
+        $p = $palettes[$kategori] ?? [
+            'c1' => '#475569', 'c2' => '#0f172a',
+            'icon' => '<circle cx="60" cy="50" r="18" fill="#f8fafc"/><path d="M60 68 L60 92" stroke="#f8fafc" stroke-width="5" stroke-linecap="round"/>',
+        ];
+
+        $svg = <<<SVG
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+    <defs>
+        <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="{$p['c1']}"/>
+            <stop offset="100%" stop-color="{$p['c2']}"/>
+        </linearGradient>
+    </defs>
+    <rect width="120" height="120" rx="24" fill="url(#g)"/>
+    <circle cx="95" cy="25" r="30" fill="rgba(255,255,255,0.06)"/>
+    {$p['icon']}
+</svg>
+SVG;
 
         return 'data:image/svg+xml;utf8,'.rawurlencode($svg);
     }
