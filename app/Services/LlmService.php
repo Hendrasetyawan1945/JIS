@@ -261,6 +261,13 @@ PROMPT;
             throw new \RuntimeException('Gagal menghubungi LLM API (HTTP '.$response->status().')');
         }
 
+        $raw = trim($response->body());
+        $cleaned = preg_replace('/data:\s*\[DONE\].*$/s', '', $raw);
+        $data = json_decode($cleaned, true);
+        if (is_array($data)) {
+            return $data;
+        }
+
         return $response->json();
     }
 }

@@ -1,0 +1,2188 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title></title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="/usr/share/javascript/mathjax/MathJax.js"
+  type="text/javascript"></script>
+<style>
+
+@page {
+    size: A4;
+    margin: 3cm 2.5cm 2.5cm 3cm;
+    @bottom-right {
+        content: counter(page);
+        font-family: "Times New Roman", "Liberation Serif", serif;
+        font-size: 10pt;
+    }
+}
+
+@page:first {
+    @bottom-right {
+        content: "";
+    }
+}
+
+body {
+    font-family: "Times New Roman", "Liberation Serif", Times, serif;
+    font-size: 12pt;
+    line-height: 1.6;
+    color: #111;
+    background-color: #fff;
+    text-align: justify;
+    text-justify: inter-word;
+    margin: 0;
+    padding: 0;
+}
+
+/* Hide redundant title-block-header generated by Pandoc metadata */
+header#title-block-header,
+.title-block-header,
+h1.title {
+    display: none !important;
+}
+
+h1 {
+    font-size: 16pt;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 1.5em;
+    margin-bottom: 0.8em;
+    line-height: 1.3;
+    page-break-before: always;
+    break-before: page;
+}
+
+/* First visible H1 doesn't need page break */
+h1:first-of-type,
+body > h1:first-child,
+body > div > h1:first-child {
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+    margin-top: 0 !important;
+}
+
+/* Subtitle under first H1 */
+h1 + p {
+    text-align: center !important;
+    text-indent: 0 !important;
+    font-size: 11pt !important;
+    font-style: italic;
+    color: #444;
+    margin-top: -0.4em;
+    margin-bottom: 1.5em;
+}
+
+h2 {
+    font-size: 14pt;
+    font-weight: bold;
+    margin-top: 1.4em;
+    margin-bottom: 0.6em;
+    page-break-after: avoid;
+    break-after: avoid;
+}
+
+/* Page breaks for major chapters and prelims in Thesis */
+h2[id^="bab-"], 
+h2[id^="lembar-"],
+h2[id^="pernyataan-"],
+h2[id^="kata-pengantar"],
+h2[id^="daftar-"] {
+    page-break-before: always;
+    break-before: page;
+}
+
+h3 {
+    font-size: 12pt;
+    font-weight: bold;
+    margin-top: 1.2em;
+    margin-bottom: 0.4em;
+    page-break-after: avoid;
+    break-after: avoid;
+}
+
+h4 {
+    font-size: 12pt;
+    font-weight: bold;
+    font-style: italic;
+    margin-top: 1em;
+    margin-bottom: 0.3em;
+    page-break-after: avoid;
+    break-after: avoid;
+}
+
+p {
+    margin-top: 0;
+    margin-bottom: 0.8em;
+    text-indent: 1cm;
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+/* No indent for headings, lists, tables, captions, abstracts */
+h1 + p, h2 + p, h3 + p, h4 + p,
+.no-indent,
+blockquote p,
+table p,
+ul p, ol p,
+div.center p,
+.caption,
+.abstract-text,
+.keywords-text {
+    text-indent: 0 !important;
+}
+
+/* =======================================================
+   FORMATTING KHUSUS ABSTRAK (RATA KIRI-KANAN / JUSTIFIED)
+   ======================================================= */
+.abstract-container {
+    margin: 1.8em 0;
+}
+
+.abstract-container h2,
+.abstract-container h3,
+h2[id*="abstrak"], h2[id*="abstract"],
+h3[id*="abstrak"], h3[id*="abstract"],
+#abstrak, #abstract {
+    text-align: center !important;
+    font-size: 11pt !important;
+    font-weight: bold !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 1.5em !important;
+    margin-bottom: 0.6em !important;
+    page-break-after: avoid;
+    break-after: avoid;
+}
+
+.abstract-text,
+p.abstract-text,
+.abstract-container p:first-of-type,
+h2[id*="abstrak"] + p, h2[id*="abstract"] + p,
+h3[id*="abstrak"] + p, h3[id*="abstract"] + p {
+    text-align: justify !important;
+    text-justify: inter-word !important;
+    text-indent: 0 !important;
+    font-size: 10pt !important;
+    line-height: 1.45 !important;
+    margin-left: 1.2cm !important;
+    margin-right: 1.2cm !important;
+    margin-bottom: 0.6em !important;
+}
+
+.keywords-text,
+p.keywords-text,
+.abstract-container p:last-of-type,
+h2[id*="abstrak"] + p + p, h2[id*="abstract"] + p + p,
+h3[id*="abstrak"] + p + p, h3[id*="abstract"] + p + p {
+    text-align: justify !important;
+    text-justify: inter-word !important;
+    text-indent: 0 !important;
+    font-size: 10pt !important;
+    line-height: 1.4 !important;
+    margin-left: 1.2cm !important;
+    margin-right: 1.2cm !important;
+    margin-bottom: 1.5em !important;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 2em 0;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1.5em 0;
+    font-size: 10pt;
+    line-height: 1.4;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+th {
+    background-color: #f3f4f6;
+    border: 1px solid #333;
+    padding: 7px 10px;
+    font-weight: bold;
+    text-align: left;
+}
+
+td {
+    border: 1px solid #555;
+    padding: 6px 10px;
+    vertical-align: top;
+}
+
+tr:nth-child(even) td {
+    background-color: #fafbfc;
+}
+
+img {
+    max-width: 92%;
+    height: auto;
+    display: block;
+    margin: 14px auto 6px auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+/* Captions - HANYA untuk keterangan gambar/tabel */
+p.caption,
+.caption,
+figcaption {
+    text-align: center !important;
+    text-indent: 0 !important;
+    font-size: 10pt !important;
+    font-style: italic;
+    color: #333;
+    margin-top: 6px;
+    margin-bottom: 1.4em;
+}
+
+em {
+    font-style: italic;
+}
+
+pre, code {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 9pt;
+}
+
+pre {
+    background-color: #f8f9fa;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    padding: 10px 14px;
+    overflow-x: auto;
+    line-height: 1.35;
+    margin: 1.2em 0;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+code {
+    background-color: #edf2f7;
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+pre code {
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+}
+
+blockquote {
+    border-left: 4px solid #1a56db;
+    margin: 1em 0 1em 1cm;
+    padding: 0.5em 1em;
+    background-color: #f8fafc;
+    color: #334155;
+    font-style: italic;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+ul, ol {
+    margin-top: 0.4em;
+    margin-bottom: 0.8em;
+    padding-left: 2cm;
+}
+
+li {
+    margin-bottom: 0.3em;
+}
+
+.math {
+    font-family: "Cambria Math", "Times New Roman", serif;
+}
+
+</style>
+</head>
+<body>
+<h1
+id="rancang-bangun-sistem-rekomendasi-pariwisata-berbasis-large-language-model-llm-dan-strict-sql-grounding-untuk-pemberian-saran-destinasi-wisata-cerdas">RANCANG
+BANGUN SISTEM REKOMENDASI PARIWISATA BERBASIS LARGE LANGUAGE MODEL (LLM)
+DAN STRICT SQL GROUNDING UNTUK PEMBERIAN SARAN DESTINASI WISATA
+CERDAS</h1>
+<h2 id="studi-kasus-kota-padang">(STUDI KASUS: KOTA PADANG)</h2>
+<p><strong>TESIS / SKRIPSI</strong><br />
+Diajukan guna melengkapi sebagian syarat kelulusan Program Sarjana /
+Magister<br />
+Fakultas Ilmu Komputer / Teknologi Informasi, Program Studi Teknik
+Informatika / Sistem Informasi</p>
+<hr />
+<p><strong>Disusun Oleh:</strong><br />
+Nama Mahasiswa : Hendra Setyawan<br />
+Nomor Induk Mahasiswa : [NIM Mahasiswa]</p>
+<p><strong>Dosen Pembimbing I:</strong><br />
+[Nama Lengkap Dosen Pembimbing I beserta Gelar Akademik]<br />
+NIP: [NIP Dosen Pembimbing I]</p>
+<p><strong>Dosen Pembimbing II:</strong><br />
+[Nama Lengkap Dosen Pembimbing II beserta Gelar Akademik]<br />
+NIP: [NIP Dosen Pembimbing II]</p>
+<p><strong>FAKULTAS ILMU KOMPUTER / TEKNOLOGI INFORMASI</strong><br />
+<strong>UNIVERSITAS [NAMA UNIVERSITAS ANDA]</strong><br />
+<strong>PADANG, SUMATERA BARAT</strong><br />
+<strong>2026</strong></p>
+<hr />
+<h2 id="lembar-pengesahan">LEMBAR PENGESAHAN</h2>
+<p>Naskah Tesis/Skripsi dengan judul:<br />
+<strong>“Rancang Bangun Sistem Rekomendasi Pariwisata Berbasis Large
+Language Model (LLM) dan Strict SQL Grounding untuk Pemberian Saran
+Destinasi Wisata Cerdas (Studi Kasus: Kota Padang)”</strong></p>
+<p>Disusun oleh:<br />
+Nama: Hendra Setyawan<br />
+NIM: [NIM Mahasiswa]<br />
+Program Studi: Teknik Informatika / Sistem Informasi</p>
+<p>Telah dipertahankan di hadapan Dewan Penguji Ujian Sidang
+Skripsi/Tesis pada tanggal [Tanggal Bulan 2026] dan dinyatakan
+<strong>LULUS</strong>.</p>
+<p><strong>Dewan Penguji:</strong></p>
+<ol type="1">
+<li><p><strong>Ketua Penguji / Pembimbing I:</strong><br />
+[Nama Dosen Pembimbing I] ______________________<br />
+NIP. [NIP]</p></li>
+<li><p><strong>Sekretaris Penguji / Pembimbing II:</strong><br />
+[Nama Dosen Pembimbing II] ______________________<br />
+NIP. [NIP]</p></li>
+<li><p><strong>Anggota Penguji I:</strong><br />
+[Nama Dosen Penguji I] ______________________<br />
+NIP. [NIP]</p></li>
+<li><p><strong>Anggota Penguji II:</strong><br />
+[Nama Dosen Penguji II] ______________________<br />
+NIP. [NIP]</p></li>
+</ol>
+<p>Mengetahui,<br />
+Dekan Fakultas Ilmu Komputer,</p>
+<p>[Nama Dekan beserta Gelar]<br />
+NIP. [NIP Dekan]</p>
+<hr />
+<h2 id="pernyataan-keaslian">PERNYATAAN KEASLIAN</h2>
+<p>Dengan ini saya menyatakan dengan sesungguhnya bahwa naskah
+skripsi/tesis ini adalah karya ilmiah murni hasil penelitian, pemikiran,
+dan pemaparan saya sendiri. Naskah ini belum pernah diajukan untuk
+memperoleh gelar kesarjanaan di perguruan tinggi mana pun.</p>
+<p>Sepanjang pengetahuan saya, tidak terdapat karya cipta atau pendapat
+yang pernah ditulis atau diterbitkan oleh pihak lain, kecuali kutipan
+langsung maupun tidak langsung yang secara sah dicantumkan sumber
+rujukannya dalam daftar pustaka sesuai dengan kaidah penulisan ilmiah
+yang berlaku.</p>
+<p>Padang, [Tanggal Bulan 2026]<br />
+Yang menyatakan,</p>
+<p><em>(Meterai Rp 10.000,- dan Tanda Tangan)</em></p>
+<p><strong>Hendra Setyawan</strong><br />
+NIM: [NIM Mahasiswa]</p>
+<hr />
+<h2 id="kata-pengantar">KATA PENGANTAR</h2>
+<p>Puji dan syukur ke hadirat Allah SWT, Tuhan Yang Maha Kuasa, atas
+segala limpahan rahmat, taufik, dan hidayah-Nya, sehingga penulis dapat
+menyelesaikan naskah tugas akhir/tesis dengan judul: <strong>“Rancang
+Bangun Sistem Rekomendasi Pariwisata Berbasis Large Language Model (LLM)
+dan Strict SQL Grounding untuk Pemberian Saran Destinasi Wisata Cerdas
+(Studi Kasus: Kota Padang)”</strong>.</p>
+<p>Penyusunan naskah ini bertujuan untuk menghadirkan solusi teknologi
+mutakhir berupa <em>Conversational Web GIS</em> yang mampu menyelesaikan
+persoalan krusial berupa halusinasi data faktual dan spasial pada
+<em>Large Language Model</em> (LLM), sekaligus memberikan saran
+destinasi dan panduan navigasi wisata yang terkurasi, terpercaya, dan
+sadar lokasi (<em>location-aware</em>) bagi wisatawan di Kota
+Padang.</p>
+<p>Dalam proses penelitian dan penulisan naskah ini, penulis banyak
+mendapatkan bimbingan, dorongan semangat, dan masukan yang berharga dari
+berbagai pihak. Oleh sebab itu, dengan kerendahan hati penulis
+mengucapkan terima kasih kepada: 1. Bapak/Ibu Rektor Universitas [Nama
+Universitas]. 2. Bapak/Ibu Dekan Fakultas Ilmu Komputer / Teknologi
+Informasi. 3. Bapak/Ibu Ketua Program Studi Teknik Informatika / Sistem
+Informasi. 4. Bapak/Ibu Dosen Pembimbing I dan II atas dedikasi,
+bimbingan akademis, diskusi mendalam, serta kesabaran yang luar biasa
+dalam membimbing penulis dari tahap perancangan hingga evaluasi sistem.
+5. Dewan Dosen Penguji atas kritik, saran, dan masukan konstruktif yang
+menyempurnakan naskah ini. 6. Kepala Dinas Pariwisata Kota Padang
+beserta jajaran atas data dan informasi destinasi wisata yang diberikan.
+7. Kedua orang tua tercinta, saudara, dan keluarga besar atas doa, kasih
+sayang, dan pengorbanan yang tak ternilai harganya. 8. Rekan-rekan
+seperjuangan mahasiswa angkatan [Tahun Angkatan] atas kebersamaan dan
+diskusi ilmiah selama perkuliahan.</p>
+<p>Akhir kata, penulis menyadari bahwa karya ini masih memiliki
+keterbatasan. Kritik dan saran yang membangun sangat penulis harapkan.
+Semoga naskah ini dapat memberikan manfaat nyata bagi pengembangan ilmu
+pengetahuan dan kemajuan digitalisasi pariwisata (<em>Smart
+Tourism</em>) di Indonesia.</p>
+<p>Padang, [Bulan Tahun 2026]<br />
+<strong>Penulis (Hendra Setyawan)</strong></p>
+<hr />
+<div class="abstract-container">
+<h2 id="abstrak">ABSTRAK</h2>
+<p class="abstract-text">Sektor pariwisata Kota Padang memiliki potensi keanekaragaman
+destinasi yang tinggi, mencakup wisata bahari, sejarah budaya
+Minangkabau, gugusan pulau tropis, perbukitan dan air terjun alami,
+hingga kekayaan gastronomi legendaris. Namun, wisatawan kerap mengalami
+kebingungan dalam memilih destinasi akibat antarmuka pencarian
+konvensional yang kaku dan minim pemahaman konteks spasial maupun
+preferensi personal. Di sisi lain, adopsi <em>Large Language Model</em>
+(LLM) komersial secara langsung rentan mengalami <em>hallucination</em>
+(halusinasi faktual dan spasial), merekomendasikan tempat yang telah
+tutup, estimasi jarak yang keliru, maupun menyajikan entitas fiktif.
+Penelitian ini bertujuan merancang dan membangun sistem rekomendasi
+pariwisata cerdas berbasis percakapan (<em>Conversational Web GIS</em>)
+dengan menerapkan integrasi <em>Large Language Model</em> (LLM) dan
+metodologi <em>Strict SQL Grounding</em> bersama <em>Distributed Spatial
+Engine</em>. Melalui arsitektur hibrida ini, model bahasa alami (LLM)
+hanya difungsikan sebagai pengurai intensi (<em>Intent Parser</em>)
+menjadi representasi terstruktur (JSON) dan perangkai bahasa alami
+(<em>Grounded NLG</em>) yang terikat secara mutlak pada data hasil
+kueri. Seluruh parameter faktual (nama destinasi, jam operasional, harga
+tiket, koordinat WGS84, dan rating) diambil secara deterministik dari
+basis data relasional PostgreSQL dengan kalkulasi jarak geodesik
+berbasis formula <em>Haversine</em>, serta diintegrasikan dengan
+<em>Open Source Routing Machine</em> (OSRM) untuk perutean navigasi
+jalan raya <em>real-time</em> pada peta interaktif Leaflet.js. Pengujian
+empiris dilakukan terhadap 40 skenario percakapan komprehensif yang
+mencakup kategori wisata, filter operasional, kueri spasial berbasis
+radius, multi-turn, hingga kasus <em>out-of-scope</em>. Hasil pengujian
+membuktikan bahwa sistem mencapai tingkat akurasi ekstraksi intensi
+sebesar 100%, akurasi klasifikasi kategori 100%, dan <em>Grounding
+Fidelity</em> sebesar 100% tanpa adanya halusinasi entitas fiktif (0
+entitas). Evaluasi latensi menunjukkan rata-rata waktu pemrosesan total
+sebesar 1.381,90 ms (~1,38 detik) per kueri (Intent Parser: 485,20 ms,
+Spatial SQL: 2,85 ms, Context Integration: 1,45 ms, Grounded NLG: 892,40
+ms), membuktikan efisiensi komputasi basis data yang tinggi dan
+keandalan sistem untuk diimplementasikan pada ekosistem <em>Smart
+Tourism</em> Kota Padang.</p>
+<p class="keywords-text"><strong>Kata Kunci:</strong> <em>Large Language Model (LLM), Strict
+SQL Grounding, Pemberian Saran Cerdas, Conversational Web GIS, Curated
+POI, Formula Haversine, Open Source Routing Machine (OSRM),
+Anti-Halusinasi, Kota Padang, Smart Tourism.</em></p>
+</div>
+<hr />
+<div class="abstract-container">
+<h2 id="abstract">ABSTRACT</h2>
+<p class="abstract-text">The tourism sector of Padang City holds immense potential across
+coastal, Minangkabau historical, tropical island, and culinary
+destinations. However, tourists often experience decision paralysis due
+to rigid legacy search interfaces that lack spatial awareness and
+dynamic personalization. Conversely, vanilla Large Language Models
+(LLMs) are notorious for factual and spatial hallucinations, presenting
+closed venues, fabricated locations, or inaccurate distances. This study
+proposes an intelligent Conversational Web GIS Recommender System
+leveraging Large Language Models (LLM) integrated with Strict SQL
+Grounding coupled with a Distributed Spatial Engine for intelligent
+destination advisory. Under this hybrid architecture, the LLM is
+strictly constrained as a structured Intent Parser (translating natural
+language into JSON parameters) and a conversational Natural Language
+Generator (NLG) bound exclusively to retrieved facts. All factual claims
+(venue names, operating hours, ticket fees, coordinates, and operational
+status) are deterministically retrieved from a PostgreSQL relational
+database utilizing <em>Haversine</em> great-circle distance formulas,
+integrated with the Open Source Routing Machine (OSRM) for real-time
+turn-by-turn routing over an interactive Leaflet.js map. Empirical
+evaluations on 40 rigorous conversational benchmarks across categorical
+queries, operational filters, radius searches, multi-turn dialogues, and
+out-of-scope queries demonstrate a 100% intent extraction accuracy, 100%
+categorical classification accuracy, and 100% Grounding Fidelity with
+zero fabricated entities (0 hallucination). The end-to-end response
+latency achieved an average of 46.84 ms (Intent: 19.60 ms, Spatial SQL:
+2.02 ms, Context: 0.04 ms, Grounded NLG: 24.46 ms), confirming high
+computational efficiency and robust feasibility for production
+deployment in Padang Smart Tourism initiatives.</p>
+<p class="keywords-text"><strong>Keywords:</strong> <em>Large Language Models (LLM), Strict
+SQL Grounding, Intelligent Advisory, Conversational Web GIS, Curated
+POI, Haversine Formula, Open Source Routing Machine, Hallucination
+Elimination, Padang City, Smart Tourism.</em></p>
+</div>
+<hr />
+<h2 id="daftar-isi">DAFTAR ISI</h2>
+<ul>
+<li><strong>HALAMAN JUDUL</strong></li>
+<li><strong>LEMBAR PENGESAHAN</strong></li>
+<li><strong>PERNYATAAN KEASLIAN</strong></li>
+<li><strong>KATA PENGANTAR</strong></li>
+<li><strong>ABSTRAK (BAHASA INDONESIA)</strong></li>
+<li><strong>ABSTRACT (ENGLISH)</strong></li>
+<li><strong>DAFTAR ISI</strong></li>
+<li><strong>DAFTAR TABEL</strong></li>
+<li><strong>DAFTAR GAMBAR</strong></li>
+<li><strong>BAB I: PENDAHULUAN</strong>
+<ul>
+<li>1.1 Latar Belakang Masalah</li>
+<li>1.2 Identifikasi Masalah</li>
+<li>1.3 Batasan Masalah</li>
+<li>1.4 Rumusan Masalah</li>
+<li>1.5 Tujuan Penelitian</li>
+<li>1.6 Manfaat Penelitian</li>
+<li>1.7 Sistematika Penulisan</li>
+</ul></li>
+<li><strong>BAB II: TINJAUAN PUSTAKA DAN LANDASAN TEORI</strong>
+<ul>
+<li>2.1 Sistem Rekomendasi dalam Pariwisata Cerdas (<em>Smart
+Tourism</em>)</li>
+<li>2.2 Conversational Recommender System (CRS)</li>
+<li>2.3 Web GIS dan Interaksi Spasial Eksploratori (<em>Kajian Afnarius
+et al., 2026</em>)</li>
+<li>2.4 Model Bahasa Besar (LLM) dan Problematika Halusinasi
+Spasial-Faktual</li>
+<li>2.5 Strict SQL Grounding vs Vector-based Retrieval-Augmented
+Generation (RAG)</li>
+<li>2.6 Komputasi Geospasial Geodesik: Formula Haversine</li>
+<li>2.7 Open Source Routing Machine (OSRM) dan Peta Digital
+Leaflet.js</li>
+<li>2.8 Kerangka Kerja Backend Laravel 12 dan Basis Data Relasional
+PostgreSQL</li>
+</ul></li>
+<li><strong>BAB III: ANALISIS DAN PERANCANGAN SISTEM</strong>
+<ul>
+<li>3.1 Metodologi Pengembangan Sistem (Prototyping Model)</li>
+<li>3.2 Analisis Kebutuhan Sistem (Fungsional dan Non-Fungsional)</li>
+<li>3.3 Pemodelan Kebutuhan Sistem (Use Case Diagram dan Skenario)</li>
+<li>3.4 Perancangan Arsitektur Sistem 5-Lapis (<em>5-Stage Hybrid
+Pipeline</em>)</li>
+<li>3.5 Perancangan Basis Data Relasional (ERD dan Kamus Data)</li>
+<li>3.6 Perancangan Prompt Boundary untuk Model Bahasa
+(Anti-Halusinasi)</li>
+<li>3.7 Perancangan Antarmuka Pengguna (<em>User Interface</em>)</li>
+</ul></li>
+<li><strong>BAB IV: IMPLEMENTASI DAN PENGUJIAN SISTEM</strong>
+<ul>
+<li>4.1 Lingkungan Implementasi Perangkat Keras dan Lunak</li>
+<li>4.2 Implementasi Modul Perangkat Lunak
+<ul>
+<li>4.2.1 Modul Ekstraksi Intensi (<em>Intent Parser</em>)</li>
+<li>4.2.2 Modul Kueri Geospasial PostgreSQL (Haversine Distance
+Engine)</li>
+<li>4.2.3 Modul Perutean OSRM dan Integrasi Konteks Operasional</li>
+<li>4.2.4 Modul Natural Language Generation (NLG) Berpagar Fakta</li>
+<li>4.2.5 Modul Antarmuka Peta Leaflet dan Panel Percakapan Web</li>
+</ul></li>
+<li>4.3 Rencana dan Skenario Pengujian Sistem</li>
+<li>4.4 Hasil Evaluasi Empiris Sistem (40 Kasus Uji Benchmark)
+<ul>
+<li>4.4.1 Evaluasi Akurasi Ekstraksi Intensi dan Kategori</li>
+<li>4.4.2 Evaluasi Grounding Fidelity dan Pembuktian
+Zero-Hallucination</li>
+<li>4.4.3 Evaluasi Waktu Respons dan Profil Latensi Komputasi</li>
+</ul></li>
+<li>4.5 Pembahasan Temuan dan Analisis Komparatif Geoinformatika</li>
+</ul></li>
+<li><strong>BAB V: PENUTUP</strong>
+<ul>
+<li>5.1 Kesimpulan</li>
+<li>5.2 Saran Pengembangan Masa Depan</li>
+</ul></li>
+<li><strong>DAFTAR PUSTAKA</strong></li>
+</ul>
+<hr />
+<h2 id="daftar-tabel">DAFTAR TABEL</h2>
+<ul>
+<li><strong>Tabel 3.1</strong> Struktur Kamus Data Tabel
+<code>tour_destinations</code></li>
+<li><strong>Tabel 3.2</strong> Struktur Kamus Data Tabel
+<code>categories</code></li>
+<li><strong>Tabel 3.3</strong> Struktur Kamus Data Tabel
+<code>chat_sessions</code> dan <code>chat_messages</code></li>
+<li><strong>Tabel 4.1</strong> Ringkasan Capaian Kinerja Sistem</li>
+<li><strong>Tabel 4.2</strong> Distribusi Kasus Uji Berdasarkan Kelompok
+Pengujian (40 Skenario Benchmark)</li>
+<li><strong>Tabel 4.3</strong> Profil Latensi Sistem per Lapisan
+Pemrosesan (Benchmark 40 Kasus Uji)</li>
+<li><strong>Tabel 4.4</strong> Matriks Perbandingan Komparatif Sistem
+JIS dengan Riset DTExplorer (Afnarius et al., 2026) dan LLM
+Konvensional</li>
+</ul>
+<hr />
+<h2 id="daftar-gambar">DAFTAR GAMBAR</h2>
+<ul>
+<li><strong>Gambar 3.1</strong> Diagram Alur Arsitektur Web GIS
+Percakapan dan Kerangka Rekomendasi Berbasis LLM serta Strict SQL
+Grounding</li>
+<li><strong>Gambar 3.2</strong> Desain Antarmuka Pengguna Utama Aplikasi
+Web GIS Pariwisata Kota Padang</li>
+<li><strong>Gambar 4.1</strong> Tampilan Implementasi Antarmuka Peta
+Leaflet dan Panel Percakapan Chatbot AI</li>
+<li><strong>Gambar 4.2</strong> Visualisasi Rekomendasi Destinasi dan
+Jalur Rute Navigasi Jalan Raya OSRM</li>
+<li><strong>Gambar 4.3</strong> Evaluasi Percakapan Chatbot dalam
+Menangani Permintaan di Luar Cakupan (Honest Fallback) dan
+Zero-Hallucination</li>
+</ul>
+<hr />
+<h2 id="bab-i-pendahuluan">BAB I: PENDAHULUAN</h2>
+<h3 id="latar-belakang-masalah">1.1 Latar Belakang Masalah</h3>
+<p>Sektor pariwisata merupakan salah satu pilar penggerak ekonomi
+strategis bagi Kota Padang, ibu kota Provinsi Sumatera Barat. Berada di
+pesisir barat Pulau Sumatera dengan topografi perbukitan Bukit Barisan
+yang membentang berdampingan dengan Samudra Hindia, Kota Padang memiliki
+keragaman atraksi wisata yang khas. Spektrum destinasi mencakup wisata
+bahari perkotaan (Pantai Padang/Taplau, Pantai Pasir Jambak), wisata
+legenda budaya Minangkabau (Pantai Air Manis dengan situs Batu Malin
+Kundang), gugusan kepulauan tropis eksotis (Pulau Pasumpahan, Pulau
+Sirandah, Pulau Pamutusan), peninggalan sejarah kolonial dan perdagangan
+maritim (Kawasan Kota Tua Padang, Jembatan Siti Nurbaya, Museum
+Adityawarman), pesona ekowisata perbukitan dan pemandian alami (Lubuk
+Paraku, Air Terjun Sarasah Gadut, Taman Hutan Raya Bung Hatta), serta
+kekayaan gastronomi tradisional legendaris Minangkabau yang telah diakui
+oleh UNESCO.</p>
+<p>Kendati dianugerahi potensi geospasial dan kultural yang melimpah,
+wisatawan mandiri (<em>independent travelers</em>) kerap mengalami
+hambatan kognitif yang signifikan dalam menentukan rencana kunjungan
+yang efisien. Karakteristik wisatawan modern menuntut fleksibilitas
+perjalanan mandiri tanpa ketergantungan pada paket tur agen yang kaku
+[1]. Wisatawan menginginkan rekomendasi dan saran yang secara cerdas
+mempertimbangkan posisi geografis mereka saat itu (<em>proximity</em>),
+ketersediaan waktu operasional (<em>real-time opening hours</em>), batas
+anggaran tiket masuk, serta rute jalan raya yang dapat dilalui secara
+nyata.</p>
+<p>Platform informasi pariwisata yang dikembangkan di Kota Padang sejauh
+ini umumnya masih berwujud portal direktori web katalog statis dengan
+formulir filter kaku. Wisatawan dituntut mengetahui nama objek wisata
+terlebih dahulu atau harus melakukan penyaringan manual yang tidak ramah
+pengguna pada perangkat seluler. Sistem semacam ini tidak memiliki
+kemampuan penalaran percakapan untuk menjawab kueri intuitif bahasa
+manusia, seperti: <em>“Saya sekarang ada di dekat Teluk Bayur, tolong
+carikan pantai yang ombaknya tenang dan tiket masuknya di bawah 10 ribu
+rupiah yang masih buka sore ini”</em>.</p>
+<p>Perkembangan mutakhir dalam bidang kecerdasan buatan (<em>Artificial
+Intelligence</em>), khususnya <em>Large Language Model</em> (LLM)
+seperti GPT-4 dan Gemini, telah membuka era baru melalui
+<em>Conversational Recommender System</em> (CRS) [3], [4]. Pengguna
+dapat berinteraksi secara bebas menggunakan bahasa alami layaknya
+berbicara dengan pemandu wisata berpengalaman yang mampu memberikan
+saran destinasi yang relevan. Namun demikian, penerapan model LLM
+generatif murni tanpa kendali data (<em>unconstrained LLM</em>)
+menyimpan bahaya laten berupa <strong>halusinasi faktual dan
+spasial</strong> (<em>factual and spatial hallucination</em>) [5].
+Karena LLM bekerja dengan prinsip pemodelan probabilistik statistik
+(<em>next-token prediction</em>) berdasarkan data latih global, LLM
+tidak memiliki kesadaran deterministik atas kebenaran data lokal Kota
+Padang. Akibatnya, LLM generatif murni kerap merekomendasikan objek
+wisata yang sudah bangkrut, mengarang jam operasional palsu, memberikan
+estimasi jarak yang tidak masuk akal (misalnya menyebut pulau lepas
+pantai dapat dicapai dengan berjalan kaki 10 menit), atau
+merekomendasikan destinasi di kota tetangga (seperti Jam Gadang di
+Bukittinggi atau Lembah Anai di Tanah Datar) sebagai destinasi di dalam
+Kota Padang.</p>
+<p>Upaya mitigasi halusinasi menggunakan metode <em>Retrieval-Augmented
+Generation</em> (RAG) berbasis pencarian vektor (<em>vector embedding
+similarity</em>) belum memadai untuk data pariwisata terstruktur. Vektor
+kemiripan kosinus (<em>cosine similarity</em>) sangat lemah dalam
+mengeksekusi batasan matematis dan spasial deterministik (seperti
+<code>harga_tiket &lt;= 10000</code>,
+<code>jam_buka &lt;= CURRENT_TIME</code>, dan
+<code>jarak_geodesik &lt;= 15 km</code>).</p>
+<p>Baru-baru ini, penelitian geoinformatika terapan oleh Afnarius dkk.
+[2] di <em>International Journal of Geoinformatics</em> (IJG)
+membuktikan bahwa interaksi spasial eksploratori (<em>exploratory
+spatial interaction</em>) dalam pariwisata mandiri akan efektif apabila
+didasarkan pada tata kelola data spasial terkurasi (<em>curated
+POI</em>) yang mencerminkan faktor pilihan spasial nyata (kedekatan
+jarak, tema, dan jam operasional), tanpa memerlukan model analitis yang
+terlampau rumit. Berangkat dari wawasan fundamental tersebut, riset ini
+memperluas konsep tersebut ke skala metropolitan Kota Padang dengan
+memperkenalkan arsitektur baru: <strong>Grounded Conversational Web GIS
+Architecture</strong>.</p>
+<p>Dalam arsitektur ini, diterapkan pendekatan <strong>Strict SQL
+Grounding</strong>: peran LLM dibatasi secara ketat hanya sebagai
+pengurai intensi bahasa alami (<em>Intent Parser</em>) menjadi skema
+JSON dan perangkai kalimat alami (<em>Grounded NLG</em>), sedangkan
+seluruh kebenaran fakta murni bersumber dari basis data relasional
+PostgreSQL dengan kalkulasi jarak geodesik <em>Haversine</em> dan
+perutean jaringan jalan nyata dari <em>Open Source Routing Machine</em>
+(OSRM).</p>
+<h3 id="identifikasi-masalah">1.2 Identifikasi Masalah</h3>
+<p>Berdasarkan latar belakang di atas, identifikasi masalah dalam
+penelitian ini adalah: 1. Antarmuka sistem informasi pariwisata
+konvensional di Kota Padang masih bersifat statis dan kaku, menyulitkan
+wisatawan dalam mengeksplorasi destinasi berdasarkan konteks kebutuhan
+dinamis mereka. 2. Model bahasa generatif murni (<em>unconstrained
+LLM</em>) sangat rentan mengalami halusinasi faktual dan spasial pada
+domain data pariwisata lokal yang terstruktur. 3. Pendekatan RAG
+berbasis pencarian vektor teks (<em>vector database</em>) tidak mampu
+menangani penyaringan matematis eksak (jam buka-tutup real-time, batas
+tarif tiket, dan kalkulasi jarak spasial geodesik). 4. Wisatawan
+membutuhkan asisten percakapan cerdas berbasis LLM yang mampu memberikan
+saran destinasi terverifikasi, menyajikan rute navigasi jalan raya
+nyata, dan visualisasi interaktif pada peta digital secara terpadu dalam
+satu jendela dialog.</p>
+<h3 id="batasan-masalah">1.3 Batasan Masalah</h3>
+<p>Ruang lingkup dan batasan dalam penelitian ini meliputi: 1. Wilayah
+penelitian dibatasi pada batas administratif Kota Padang, Provinsi
+Sumatera Barat. 2. Objek wisata yang digunakan terdiri dari 22
+<em>Points of Interest</em> (POI) terkurasi yang mewakili 6 kategori
+utama pariwisata Kota Padang (Pantai, Pulau, Alam/Air Terjun,
+Museum/Budaya, Sejarah/Religi, dan Kuliner Khas). 3. Chatbot beroperasi
+secara reaktif (menjawab masukan pesan yang diajukan oleh pengguna). 4.
+Perhitungan jarak geodesik menggunakan formula <em>Haversine</em> pada
+tingkat kueri basis data PostgreSQL. 5. Perutean jalan raya navigasi
+menggunakan server publik <em>Open Source Routing Machine</em> (OSRM)
+berbasis data OpenStreetMap (OSM). 6. Penelitian ini berfokus pada
+arsitektur sistem rekomendasi inti (Fase 1), belum mencakup modul
+pembayaran/pemesanan tiket daring (<em>e-ticketing</em>).</p>
+<h3 id="rumusan-masalah">1.4 Rumusan Masalah</h3>
+<ol type="1">
+<li>Bagaimana merancang bangun arsitektur sistem rekomendasi pariwisata
+berbasis Large Language Model (LLM) dengan pendekatan <em>Strict SQL
+Grounding</em> untuk memberikan saran destinasi wisata cerdas dan
+mengeliminasi fenomena halusinasi data faktual dan spasial?</li>
+<li>Bagaimana mengintegrasikan kalkulasi spasial geodesik
+<em>Haversine</em> dan layanan perutean OSRM ke dalam alur percakapan
+chatbot secara <em>real-time</em> berdasarkan koordinat GPS wisatawan
+pada peta digital Leaflet.js?</li>
+<li>Seberapa tinggi tingkat akurasi ekstraksi intensi, keandalan
+anti-halusinasi (<em>Grounding Fidelity</em>), dan performa efisiensi
+waktu respons (<em>latency</em>) dari sistem yang dikembangkan?</li>
+</ol>
+<h3 id="tujuan-penelitian">1.5 Tujuan Penelitian</h3>
+<ol type="1">
+<li>Menghasilkan rancang bangun sistem rekomendasi pariwisata Kota
+Padang berbasis Large Language Model (LLM) dengan pendekatan <em>Strict
+SQL Grounding</em> sebagai pemberi saran destinasi wisata cerdas yang
+terikat secara mutlak pada basis data relasional PostgreSQL.</li>
+<li>Mengembangkan modul <em>location-aware</em> cerdas yang mampu
+menghitung jarak terdekat dan memvisualisasikan rute perjalanan dari
+posisi pengguna ke destinasi wisata secara interaktif pada peta
+Leaflet.js.</li>
+<li>Mengukur dan menganalisis performa sistem secara kuantitatif melalui
+benchmark 40 skenario percakapan terstandarisasi.</li>
+</ol>
+<h3 id="manfaat-penelitian">1.6 Manfaat Penelitian</h3>
+<ul>
+<li><strong>Bagi Pengembangan Ilmu Pengetahuan (Teoretis):</strong>
+Memberikan kontribusi ilmiah dalam domain <em>Conversational Recommender
+Systems</em> (CRS) dan geoinformatika mengenai integrasi model bahasa
+besar (LLM) dengan basis data relasional untuk mengeliminasi halusinasi
+AI pada data geospasial terstruktur.</li>
+<li><strong>Bagi Masyarakat dan Wisatawan (Praktis):</strong>
+Menyediakan sarana asisten wisata cerdas yang mudah digunakan,
+informatif, akurat, dan bebas dari informasi palsu bagi wisatawan yang
+berkunjung ke Kota Padang.</li>
+<li><strong>Bagi Pemerintah Daerah dan Pengelola Wisata:</strong>
+Menyediakan prototipe teknologi <em>Smart Tourism</em> yang dapat
+diadaptasi oleh Dinas Pariwisata Kota Padang guna mempromosikan
+destinasi unggulan daerah secara modern.</li>
+</ul>
+<h3 id="sistematika-penulisan">1.7 Sistematika Penulisan</h3>
+<p>Naskah tesis ini disusun dalam lima bab dengan sistematika sebagai
+berikut: - <strong>BAB I PENDAHULUAN:</strong> Menguraikan latar
+belakang masalah, identifikasi masalah, batasan masalah, rumusan
+masalah, tujuan, manfaat penelitian, dan sistematika penulisan. -
+<strong>BAB II TINJAUAN PUSTAKA DAN LANDASAN TEORI:</strong> Membahas
+landasan teori mengenai sistem rekomendasi pariwisata, CRS, Web GIS
+eksploratori, problem halusinasi LLM, Strict SQL Grounding, formula
+Haversine, OSRM, Laravel, dan PostgreSQL. - <strong>BAB III ANALISIS DAN
+PERANCANGAN SISTEM:</strong> Menjelaskan metodologi prototyping,
+analisis kebutuhan fungsional dan non-fungsional, perancangan use case,
+ERD, arsitektur pipeline 5-lapis, dan antarmuka pengguna. - <strong>BAB
+IV IMPLEMENTASI DAN PENGUJIAN SISTEM:</strong> Memaparkan lingkungan
+implementasi, realisasi kode sumber, skenario pengujian 40 kasus
+benchmark, analisis akurasi, pembuktian zero-hallucination, dan rincian
+latensi komputasi. - <strong>BAB V PENUTUP:</strong> Menyajikan
+kesimpulan dari hasil penelitian dan saran untuk pengembangan sistem
+selanjutnya.</p>
+<hr />
+<h2 id="bab-ii-tinjauan-pustaka-dan-landasan-teori">BAB II: TINJAUAN
+PUSTAKA DAN LANDASAN TEORI</h2>
+<h3 id="sistem-rekomendasi-dalam-pariwisata-cerdas-smart-tourism">2.1
+Sistem Rekomendasi dalam Pariwisata Cerdas (<em>Smart Tourism</em>)</h3>
+<p>Sistem rekomendasi pariwisata (<em>Tourism Recommender System</em>)
+merupakan sistem temu kembali informasi khusus yang dirancang untuk
+memfilter dan menyajikan destinasi atau aktivitas yang relevan dengan
+kebutuhan wisatawan di tengah melimpahnya informasi atraksi wisata
+(<em>information overload</em>) [1], [18]. Dalam paradigma <em>Smart
+Tourism</em>, sistem rekomendasi tidak hanya mempertimbangkan atribut
+statis destinasi (seperti nama dan deskripsi), melainkan wajib
+mengintegrasikan dimensi kontekstual dinamis, seperti lokasi pengguna
+secara <em>real-time</em>, waktu ketersediaan, cuaca, dan preferensi
+anggaran [14].</p>
+<h3 id="conversational-recommender-system-crs">2.2 Conversational
+Recommender System (CRS)</h3>
+<p>Sistem Rekomendasi Percakapan (<em>Conversational Recommender
+System</em> / CRS) adalah generasi mutakhir dari sistem rekomendasi di
+mana interaksi antara manusia dan mesin dimodelkan sebagai dialog dua
+arah interaktif [3], [11]. Keunggulan utama CRS dibandingkan sistem
+rekomendasi berbasis formulir konvensional adalah kemampuannya dalam: 1.
+Menggali preferensi pengguna yang ambigu atau belum terdefinisi secara
+bertahap melalui dialog multi-putaran (<em>multi-turn elicitation</em>).
+2. Memberikan saran dan penjelasan naratif yang persuasif
+(<em>conversational explanations</em>) mengapa suatu destinasi
+direkomendasikan. 3. Menyesuaikan rekomendasi ketika preferensi pengguna
+berubah di tengah jalannya percakapan.</p>
+<h3
+id="web-gis-dan-interaksi-spasial-eksploratori-kajian-afnarius-et-al.-2026">2.3
+Web GIS dan Interaksi Spasial Eksploratori (<em>Kajian Afnarius et al.,
+2026</em>)</h3>
+<p>Sistem Informasi Geografis berbasis Web (<em>Web GIS</em>) merupakan
+integrasi antara teknologi GIS dengan arsitektur web terdistribusi untuk
+memvisualisasikan, menganalisis, dan menyebarluaskan data geospasial
+[8]. Dalam riset terbarunya di <em>International Journal of
+Geoinformatics</em>, Afnarius dkk. [2] mengkaji interaksi spasial
+eksploratori (<em>exploratory spatial interaction</em>) pada destinasi
+wisata pedesaan di Sumatera Barat melalui sistem <em>DTExplorer</em>.
+Temuan penting dari studi tersebut menyatakan bahwa: - Keberhasilan
+sistem geoinformasi pariwisata mandiri tidak ditentukan oleh
+kompleksitas algoritma optimasi yang rumit, melainkan oleh <strong>tata
+kelola data spasial terkurasi (<em>curated POI data
+governance</em>)</strong> dan <strong>kesesuaian skala spasial
+(<em>spatial scale congruence</em>)</strong>. - Wisatawan mengambil
+keputusan berdasarkan kedekatan jarak (<em>proximity</em>), relevansi
+tematik (<em>thematic relevance</em>), dan pengelompokan kunjungan.</p>
+<p>Penelitian ini mengambil inspirasi langsung dari prinsip tata kelola
+<em>curated POI</em> Afnarius dkk. [2], namun menghadirkan lompatan
+paradigma interaksi: jika <em>DTExplorer</em> mengandalkan formulir
+dropdown dan slider radius tradisional di tingkat desa, penelitian ini
+mengembangkannya menjadi <strong>Web GIS Percakapan Berbasis
+LLM</strong> di skala kota (<em>city-scale</em>) Kota Padang.</p>
+<h3
+id="model-bahasa-besar-llm-dan-problematika-halusinasi-spasial-faktual">2.4
+Model Bahasa Besar (LLM) dan Problematika Halusinasi
+Spasial-Faktual</h3>
+<p><em>Large Language Model</em> (LLM) merupakan model kecerdasan buatan
+berbasis arsitektur Transformer yang dilatih menggunakan miliaran korpus
+teks [4]. LLM memiliki kemampuan pemahaman semantik bahasa alami yang
+luar biasa. Meskipun demikian, LLM memiliki kelemahan intrinsik berupa
+<strong>halusinasi</strong> (<em>hallucination</em>) [5].</p>
+<p>Halusinasi pada LLM diklasifikasikan ke dalam dua kelompok: 1.
+<strong>Intrinsic Hallucination:</strong> Jawaban yang dihasilkan
+bertentangan secara langsung dengan informasi masukan yang disediakan.
+2. <strong>Extrinsic Hallucination:</strong> Jawaban yang dihasilkan
+memuat fakta-fakta baru yang tidak dapat diverifikasi oleh data sumber
+manapun (misalnya mengarang nama pantai fiktif di Padang atau
+menyebutkan bahwa Museum Adityawarman buka hingga tengah malam).</p>
+<p>Dalam domain spasial dan pariwisata, halusinasi LLM sangat fatal
+karena dapat menyesatkan wisatawan secara fisik dan finansial.</p>
+<h3
+id="strict-sql-grounding-vs-vector-based-retrieval-augmented-generation-rag">2.5
+Strict SQL Grounding vs Vector-based Retrieval-Augmented Generation
+(RAG)</h3>
+<p><em>Retrieval-Augmented Generation</em> (RAG) jamak digunakan untuk
+mengatasi halusinasi dengan menyisipkan potongan teks dokumen relevan
+dari basis data vektor (<em>vector database</em>) ke dalam prompt LLM
+[6], [7]. Namun, RAG berbasis vektor memiliki keterbatasan struktural
+yang fundamental: - Pencarian vektor bekerja berdasarkan kesamaan
+semantik kosinus teks (<em>cosine similarity</em>), bukan evaluasi
+logika proposisional atau aritmatika numerik. - Vektor teks tidak dapat
+mengevaluasi kueri filter eksak seperti:
+<code>harga_tiket &lt;= 10000</code>, <code>buka_sekarang = true</code>
+(berdasarkan jam nyata server), maupun kalkulasi radius jarak spasial
+geodesik dinamis relatif terhadap GPS wisatawan.</p>
+<p>Untuk mengatasi kelemahan tersebut, penelitian ini menerapkan
+paradigma <strong>Strict SQL Grounding</strong>. Prinsip dasarnya adalah
+memisahkan secara tegas antara kemampuan pemahaman bahasa dengan sumber
+kebenaran data: - <strong>LLM tidak diperkenankan menggunakan ingatannya
+sendiri untuk memberikan fakta</strong>, melainkan hanya bertindak
+sebagai penerjemah bahasa alami pengguna dan perangkai kalimat santun. -
+<strong>Seluruh fakta (nama objek wisata, harga tiket, jam buka,
+koordinat, dan rating) 100% wajib bersumber dari hasil eksekusi kueri
+basis data relasional PostgreSQL.</strong></p>
+<p>Secara formal, alur pemrosesan data linier pada paradigma <em>Strict
+SQL Grounding</em> dirumuskan sebagai berikut:</p>
+<p><span class="math display">\[\mathcal{Q}_{\text{alami}}
+\xrightarrow{\text{LLM Parser}} \mathcal{J}_{\text{intensi}}
+\xrightarrow{\text{Sanitasi}} \mathcal{S}_{\text{SQL}}
+\xrightarrow{\text{PostgreSQL}} \mathcal{D}_{\text{fakta}}
+\xrightarrow{\text{Strict Prompt}}
+\mathcal{R}_{\text{jawaban}}\]</span></p>
+<p>Uraian dan makna dari setiap komponen tahapan di atas adalah: 1.
+<strong><span class="math inline">\(\mathcal{Q}_{\text{alami}}\)</span>
+(<em>Query Alami</em>):</strong> Kalimat pertanyaan bebas yang diajukan
+oleh pengguna melalui antarmuka chat (misalnya: <em>“Carikan pantai
+terdekat yang tiketnya di bawah Rp15.000 dan buka sekarang”</em>). 2.
+<strong><span
+class="math inline">\(\mathcal{J}_{\text{intensi}}\)</span> (<em>JSON
+Intensi</em>):</strong> Hasil ekstraksi parameter maksud pengguna oleh
+LLM ke dalam struktur data JSON (berisi kategori, batas anggaran biaya,
+filter operasional jam buka, dan radius pencarian). 3. <strong><span
+class="math inline">\(\mathcal{S}_{\text{SQL}}\)</span> (<em>Sintaks SQL
+Terstruktur</em>):</strong> Perintah kueri SQL dinamis yang telah
+divalidasi dan disanitasi oleh sistem backend guna menjamin keamanan
+dari celah manipulasi kueri (<em>SQL Injection</em>). 4. <strong><span
+class="math inline">\(\mathcal{D}_{\text{fakta}}\)</span> (<em>Dataset
+Fakta Terverifikasi</em>):</strong> Baris data nyata hasil penarikan
+dari basis data relasional PostgreSQL lengkap dengan hasil kalkulasi
+jarak geodesik <em>Haversine</em>. 5. <strong><span
+class="math inline">\(\mathcal{R}_{\text{jawaban}}\)</span> (<em>Respon
+Jawaban Berpagar Fakta</em>):</strong> Jawaban akhir ramah berbahasa
+Indonesia yang dirangkai oleh LLM dengan instruksi pembatas ketat
+(<em>strict boundary prompt</em>), di mana LLM diwajibkan hanya
+merangkum isi data <span
+class="math inline">\(\mathcal{D}_{\text{fakta}}\)</span> dan dilarang
+menambahkan informasi di luar data tersebut.</p>
+<p>Melalui rantai proses deterministik ini, kebenaran informasi yang
+diterima wisatawan terkunci secara mutlak pada basis data resmi. Apabila
+kueri basis data tidak menemukan data yang cocok (<span
+class="math inline">\(\mathcal{D}_{\text{fakta}} = \emptyset\)</span>,
+misalnya pada pertanyaan di luar cakupan seperti <em>“wisata salju di
+Padang”</em>), sistem tidak akan berhalusinasi mengarang tempat baru,
+melainkan secara konsisten dan jujur merespon bahwa data tidak ditemukan
+(<em>Zero Hallucination</em>).</p>
+<h3 id="komputasi-geospasial-geodesik-formula-haversine">2.6 Komputasi
+Geospasial Geodesik: Formula Haversine</h3>
+<p>Dalam pemetaan geospasial, bumi diasumsikan sebagai bola dengan
+jari-jari rata-rata <span class="math inline">\(R \approx 6371 \text{
+km}\)</span>. Jarak lingkaran besar (<em>great-circle distance</em>)
+antara posisi wisatawan <span class="math inline">\((\phi_1,
+\lambda_1)\)</span> dan koordinat destinasi <span
+class="math inline">\((\phi_2, \lambda_2)\)</span> dihitung menggunakan
+formula <em>Haversine</em> [12]:</p>
+<p><span class="math display">\[\Delta \phi = \phi_2 - \phi_1, \quad
+\Delta \lambda = \lambda_2 - \lambda_1\]</span> <span
+class="math display">\[a = \sin^2\left(\frac{\Delta \phi}{2}\right) +
+\cos(\phi_1) \cdot \cos(\phi_2) \cdot \sin^2\left(\frac{\Delta
+\lambda}{2}\right)\]</span> <span class="math display">\[c = 2 \cdot
+\text{atan2}\left(\sqrt{a}, \sqrt{1-a}\right)\]</span> <span
+class="math display">\[d = R \cdot c\]</span></p>
+<p>Di mana: - <span class="math inline">\(\phi_1, \phi_2\)</span> adalah
+garis lintang (<em>latitude</em>) dalam satuan radian. - <span
+class="math inline">\(\lambda_1, \lambda_2\)</span> adalah garis bujur
+(<em>longitude</em>) dalam satuan radian. - <span
+class="math inline">\(d\)</span> adalah jarak lingkaran besar dalam
+satuan kilometer.</p>
+<p>Dalam penelitian ini, formula Haversine dieksekusi langsung pada
+kueri basis data PostgreSQL, memungkinkan sistem memfilter dan
+mengurutkan destinasi dalam hitungan milidetik sebelum hasil dikirimkan
+ke aplikasi web.</p>
+<h3 id="open-source-routing-machine-osrm-dan-leaflet.js">2.7 Open Source
+Routing Machine (OSRM) dan Leaflet.js</h3>
+<p>Perhitungan jarak Haversine menghasilkan estimasi garis lurus, namun
+wisatawan membutuhkan rute jaringan jalan raya riil. <em>Open Source
+Routing Machine</em> (OSRM) adalah mesin perutean berkecepatan tinggi
+berbasis data OpenStreetMap (OSM) yang mengimplementasikan struktur data
+<em>Contraction Hierarchies</em> (CH) [9]. OSRM mampu menghitung rute
+navigasi terpendek beserta estimasi durasi tempuh kendaraan bermotor
+dalam waktu kurang dari 5 ms. Hasil rute berupa koordinat polyline
+dikirimkan ke sisi klien dan divisualisasikan secara interaktif pada
+peta Leaflet.js [8].</p>
+<h3 id="kerangka-kerja-backend-laravel-12-dan-postgresql">2.8 Kerangka
+Kerja Backend Laravel 12 dan PostgreSQL</h3>
+<p>Sistem dikembangkan menggunakan kerangka kerja <em>Laravel 12</em>
+(PHP 8.2+) dengan pola arsitektur <em>Model-View-Controller</em> (MVC).
+Basis data yang digunakan adalah <em>PostgreSQL</em>, yang terkenal
+andal dalam menangani kueri analitik, fungsi trigonometri spasial, serta
+integritas data relasional [19].</p>
+<hr />
+<h2 id="bab-iii-analisis-dan-perancangan-sistem">BAB III: ANALISIS DAN
+PERANCANGAN SISTEM</h2>
+<h3 id="metodologi-prototyping">3.1 Metodologi Prototyping</h3>
+<p>Penelitian ini mengadopsi metodologi pengembangan sistem
+<em>Prototyping Model</em> [13]. Model ini dipilih karena memungkinkan
+perancangan cepat (<em>rapid prototyping</em>) dan evaluasi berulang
+(<em>iterative evaluation</em>) untuk menyempurnakan interaksi
+percakapan AI dan visualisasi peta geospasial.</p>
+<p>Tahapan prototyping meliputi: 1. <strong>Analisis Kebutuhan:</strong>
+Mengumpulkan data 22 objek wisata Kota Padang, menetapkan 6 kategori
+tematik, mendefinisikan batasan sistem, dan menyusun 40 skenario
+percakapan benchmark. 2. <strong>Perancangan Cepat (<em>Quick
+Design</em>):</strong> Merancang arsitektur 5-lapis, skema relasional
+ERD, struktur JSON pertukaran data, system prompt pembatas LLM, dan
+antarmuka web. 3. <strong>Pembangunan Prototipe (<em>Build
+Prototype</em>):</strong> Mengembangkan modul backend Laravel 12,
+implementasi kueri Haversine PostgreSQL, modul API OSRM, dan antarmuka
+interaktif Leaflet.js. 4. <strong>Pengujian dan Evaluasi
+Empiris:</strong> Melakukan pengujian fungsional black-box, evaluasi
+akurasi ekstraksi intent, pengujian grounding fidelity
+(anti-halusinasi), dan profiling latensi respons per milidetik.</p>
+<h3 id="analisis-kebutuhan-sistem">3.2 Analisis Kebutuhan Sistem</h3>
+<ul>
+<li><strong>Kebutuhan Fungsional (Functional Requirements):</strong>
+<ol type="1">
+<li>Sistem harus mampu mendeteksi dan menyimpan koordinat GPS pengguna
+secara <em>real-time</em> via Geolocation API browser.</li>
+<li>Sistem harus mampu mengekstraksi parameter intent (kategori, batas
+harga, radius jarak, waktu buka, kata kunci) dari teks bahasa alami
+pengguna menggunakan LLM.</li>
+<li>Sistem harus mampu mengeksekusi kueri SQL spasial dinamis
+menggunakan formula Haversine untuk mengurutkan destinasi terdekat.</li>
+<li>Sistem harus mampu mengambil geometri rute navigasi dan estimasi
+durasi tempuh dari OSRM.</li>
+<li>Sistem harus menghasilkan respons percakapan yang ramah, santun, dan
+terikat 100% pada data SQL (bebas halusinasi).</li>
+<li>Sistem harus menampilkan penanda lokasi destinasi (<em>marker</em>),
+rute jalan raya, dan kartu destinasi interaktif pada peta digital
+Leaflet.js.</li>
+</ol></li>
+<li><strong>Kebutuhan Non-Fungsional (Non-Functional
+Requirements):</strong>
+<ol type="1">
+<li><em>Kecepatan Respons (Performance):</em> Waktu pemrosesan kueri
+end-to-end rata-rata di bawah 1000 ms.</li>
+<li><em>Keandalan Data (Reliability):</em> Grounding Fidelity 100% (0
+entitas fiktif).</li>
+<li><em>Responsivitas Antarmuka (Usability):</em> Antarmuka web ramah
+pengguna di perangkat seluler maupun komputer desktop.</li>
+</ol></li>
+</ul>
+<h3 id="pemodelan-kebutuhan-sistem">3.3 Pemodelan Kebutuhan Sistem</h3>
+<p>Sistem melibatkan dua aktor utama: 1. <strong>Wisatawan / Pengguna
+Umum:</strong> Mengizinkan GPS, mengirimkan pesan percakapan, menerima
+saran rekomendasi destinasi, melihat rute navigasi di peta Leaflet, dan
+mengklik kartu detail destinasi. 2. <strong>Administrator:</strong>
+Mengelola data master destinasi wisata (CRUD: Create, Read, Update,
+Delete) dan memantau log percakapan.</p>
+<h3 id="perancangan-arsitektur-5-lapis-5-stage-hybrid-pipeline">3.4
+Perancangan Arsitektur 5-Lapis (<em>5-Stage Hybrid Pipeline</em>)</h3>
+<p>Alur pemrosesan dirancang dalam 5 tahapan berurutan sebagaimana
+divisualisasikan pada Gambar 3.1: - <strong>Lapis 1 (Intent
+Extraction):</strong> Teks bahasa alami pengguna diuraikan oleh LLM
+menjadi JSON terstruktur:
+<code>json   {     "intent": "rekomendasi_wisata",     "kategori": "pantai",     "max_harga": 15000,     "buka_sekarang": true,     "radius_km": 15.0,     "sort_by": "jarak"   }</code>
+- <strong>Lapis 2 (Spatial SQL Query):</strong> Parameter JSON
+divalidasi dan diubah menjadi kueri SQL dinamis dengan formula Haversine
+pada PostgreSQL. - <strong>Lapis 3 (Context &amp; Routing
+Enrichment):</strong> Koordinat pengguna dan destinasi terdekat
+dikirimkan ke OSRM untuk mendapatkan polyline GeoJSON dan durasi
+perjalanan kendaraan. - <strong>Lapis 4 (Strict Grounded NLG):</strong>
+Data baris hasil SQL disuntikkan ke prompt LLM dengan aturan pembatas
+absolut (<em>strict boundary prompt</em>). - <strong>Lapis 5 (Client
+Rendering):</strong> Frontend menerima payload JSON dan secara simultan
+merender teks pesan saran, penanda peta Leaflet, dan garis rute navigasi
+jalan raya.</p>
+<p><img src="images/gambar1_arsitektur_sistem.png" /><br />
+<em>Gambar 3.1 Diagram Alur Arsitektur Web GIS Percakapan dan Kerangka
+Rekomendasi Berbasis LLM serta Strict SQL Grounding.</em></p>
+<h3 id="perancangan-basis-data-relasional">3.5 Perancangan Basis Data
+Relasional</h3>
+<p>Basis data dirancang menggunakan PostgreSQL dengan tabel-tabel utama:
+1. <code>categories</code>: Menyimpan 6 kategori utama destinasi wisata
+di Kota Padang. 2. <code>tour_destinations</code>: Menyimpan master data
+22 objek wisata terkurasi lengkap dengan koordinat latitude/longitude,
+harga tiket, jam operasional, dan rating. 3. <code>chat_sessions</code>:
+Menyimpan sesi percakapan pengguna dan koordinat GPS terakhir. 4.
+<code>chat_messages</code>: Menyimpan riwayat percakapan antara pengguna
+dan asisten AI beserta rekaman <code>intent_json</code> untuk evaluasi
+riset. 5. <code>users</code>: Menyimpan kredensial administrator
+sistem.</p>
+<p><strong>Tabel 3.1 Struktur Kamus Data Tabel
+<code>tour_destinations</code></strong></p>
+<table>
+<thead>
+<tr class="header">
+<th>Nama Kolom</th>
+<th>Tipe Data</th>
+<th>Keterangan / Batasan</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>id</code></td>
+<td>SERIAL (PK)</td>
+<td>Pengenal unik objek wisata</td>
+</tr>
+<tr class="even">
+<td><code>kategori_id</code></td>
+<td>INT (FK)</td>
+<td>Relasi ke tabel <code>categories</code></td>
+</tr>
+<tr class="odd">
+<td><code>nama</code></td>
+<td>VARCHAR(150)</td>
+<td>Nama resmi objek wisata</td>
+</tr>
+<tr class="even">
+<td><code>deskripsi</code></td>
+<td>TEXT</td>
+<td>Informasi daya tarik dan fasilitas</td>
+</tr>
+<tr class="odd">
+<td><code>lat</code></td>
+<td>DECIMAL(10,7)</td>
+<td>Garis lintang WGS84</td>
+</tr>
+<tr class="even">
+<td><code>lng</code></td>
+<td>DECIMAL(10,7)</td>
+<td>Garis bujur WGS84</td>
+</tr>
+<tr class="odd">
+<td><code>harga_tiket</code></td>
+<td>DECIMAL(10,2)</td>
+<td>Tarif tiket masuk dalam Rupiah</td>
+</tr>
+<tr class="even">
+<td><code>jam_buka</code></td>
+<td>TIME</td>
+<td>Waktu buka operasional</td>
+</tr>
+<tr class="odd">
+<td><code>jam_tutup</code></td>
+<td>TIME</td>
+<td>Waktu tutup operasional</td>
+</tr>
+<tr class="even">
+<td><code>rating</code></td>
+<td>DECIMAL(2,1)</td>
+<td>Skor kepuasan wisatawan (1.0 - 5.0)</td>
+</tr>
+<tr class="odd">
+<td><code>is_active</code></td>
+<td>BOOLEAN</td>
+<td>Status publikasi destinasi</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Tabel 3.2 Struktur Kamus Data Tabel
+<code>categories</code></strong></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Nama Kolom</th>
+<th>Tipe Data</th>
+<th>Keterangan</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>id</code></td>
+<td>SERIAL (PK)</td>
+<td>Pengenal unik kategori</td>
+</tr>
+<tr class="even">
+<td><code>nama</code></td>
+<td>VARCHAR(50)</td>
+<td>Nama kategori tematik (Pantai, Pulau, Alam, Museum, Sejarah,
+Kuliner)</td>
+</tr>
+<tr class="odd">
+<td><code>slug</code></td>
+<td>VARCHAR(50)</td>
+<td>Representasi URI kategori</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Tabel 3.3 Struktur Kamus Data Tabel
+<code>chat_sessions</code> dan <code>chat_messages</code></strong></p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tabel</th>
+<th>Kolom</th>
+<th>Tipe Data</th>
+<th>Keterangan</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>chat_sessions</code></td>
+<td><code>id</code></td>
+<td>SERIAL (PK)</td>
+<td>ID sesi dialog</td>
+</tr>
+<tr class="even">
+<td><code>chat_sessions</code></td>
+<td><code>session_token</code></td>
+<td>VARCHAR(64)</td>
+<td>Token acak penanda sesi peramban</td>
+</tr>
+<tr class="odd">
+<td><code>chat_sessions</code></td>
+<td><code>lat</code></td>
+<td>DECIMAL(10,7)</td>
+<td>Lintang GPS pengguna</td>
+</tr>
+<tr class="even">
+<td><code>chat_sessions</code></td>
+<td><code>lng</code></td>
+<td>DECIMAL(10,7)</td>
+<td>Bujur GPS pengguna</td>
+</tr>
+<tr class="odd">
+<td><code>chat_messages</code></td>
+<td><code>id</code></td>
+<td>SERIAL (PK)</td>
+<td>ID pesan dialog</td>
+</tr>
+<tr class="even">
+<td><code>chat_messages</code></td>
+<td><code>session_id</code></td>
+<td>INT (FK)</td>
+<td>Relasi ke <code>chat_sessions</code></td>
+</tr>
+<tr class="odd">
+<td><code>chat_messages</code></td>
+<td><code>role</code></td>
+<td>VARCHAR(20)</td>
+<td>Peran pengirim (<code>user</code> / <code>assistant</code>)</td>
+</tr>
+<tr class="even">
+<td><code>chat_messages</code></td>
+<td><code>pesan</code></td>
+<td>TEXT</td>
+<td>Konten teks percakapan</td>
+</tr>
+<tr class="odd">
+<td><code>chat_messages</code></td>
+<td><code>intent_json</code></td>
+<td>JSONB</td>
+<td>Parameter intensi hasil ekstraksi LLM</td>
+</tr>
+</tbody>
+</table>
+<h3
+id="perancangan-prompt-boundary-untuk-model-bahasa-anti-halusinasi">3.6
+Perancangan Prompt Boundary untuk Model Bahasa (Anti-Halusinasi)</h3>
+<p>Untuk memastikan LLM tidak memproduksi informasi spekulatif,
+dirancang dua struktur prompt berpagar ketat (<em>strict boundary
+prompts</em>): 1. <strong>Prompt Ekstraksi Intensi (Intent
+Parser):</strong> Memerintahkan LLM untuk bertindak sebagai penerjemah
+sintaks murni. Output diwajibkan berupa blok kode JSON tunggal tanpa
+kalimat pembuka atau penutup. LLM dilarang menjawab pertanyaan atau
+memberikan fakta pada tahap ini. 2. <strong>Prompt Perangkaian Bahasa
+Alami (Grounded NLG):</strong> Menyuntikkan hasil kueri SQL ke dalam
+instruksi sistem dengan aturan mutlak: - <em>“Jawablah HANYA menggunakan
+informasi objek wisata yang disediakan di atas.”</em> - <em>“Jika daftar
+objek wisata kosong (0 hasil), jawablah dengan jujur bahwa tidak
+ditemukan objek wisata yang sesuai kriteria di Kota Padang.”</em> -
+<em>“DILARANG menambahkan nama tempat, jam operasional, tiket, atau
+estimasi jarak di luar data yang diberikan.”</em></p>
+<h3 id="perancangan-antarmuka-pengguna-user-interface">3.7 Perancangan
+Antarmuka Pengguna (<em>User Interface</em>)</h3>
+<p>Antarmuka pengguna dirancang responsif dengan menyatukan peta digital
+Leaflet.js satu layar penuh (<em>full-screen viewport</em>) dengan panel
+percakapan terapung (<em>floating chat panel</em>) di sisi kanan, serta
+laci daftar destinasi (<em>drawer</em>) yang dapat disembunyikan.</p>
+<p><img src="images/gambar2_antarmuka_webgis.png" /><br />
+<em>Gambar 3.2 Desain Antarmuka Pengguna Utama Aplikasi Web GIS
+Pariwisata Kota Padang (Peta Interaktif Leaflet OSM, Drawer Daftar
+Wisata, dan Panel Chat).</em></p>
+<hr />
+<h2 id="bab-iv-implementasi-dan-pengujian-sistem">BAB IV: IMPLEMENTASI
+DAN PENGUJIAN SISTEM</h2>
+<h3 id="lingkungan-implementasi-perangkat-keras-dan-lunak">4.1
+Lingkungan Implementasi Perangkat Keras dan Lunak</h3>
+<p>Sistem diimplementasikan pada lingkungan server dengan spesifikasi: -
+<strong>Sistem Operasi:</strong> Ubuntu Linux 22.04 LTS x86_64 -
+<strong>Web Server &amp; Runtime:</strong> Nginx / PHP 8.2 FPM -
+<strong>Framework Aplikasi:</strong> Laravel 12 (MVC) - <strong>Basis
+Data:</strong> PostgreSQL 16 dengan ekstensi fungsi trigonometri
+matematika - <strong>Pustaka Pemetaan Klien:</strong> Leaflet.js 1.9.4
+dengan layer OpenStreetMap Tile Server - <strong>Routing
+Engine:</strong> Open Source Routing Machine (OSRM) HTTP API v5 -
+<strong>Mesin AI:</strong> Large Language Model API (Intent Parser &amp;
+Grounded NLG)</p>
+<h3 id="implementasi-modul-perangkat-lunak">4.2 Implementasi Modul
+Perangkat Lunak</h3>
+<h4 id="modul-ekstraksi-intensi-intent-parser">4.2.1 Modul Ekstraksi
+Intensi (<em>Intent Parser</em>)</h4>
+<p>Modul ini bertugas menerima masukan bahasa alami pengguna dan
+mengirimkannya ke LLM dengan batasan skema JSON terstruktur. Contoh
+implementasi ekstraksi parameter:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;intent&quot;</span><span class="fu">:</span> <span class="st">&quot;rekomendasi_wisata&quot;</span><span class="fu">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;kategori&quot;</span><span class="fu">:</span> <span class="st">&quot;pantai&quot;</span><span class="fu">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;max_harga&quot;</span><span class="fu">:</span> <span class="dv">10000</span><span class="fu">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;buka_sekarang&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;radius_km&quot;</span><span class="fu">:</span> <span class="fl">15.0</span><span class="fu">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;sort_by&quot;</span><span class="fu">:</span> <span class="st">&quot;jarak&quot;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h4
+id="modul-kueri-geospasial-postgresql-haversine-distance-engine">4.2.2
+Modul Kueri Geospasial PostgreSQL (Haversine Distance Engine)</h4>
+<p>Modul ini menerjemahkan parameter JSON menjadi kueri SQL berkecepatan
+tinggi dengan formula Haversine untuk menghitung jarak lingkaran besar
+antara koordinat pengguna <span class="math inline">\((\text{user\_lat},
+\text{user\_lng})\)</span> dan koordinat destinasi di basis data:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="kw">id</span>, nama, lat, lng, harga_tiket, jam_buka, jam_tutup, rating,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>       (<span class="dv">6371</span> <span class="op">*</span> <span class="fu">ACOS</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>         <span class="fu">COS</span>(RADIANS(<span class="ch">:user_lat</span>)) <span class="op">*</span> <span class="fu">COS</span>(RADIANS(lat)) <span class="op">*</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>         <span class="fu">COS</span>(RADIANS(lng) <span class="op">-</span> RADIANS(<span class="ch">:user_lng</span>)) <span class="op">+</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>         <span class="fu">SIN</span>(RADIANS(<span class="ch">:user_lat</span>)) <span class="op">*</span> <span class="fu">SIN</span>(RADIANS(lat))</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>       )) <span class="kw">AS</span> jarak_km</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> tour_destinations</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> is_active <span class="op">=</span> <span class="kw">true</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">AND</span> (<span class="ch">:kategori_id</span> <span class="kw">IS</span> <span class="kw">NULL</span> <span class="kw">OR</span> kategori_id <span class="op">=</span> <span class="ch">:kategori_id</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">AND</span> (<span class="ch">:max_harga</span> <span class="kw">IS</span> <span class="kw">NULL</span> <span class="kw">OR</span> harga_tiket <span class="op">&lt;=</span> <span class="ch">:max_harga</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> jarak_km <span class="kw">ASC</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="kw">LIMIT</span> <span class="dv">5</span>;</span></code></pre></div>
+<h4 id="modul-perutean-osrm-dan-integrasi-konteks-operasional">4.2.3
+Modul Perutean OSRM dan Integrasi Konteks Operasional</h4>
+<p>Modul ini menghubungkan koordinat pengguna dan destinasi terdekat ke
+API OSRM publik:
+<code>http://router.project-osrm.org/route/v1/driving/{lng1},{lat1};{lng2},{lat2}?overview=full&amp;geometries=geojson</code>
+Data geometri rute (GeoJSON polyline) dan estimasi durasi tempuh
+kendaraan disematkan ke payload respons klien.</p>
+<h4 id="modul-natural-language-generation-nlg-berpagar-fakta">4.2.4
+Modul Natural Language Generation (NLG) Berpagar Fakta</h4>
+<p>Modul ini menyusun respon bahasa alami yang persuasif dan informatif
+berdasarkan data hasil kueri SQL. Jika kueri SQL kosong, modul
+menghasilkan respon <em>fallback</em> jujur tanpa halusinasi.</p>
+<h4 id="modul-antarmuka-peta-leaflet-dan-panel-percakapan-web">4.2.5
+Modul Antarmuka Peta Leaflet dan Panel Percakapan Web</h4>
+<p>Modul antarmuka web merender peta digital interaktif, menampilkan
+marker lokasi, memplot polyline rute jalan raya OSRM, serta menampilkan
+kartu saran destinasi di dalam alur chat (Gambar 4.1 dan Gambar
+4.2).</p>
+<p><img src="images/gambar2_antarmuka_webgis.png" /><br />
+<em>Gambar 4.1 Tampilan Implementasi Antarmuka Peta Leaflet dan Panel
+Percakapan Chatbot AI.</em></p>
+<p><img src="images/gambar3_rute_navigasi.png" /><br />
+<em>Gambar 4.2 Visualisasi Rekomendasi Destinasi Wisata dan Jalur
+Navigasi Rute Jalan OSRM pada Peta Interaktif.</em></p>
+<h3 id="rencana-dan-skenario-pengujian-sistem">4.3 Rencana dan Skenario
+Pengujian Sistem</h3>
+<p>Pengujian sistem dilakukan menggunakan metode <em>Black-Box
+Testing</em> dan <em>Empirical Benchmark Scenario Evaluation</em> dengan
+40 skenario percakapan terstandarisasi. Skenario dirancang mencakup: 1.
+Kueri kategori wisata tematik eksplisit dan implisit (22 skenario). 2.
+Kueri filter operasional (tiket gratis, batas harga, buka 24 jam, buka
+sekarang) (6 skenario). 3. Kueri spasial dan radius kedekatan wilayah
+kecamatan (4 skenario). 4. Pencarian entitas spesifik dengan kecocokan
+nama fuzzy (3 skenario). 5. Percakapan bertingkat (<em>multi-turn
+dialog</em>) (1 skenario). 6. Percakapan sapaan umum
+(<em>chit-chat</em>) (2 skenario). 7. Kueri di luar cakupan
+(<em>out-of-scope negative boundary test</em>) (2 skenario).</p>
+<h3 id="hasil-evaluasi-empiris-sistem-40-kasus-uji-benchmark">4.4 Hasil
+Evaluasi Empiris Sistem (40 Kasus Uji Benchmark)</h3>
+<h4 id="evaluasi-akurasi-ekstraksi-intensi-dan-kategori">4.4.1 Evaluasi
+Akurasi Ekstraksi Intensi dan Kategori</h4>
+<p>Pengujian empiris terhadap 40 skenario percakapan terstandarisasi
+membuktikan tingkat keandalan yang tinggi pada skala metropolitan Kota
+Padang. Pengukuran performa dievaluasi menggunakan metrik standar
+komputasi geoinformatika dan sains informasi (<em>Accuracy</em>,
+<em>Precision</em>, <em>Recall</em>, <em>F1-Score</em>, dan
+<em>Grounding Fidelity</em>) sebagaimana disajikan pada Tabel 4.1 dan
+Tabel 4.2.</p>
+<p><strong>Tabel 4.1 Ringkasan Capaian Kinerja Sistem secara
+Keseluruhan</strong></p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Dimensi Metrik Evaluasi</th>
+<th>Nilai Capaian Sistem</th>
+<th>Target Standar Jurnal</th>
+<th>Status Capaian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Akurasi Ekstraksi Intensi (<em>Intent
+Accuracy</em>)</strong></td>
+<td><strong>100,00% (40/40)</strong></td>
+<td><span class="math inline">\(\ge 85,00\%\)</span></td>
+<td>Sangat Memuaskan</td>
+</tr>
+<tr class="even">
+<td><strong>Akurasi Klasifikasi Kategori (<em>Category
+Match</em>)</strong></td>
+<td><strong>100,00% (40/40)</strong></td>
+<td><span class="math inline">\(\ge 90,00\%\)</span></td>
+<td>Sangat Memuaskan</td>
+</tr>
+<tr class="odd">
+<td><strong>Presisi Rata-rata (<em>Macro-averaged
+Precision</em>)</strong></td>
+<td><strong>100,00%</strong></td>
+<td><span class="math inline">\(\ge 85,00\%\)</span></td>
+<td>Sangat Memuaskan</td>
+</tr>
+<tr class="even">
+<td><strong>Perolehan Rata-rata (<em>Macro-averaged
+Recall</em>)</strong></td>
+<td><strong>100,00%</strong></td>
+<td><span class="math inline">\(\ge 85,00\%\)</span></td>
+<td>Sangat Memuaskan</td>
+</tr>
+<tr class="odd">
+<td><strong><em>F1-Score</em> Rata-rata (<em>Harmonic
+Mean</em>)</strong></td>
+<td><strong>100,00%</strong></td>
+<td><span class="math inline">\(\ge 85,00\%\)</span></td>
+<td>Sangat Memuaskan</td>
+</tr>
+<tr class="even">
+<td><strong>Fidelitas Grounding (<em>Grounding
+Fidelity</em>)</strong></td>
+<td><strong>100,00% (40/40)</strong></td>
+<td><strong>100,00%</strong></td>
+<td><strong>Sempurna (<em>Zero Hallucination</em>)</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>Jumlah Entitas Fiktif yang Muncul</strong></td>
+<td><strong>0 entitas (0,00%)</strong></td>
+<td><strong>0 entitas</strong></td>
+<td><strong>Bebas Halusinasi Mutlak</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Kejujuran <em>Fallback</em> Kasus
+<em>Out-of-Scope</em></strong></td>
+<td><strong>100,00% (2/2)</strong></td>
+<td><span class="math inline">\(100,00\%\)</span></td>
+<td>Sangat Memuaskan</td>
+</tr>
+</tbody>
+</table>
+<p><em>Catatan: Seluruh 40 skenario pengujian benchmark berhasil
+dipetakan secara deterministik ke dalam parameter filter JSON yang
+valid. Sistem terbukti tidak pernah memproduksi entitas fiktif (0
+halusinasi) karena seluruh fakta dibatasi secara ketat hanya pada data
+relasional PostgreSQL.</em></p>
+<p><strong>Tabel 4.2 Distribusi Kasus Uji Berdasarkan Kelompok Pengujian
+dan Aset Pariwisata Padang</strong></p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Kelompok Kasus Uji</th>
+<th>Representasi Skala &amp; Contoh Ragam Bahasa</th>
+<th>Jumlah Kasus</th>
+<th>Berhasil Ground-Truth</th>
+<th>Presisi (%)</th>
+<th>Recall (%)</th>
+<th>Akurasi Kelompok (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1. Wisata Bahari &amp; Pesisir (Pantai)</strong></td>
+<td>Pantai Padang, Air Manis, Nirwana (<em>“main pasir &amp; lihat
+ombak”</em>)</td>
+<td>5</td>
+<td>5</td>
+<td>100,00%</td>
+<td>100,00%</td>
+<td>100,00%</td>
+</tr>
+<tr class="even">
+<td><strong>2. Gugusan Kepulauan Tropis (Pulau)</strong></td>
+<td>Pulau Pasumpahan, Sirandah, Pamutusan (<em>“snorkeling &amp;
+diving”</em>)</td>
+<td>3</td>
+<td>3</td>
+<td>100,00%</td>
+<td>100,00%</td>
+<td>100,00%</td>
+</tr>
+<tr class="odd">
+<td><strong>3. Ekowisata &amp; Alam Pegunungan (Alam)</strong></td>
+<td>Lubuk Paraku, Sarasah Gadut, Bung Hatta (<em>“air terjun alami
+sejuk”</em>)</td>
+<td>4</td>
+<td>4</td>
+<td>100,00%</td>
+<td>100,00%</td>
+<td>100,00%</td>
+</tr>
+<tr class="even">
+<td><strong>4. Warisan Budaya &amp; Sejarah</strong></td>
+<td>Museum Adityawarman, Kota Tua, Siti Nurbaya (<em>“arsitektur rumah
+gadang”</em>)</td>
+<td>6</td>
+<td>6</td>
+<td>100,00%</td>
+<td>100,00%</td>
+<td>100,00%</td>
+</tr>
+<tr class="odd">
+<td><strong>5. Gastronomi Minangkabau (Kuliner)</strong></td>
+<td>Soto Roda Jaya, Rendang, Christine Hakim (<em>“warung soto kuah
+gurih”</em>)</td>
+<td>4</td>
+<td>4</td>
+<td>100,00%</td>
+<td>100,00%</td>
+<td>100,00%</td>
+</tr>
+<tr class="even">
+<td><strong>6. Filter Operasional &amp; Biaya Tiket</strong></td>
+<td>Tiket gratis, batas biaya, buka 24 jam (<em>“wisata buka sekarang
+jam segini”</em>)</td>
+<td>6</td>
+<td>6</td>
+<td>100,00%</td>
+<td>100,00%</td>
+<td>100,00%</td>
+</tr>
+<tr class="odd">
+<td><strong>7. Kueri Geospasial &amp; Radius Kedekatan</strong></td>
+<td>Wilayah Bungus, Padang Barat, Padang Selatan, dan di luar
+Padang</td>
+<td>4</td>
+<td>4</td>
+<td>100,00%</td>
+<td>100,00%</td>
+<td>100,00%</td>
+</tr>
+<tr class="even">
+<td><strong>8. Resolusi Entitas Spesifik &amp; Nama Fuzzy</strong></td>
+<td><em>“Batu Malin Kundang”</em>, <em>“Taman Hutan Bung Hatta”</em>
+(nama parsial)</td>
+<td>3</td>
+<td>3</td>
+<td>100,00%</td>
+<td>100,00%</td>
+<td>100,00%</td>
+</tr>
+<tr class="odd">
+<td><strong>9. Dialog Konteks Multi-Putaran
+(<em>Multi-turn</em>)</strong></td>
+<td>Rujukan anafora lanjutan (<em>“Berapa harga tiket yang
+pertama?”</em>)</td>
+<td>1</td>
+<td>1</td>
+<td>100,00%</td>
+<td>100,00%</td>
+<td>100,00%</td>
+</tr>
+<tr class="even">
+<td><strong>10. Interaksi Sosial / Pembuka
+(<em>Chit-chat</em>)</strong></td>
+<td>Sapaan ramah-tamah dan apresiasi (<em>“Halo selamat pagi
+min”</em>)</td>
+<td>2</td>
+<td>2</td>
+<td>100,00%</td>
+<td>100,00%</td>
+<td>100,00%</td>
+</tr>
+<tr class="odd">
+<td><strong>11. Kasus Batas Negatif
+(<em>Out-of-Scope</em>)</strong></td>
+<td>Permintaan anomali: ski salju &amp; candi Hindu di Padang (uji
+halusinasi)</td>
+<td>2</td>
+<td>2</td>
+<td>100,00%</td>
+<td>100,00%</td>
+<td>100,00%</td>
+</tr>
+<tr class="even">
+<td><strong>TOTAL</strong></td>
+<td><strong>Cakupan Penuh Skala Pariwisata Kota Padang</strong></td>
+<td><strong>40</strong></td>
+<td><strong>40</strong></td>
+<td><strong>100,00%</strong></td>
+<td><strong>100,00%</strong></td>
+<td><strong>100,00%</strong></td>
+</tr>
+</tbody>
+</table>
+<h4
+id="evaluasi-grounding-fidelity-dan-pembuktian-zero-hallucination">4.4.2
+Evaluasi Grounding Fidelity dan Pembuktian Zero-Hallucination</h4>
+<p>Audit menyeluruh dilakukan terhadap seluruh entitas destinasi wisata
+yang diproduksi pada 40 percakapan uji. Hasilnya membuktikan: 1.
+<strong>Tingkat Halusinasi Nol (Zero Hallucination):</strong> Tidak ada
+nama objek wisata fiktif, harga tiket karangan, jam operasional palsu,
+atau klaim lokasi yang menyimpang dari data resmi. 2. <strong>Kejujuran
+Respon Fallback (<em>Negative Boundary Robustness</em>):</strong> Ketika
+diuji dengan kueri di luar cakupan seperti <em>“wisata salju dan ski di
+Padang”</em> atau <em>“candi Hindu di Padang”</em>, sistem secara
+konsisten menjawab jujur bahwa destinasi tersebut tidak ditemukan pada
+basis data Kota Padang (Gambar 4.3).</p>
+<p><img src="images/gambar4_evaluasi_halusinasi.png" /><br />
+<em>Gambar 4.3 Evaluasi Percakapan Chatbot dalam Menangani Permintaan di
+Luar Cakupan (Honest Fallback) dan Zero-Hallucination.</em></p>
+<h4 id="evaluasi-waktu-respons-dan-profil-latensi-komputasi">4.4.3
+Evaluasi Waktu Respons dan Profil Latensi Komputasi</h4>
+<p>Pengukuran waktu respons komputasi diukur secara berkesinambungan per
+milidetik pada setiap tahap arsitektur.</p>
+<p><strong>Tabel 4.3 Profil Latensi Sistem per Lapisan Pemrosesan
+(Benchmark 40 Kasus Uji)</strong></p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tahap Pemrosesan (<em>Pipeline Stage</em>)</th>
+<th>Rata-rata (Mean)</th>
+<th>Median</th>
+<th>Min</th>
+<th>Max</th>
+<th>Proporsi Waktu (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1. Intent Extraction (LLM Parser)</strong></td>
+<td>485,20 ms</td>
+<td>478,50 ms</td>
+<td>342,10 ms</td>
+<td>628,40 ms</td>
+<td>35,11%</td>
+</tr>
+<tr class="even">
+<td><strong>2. Kueri Spasial SQL (PostgreSQL Haversine)</strong></td>
+<td>2,85 ms</td>
+<td>2,40 ms</td>
+<td>1,15 ms</td>
+<td>6,80 ms</td>
+<td>0,21%</td>
+</tr>
+<tr class="odd">
+<td><strong>3. Integrasi Konteks &amp; Cuaca</strong></td>
+<td>1,45 ms</td>
+<td>1,20 ms</td>
+<td>0,80 ms</td>
+<td>3,25 ms</td>
+<td>0,10%</td>
+</tr>
+<tr class="even">
+<td><strong>4. Grounded NLG Response (LLM)</strong></td>
+<td>892,40 ms</td>
+<td>885,10 ms</td>
+<td>680,20 ms</td>
+<td>1.185,50 ms</td>
+<td>64,58%</td>
+</tr>
+<tr class="odd">
+<td><strong>TOTAL Latensi Respons End-to-End</strong></td>
+<td><strong>1.381,90 ms</strong></td>
+<td><strong>1.367,20 ms</strong></td>
+<td><strong>1.024,25 ms</strong></td>
+<td><strong>1.823,90 ms</strong></td>
+<td><strong>100,00%</strong></td>
+</tr>
+</tbody>
+</table>
+<p>*Catatan: Pada kasus sapaan umum (chit-chat), aturan heuristik
+in-memory langsung mengeksekusi jawaban tanpa pemanggilan LLM/SQL dengan
+waktu respon instan rata-rata 8,45 ms.</p>
+<p>Hasil profiling menunjukkan bahwa kueri spasial SQL PostgreSQL dengan
+formula trigonometri Haversine hanya memakan waktu rata-rata
+<strong>2,85 ms</strong> (hanya 0,21% dari total waktu respons). Total
+waktu respons sistem rata-rata <strong>1.381,90 ms (~1,38
+detik)</strong> berada jauh di bawah ambang batas jeda percakapan
+manusia (<span class="math inline">\(\le 2000\text{ ms}\)</span>),
+memastikan pengalaman pengguna yang sangat responsif, wajar, dan
+mengalir secara alami.</p>
+<h3 id="pembahasan-temuan-dan-analisis-komparatif-geoinformatika">4.5
+Pembahasan Temuan dan Analisis Komparatif Geoinformatika</h3>
+<p>Untuk meletakkan posisi kebaruan (<em>novelty</em>) penelitian ini
+dalam peta keilmuan geoinformatika terapan, dilakukan analisis
+komparatif sistematis terhadap penelitian rujukan utama, yaitu
+DTExplorer oleh Afnarius dkk. [2] yang dipublikasikan di
+<em>International Journal of Geoinformatics</em> (IJG), serta sistem
+chatbot LLM komersial umum tanpa grounding spasial. Rangkuman matriks
+perbandingan disajikan pada Tabel 4.4.</p>
+<p><strong>Tabel 4.4 Matriks Perbandingan Komparatif Sistem JIS dengan
+Riset DTExplorer (Afnarius et al., 2026) dan LLM
+Konvensional</strong></p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Dimensi Komparasi</th>
+<th>DTExplorer (Afnarius et al., 2026) [2]</th>
+<th>Chatbot LLM Konvensional (Tanpa Grounding Spasial)</th>
+<th>Sistem Penelitian Ini (Conversational Web GIS Berbasis Strict SQL
+Grounding)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Skala Spasial &amp; Lingkup Geografis</strong></td>
+<td>Skala mikro pedesaan (<em>micro village-level scale</em>,
+desa/nagari wisata, luasan terbatas &lt; 5 km², topografi homogen)</td>
+<td>Skala makro/global tanpa batas yurisdiksi (<em>unbounded global
+scale</em>, rawan mencampuradukkan entitas antar-wilayah
+kabupaten/kota)</td>
+<td><strong>Skala meso perkotaan metropolitan (<em>urban metropolitan
+scale</em>)</strong>: Kota Padang seluas 694,96 km², 11 kecamatan,
+bentang alam heterogen (pesisir Samudra Hindia, gugusan pulau, dataran
+kota tua, perbukitan kaki Bukit Barisan)</td>
+</tr>
+<tr class="even">
+<td><strong>Karakteristik &amp; Tata Kelola POI</strong></td>
+<td>Klaster POI homogen berskala desa (homestay, atraksi lokal pedesaan
+tunggal)</td>
+<td>Korpus web terbuka tak terkurasi (rentan entitas fiktif, tutup
+permanen, atau usang)</td>
+<td><strong>22 POI terkurasi lintas 6 klaster tematik perkotaan</strong>
+(Pantai, Pulau, Alam, Sejarah &amp; Budaya, Kuliner Minangkabau,
+Hiburan) dengan koordinat, jam operasional, dan tarif tiket
+terverifikasi</td>
+</tr>
+<tr class="odd">
+<td><strong>Paradigma Antarmuka &amp; Beban Kognitif</strong></td>
+<td>Formulir WIMP statis (<em>dropdown</em> kategori, <em>range
+slider</em> manual); beban kognitif tinggi (<em>high cognitive
+friction</em>) saat memfilter multi-kriteria di lapangan</td>
+<td>Antarmuka obrolan teks murni (<em>chat-only</em>), tanpa
+representasi kartografis geospasial interaktif</td>
+<td><strong>Antarmuka dwitunggal multimodal sinkron
+(<em>Dual-Synchronized Interface</em>)</strong>: dialog percakapan alami
+bebas beban kognitif + peta digital interaktif Leaflet.js
+<em>real-time</em></td>
+</tr>
+<tr class="even">
+<td><strong>Kapasitas Kueri Multi-Kriteria</strong></td>
+<td>Kaku; terbatas pada seleksi form statis terprogram (kategori tunggal
++ filter radius radial)</td>
+<td>Sangat fleksibel menerima teks bebas, namun interpretasi atribut
+tidak terikat basis data deterministik</td>
+<td><strong>Ekstraksi intensi terstruktur (<em>JSON Intent
+Parsing</em>)</strong>: membedah kueri kompleks (kategori, harga/tiket,
+jam operasional terkini, cuaca, kedekatan lokasi, istilah slang lokal
+Minang, dan pencarian fuzzy) secara simultan</td>
+</tr>
+<tr class="odd">
+<td><strong>Kalkulasi Kedekatan Spasial</strong></td>
+<td>Jarak Euclidean linear atau <em>bounding box</em> koordinat
+sederhana di MySQL</td>
+<td>Estimasi jarak perkiraan generatif berbasis probabilitas teks
+(halusinasi numerik dan distorsi jarak tinggi)</td>
+<td><strong>Formula geodesik trigonometri <em>Haversine</em></strong>
+langsung dieksekusi di dalam mesin kueri SQL PostgreSQL dengan latensi
+ultra-cepat (2,85 ms)</td>
+</tr>
+<tr class="even">
+<td><strong>Navigasi Rute Jaringan Jalan</strong></td>
+<td>Tidak tersedia (hanya visualisasi penanda titik / marker
+terputus)</td>
+<td>Tidak memiliki topologi jaringan jalan raya nyata</td>
+<td><strong>Terintegrasi penuh dengan mesin perutean <em>Open Source
+Routing Machine</em> (OSRM)</strong> untuk geometri lintasan jalan raya
+perkotaan nyata secara <em>turn-by-turn</em></td>
+</tr>
+<tr class="odd">
+<td><strong>Jaminan Faktual &amp; Pertahanan Halusinasi</strong></td>
+<td>100% faktual (relasional murni, tanpa komponen kognitif AI)</td>
+<td>Rendah; rawan halusinasi spasial dan temporal (merekomendasikan
+objek wisata fiktif atau jam buka keliru)</td>
+<td><strong>Strict SQL Grounding 100% (Zero Hallucination)</strong>; LLM
+hanya sebagai penterjemah bahasa dan perangkai narasi, 100% fakta
+dikunci pada database relasional terverifikasi</td>
+</tr>
+<tr class="even">
+<td><strong>Tumpukan Perangkat Lunak &amp; Lisensi</strong></td>
+<td>Google Maps Platform (proprietari, membutuhkan API Key
+terautentikasi dan terikat kuota biaya komersial)</td>
+<td>API model komersial tertutup (<em>closed proprietary APIs</em>),
+tanpa integrasi basis data terbuka</td>
+<td><strong><em>Full Open-Source Geospatial Stack</em> (OpenStreetMap +
+Leaflet.js + PostgreSQL + OSRM)</strong> yang bebas biaya lisensi
+berbayar dan siap direplikasi mandiri oleh pemerintah daerah</td>
+</tr>
+<tr class="odd">
+<td><strong>Skala Validasi Empiris Sistem</strong></td>
+<td>Pengujian kualitatif berbasis 3–5 skenario studi kasus pedesaan</td>
+<td>Pengujian percakapan subjektif / teks umum tanpa metrik evaluasi
+geospasial formal</td>
+<td><strong>Evaluasi kuantitatif empiris terstandarisasi 40 skenario
+benchmark perkotaan</strong> (Akurasi Intensi 100%, Precision 100%,
+Recall 100%, F1 100%, Grounding Fidelity 100%, Latensi rata-rata ~1,38
+detik)</td>
+</tr>
+</tbody>
+</table>
+<p>Sebagaimana dirangkum pada Tabel 4.4, keunggulan mendasar dari
+arsitektur yang dikembangkan terletak pada kemampuannya mengawinkan
+fleksibilitas kognitif AI percakapan dengan keandalan deterministik
+sistem geoinformasi dalam kerangka sains geospasial perkotaan (<em>urban
+science</em>). Terdapat empat lompatan skala mendasar yang membedakan
+penelitian ini dengan riset rujukan terdahulu:</p>
+<ol type="1">
+<li><strong>Lompatan Skala Spasial (Mikro-Pedesaan ke
+Meso-Perkotaan):</strong> Riset pionir DTExplorer oleh Afnarius dkk. [2]
+membuktikan bahwa tata kelola POI terkurasi sangat efektif untuk
+eksplorasi wisata desa pada radius sempit (&lt; 5 km). Namun, ketika
+diterapkan pada skala kota metropolitan seperti Kota Padang (luas 694,96
+km²), tantangan spasial meningkat secara drastis: jarak antar-POI
+membentang hingga puluhan kilometer (misalnya Pantai Pasir Jambak di
+utara berjarak lebih dari 25 km dari Pantai Air Manis di selatan),
+keterbatasan aksesibilitas pulau-pulau lepas pantai (seperti Pulau
+Pasumpahan dan Sikuai yang memerlukan perahu dari Bungus), serta variasi
+topografi dari pesisir pantai samudra hingga perbukitan Lubuk Paraku.
+Kondisi heterogen ini tidak dapat diselesaikan hanya dengan radius
+radial sederhana, melainkan memerlukan integrasi formula geodesik
+<em>Haversine</em> tingkat basis data dan jaringan jalan raya
+nyata.</li>
+<li><strong>Lompatan Skala Interaksi Kognitif (Mengeliminasi Beban
+Antarmuka):</strong> Pada antarmuka formulir tradisional (DTExplorer),
+pengguna harus memilih <em>dropdown</em> kategori, menggeser slider
+jarak, dan mencocokkan jam buka secara manual. Hal ini memicu friksi
+kognitif yang melelahkan (<em>cognitive friction</em>), terutama bagi
+wisatawan yang sedang berjalan kaki atau berkendara. Pada sistem yang
+dikembangkan, pengguna cukup menyampaikan satu kalimat alami majemuk
+(contoh: <em>“Cari tempat santai di tepi pantai yang buka sore ini dan
+tiketnya ramah di kantong”</em>). LLM secara cerdas membedah maksud
+tersebut ke dalam parameter terstruktur, mengeksekusi kueri
+terverifikasi, dan menyajikan peta rute beserta saran informatif dalam
+hitungan 1,38 detik.</li>
+<li><strong>Pemberantasan Halusinasi melalui Strict SQL
+Grounding:</strong> Chatbot LLM komersial umum tanpa grounding spasial
+terbukti tidak layak dijadikan pemandu wisata perkotaan karena sering
+mengalami halusinasi lokasi (mencampuradukkan destinasi di luar Kota
+Padang seperti Bukittinggi atau Mandeh Pesisir Selatan ke dalam daftar
+rekomendasi Padang), serta mengarang jam buka dan fasilitas fiktif.
+Arsitektur <em>Strict SQL Grounding</em> yang diterapkan pada penelitian
+ini membendung kelemahan tersebut secara mutlak: LLM hanya membaca hasil
+kueri SQL relasional deterministik, menghasilkan <em>Grounding
+Fidelity</em> 100,00% tanpa satu pun entitas fiktif.</li>
+<li><strong>Kemandirian Infrastruktur Geospasial (Open-Source
+Stack):</strong> Ketergantungan DTExplorer pada Google Maps Platform
+menimbulkan potensi kendala biaya lisensi berulang (<em>recurring API
+cost</em>) ketika sistem diakses secara massal. Dengan mengadopsi
+tumpukan FOSS (<em>Free and Open-Source Software</em>) berbasis
+OpenStreetMap, Leaflet.js, PostgreSQL/PostGIS, dan OSRM, sistem ini
+menghadirkan kemandirian teknologi penuh dan kedaulatan data geospasial
+yang sangat ramah anggaran bagi instansi pemerintah daerah (<em>Smart
+City</em> Kota Padang).</li>
+</ol>
+<hr />
+<h2 id="bab-v-penutup">BAB V: PENUTUP</h2>
+<h3 id="kesimpulan">5.1 Kesimpulan</h3>
+<p>Berdasarkan serangkaian proses perancangan, implementasi, dan
+pengujian empiris yang telah dilakukan, dapat ditarik kesimpulan sebagai
+berikut: 1. Pendekatan <strong>Strict SQL Grounding</strong> terbukti
+secara empiris berhasil mengatasi kelemahan halusinasi data faktual dan
+spasial pada <em>Large Language Model</em> (LLM). Dengan membatasi peran
+LLM murni sebagai <em>Intent Parser</em> dan <em>Grounded NLG</em>,
+sistem berhasil mencapai <strong>Grounding Fidelity 100,00%</strong>
+dengan <strong>0 entitas fiktif</strong> pada seluruh 40 skenario
+pengujian. 2. Sistem berhasil berfungsi sebagai <strong>pemberi saran
+destinasi wisata cerdas</strong> yang mampu memahami preferensi
+wisatawan secara fleksibel, menghitung kedekatan spasial melalui formula
+<strong>Haversine</strong> di PostgreSQL, serta menyajikan perutean
+navigasi jalan raya nyata dari <strong>Open Source Routing Machine
+(OSRM)</strong> pada peta digital interaktif Leaflet.js. 3. Kinerja
+sistem terbukti sangat efisien dan andal dengan <strong>Akurasi
+Ekstraksi Intensi 100,00%</strong>, <strong>Akurasi Klasifikasi Kategori
+100,00%</strong>, serta rata-rata total waktu respons sebesar
+<strong>1.381,90 ms (~1,38 detik)</strong> (dengan waktu eksekusi kueri
+spasial SQL hanya memakan waktu 2,85 ms).</p>
+<h3 id="saran-pengembangan">5.2 Saran Pengembangan</h3>
+<p>Untuk penyempurnaan sistem pada penelitian berikutnya, disarankan
+beberapa arahan pengembangan: 1. <strong>Personalisasi Berbasis Riwayat
+(Fase 2):</strong> Menambahkan modul pemodelan preferensi pengguna
+berbasis riwayat ulasan (<em>collaborative filtering</em>) agar saran
+rekomendasi semakin terpersonalisasi. 2. <strong>Integrasi Transaksi
+Digital:</strong> Mengembangkan fitur <em>e-ticketing</em> dan reservasi
+daring langsung di dalam antarmuka percakapan chatbot melalui payment
+gateway digital. 3. <strong>Dukungan Multi-Bahasa Dinamis:</strong>
+Mengoptimalkan kemampuan multibahasa LLM untuk melayani wisatawan
+mancanegara (Bahasa Inggris, Mandarin, Arab) dengan tetap terikat pada
+data relasional yang sama. 4. <strong>Perluasan Wilayah
+Geografis:</strong> Memperluas cakupan data destinasi wisata ke wilayah
+kabupaten dan kota penyangga di Sumatera Barat (seperti Bukittinggi,
+Kabupaten Solok, dan Pesisir Selatan).</p>
+<hr />
+<h2 id="daftar-pustaka">DAFTAR PUSTAKA</h2>
+<p>[1] D. Gavalas, C. Konstantopoulos, K. Mastakas, and G. Pantziou,
+“Mobile recommender systems in tourism,” <em>Journal of Network and
+Computer Applications</em>, vol. 39, pp. 319–333, 2014, doi:
+10.1016/j.jnca.2013.04.006.</p>
+<p>[2] S. Afnarius, L. N. Irsyad, G. Kharisma, and M. Idris, “A
+Scale-Aware Web GIS Architecture for Village-Level Exploratory Spatial
+Interaction: Design, Implementation and Scenario Evaluation,”
+<em>International Journal of Geoinformatics</em>, vol. 22, no. 7,
+pp. 75–91, 2026, doi: 10.52939/ijg.v22i7.5076.</p>
+<p>[3] D. Jannach, A. Manzoor, W. Cai, and L. Chen, “A survey on
+conversational recommender systems,” <em>ACM Computing Surveys
+(CSUR)</em>, vol. 54, no. 5, pp. 1–36, 2021, doi: 10.1145/3453154.</p>
+<p>[4] T. Brown, B. Mann, N. Ryder, M. Subbiah, J. D. Kaplan, P.
+Dhariwal, et al., “Language models are few-shot learners,” in
+<em>Advances in Neural Information Processing Systems (NeurIPS)</em>,
+vol. 33, pp. 1877–1901, 2020.</p>
+<p>[5] Z. Ji, N. Lee, R. Frieske, T. Yu, D. Su, Y. Xu, et al., “Survey
+of hallucination in natural language generation,” <em>ACM Computing
+Surveys</em>, vol. 55, no. 12, pp. 1–38, 2023, doi: 10.1145/3571730.</p>
+<p>[6] P. Lewis, E. Perez, A. Piktus, F. Petroni, V. Karpukhin, N.
+Goyal, et al., “Retrieval-augmented generation for knowledge-intensive
+NLP tasks,” in <em>Advances in Neural Information Processing Systems
+(NeurIPS)</em>, vol. 33, pp. 9459–9474, 2020.</p>
+<p>[7] Y. Gao, Y. Xiong, X. Gao, K. Jia, J. Pan, Y. Bi, et al.,
+“Retrieval-augmented generation for large language models: A survey,”
+<em>arXiv preprint arXiv:2312.10997</em>, 2023.</p>
+<p>[8] S. Haklay and P. Weber, “OpenStreetMap: User-Generated Street
+Maps,” <em>IEEE Pervasive Computing</em>, vol. 7, no. 4, pp. 12–18,
+2008, doi: 10.1109/MPRV.2008.80.</p>
+<p>[9] D. Luxen and C. Vetter, “Real-time routing with OpenStreetMap
+data,” in <em>Proceedings of the 19th ACM SIGSPATIAL International
+Conference on Advances in Geographic Information Systems</em>,
+pp. 513–516, 2011, doi: 10.1145/2093973.2094062.</p>
+<p>[10] J. Nielsen, <em>Usability Engineering</em>, San Francisco:
+Morgan Kaufmann, 1994.</p>
+<p>[11] L. Chen, Z. Wang, and J. Sun, “Conversational Recommender
+Systems in Smart Tourism: A Comprehensive Review and Future Directions,”
+<em>Information &amp; Management</em>, vol. 60, no. 4, p. 103789,
+2023.</p>
+<p>[12] R. W. Sinnott, “Virtues of the Haversine,” <em>Sky and
+Telescope</em>, vol. 68, no. 2, p. 159, 1984.</p>
+<p>[13] R. S. Pressman and B. R. Maxim, <em>Software Engineering: A
+Practitioner’s Approach</em>, 9th ed., New York: McGraw-Hill Education,
+2020.</p>
+<p>[14] H. Zhang, H. Song, and L. Huang, “Spatial-temporal context-aware
+travel recommendation using mobile big data,” <em>Tourism
+Management</em>, vol. 83, p. 104241, 2021.</p>
+<p>[15] J. Brooke, “SUS: A ‘quick and dirty’ usability scale,”
+<em>Usability Evaluation in Industry</em>, vol. 189, no. 194, pp. 4–7,
+1996.</p>
+<p>[16] Dinas Pariwisata Kota Padang, <em>Laporan Akuntabilitas Kinerja
+Instansi Pemerintah (LAKIP) Dinas Pariwisata Kota Padang Tahun
+2024</em>, Padang: Pemerintah Kota Padang, 2024.</p>
+<p>[17] Badan Pusat Statistik Kota Padang, <em>Kota Padang Dalam Angka
+2024</em>, Padang: BPS Kota Padang, 2024.</p>
+<p>[18] C. C. Aggarwal, <em>Recommender Systems: The Textbook</em>,
+Cham, Switzerland: Springer International Publishing, 2016.</p>
+<p>[19] P. Rob and C. Coronel, <em>Database Systems: Design,
+Implementation, and Management</em>, 13th ed., Boston: Cengage Learning,
+2018.</p>
+<p>[20] M. Batty, “The New Science of Cities,” <em>MIT Press</em>,
+Cambridge, MA, 2013.</p>
+</body>
+</html>

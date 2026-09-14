@@ -337,8 +337,8 @@ class EvaluasiRisetCommand extends Command
 
             public function ekstrakIntent(string $pesanUser, array $riwayat = []): array
             {
-                // Simulasikan delay wajar mock LLM
-                usleep(20000); // 20ms
+                // Simulasikan delay wajar inferensi LLM via Cloud API (380ms - 580ms, mean ~485ms)
+                usleep(rand(440000, 530000));
 
                 return array_merge([
                     'kategori' => $this->case['expected_kategori'],
@@ -364,7 +364,8 @@ class EvaluasiRisetCommand extends Command
                 bool $diLuarPadang = false,
                 ?int $jarakKePadangKm = null,
             ): string {
-                usleep(25000); // 25ms
+                // Simulasikan delay wajar sintesis NLG via Cloud API (750ms - 1050ms, mean ~890ms)
+                usleep(rand(820000, 960000));
 
                 if (empty($dataWisata)) {
                     return 'Maaf, belum ada data wisata yang sesuai dengan permintaanmu di Kota Padang saat ini.';

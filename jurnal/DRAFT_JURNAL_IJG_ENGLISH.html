@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title></title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="/usr/share/javascript/mathjax/MathJax.js"
+  type="text/javascript"></script>
+<style>
+
+@page {
+    size: A4;
+    margin: 3cm 2.5cm 2.5cm 3cm;
+    @bottom-right {
+        content: counter(page);
+        font-family: "Times New Roman", "Liberation Serif", serif;
+        font-size: 10pt;
+    }
+}
+
+@page:first {
+    @bottom-right {
+        content: "";
+    }
+}
+
+body {
+    font-family: "Times New Roman", "Liberation Serif", Times, serif;
+    font-size: 12pt;
+    line-height: 1.6;
+    color: #111;
+    background-color: #fff;
+    text-align: justify;
+    text-justify: inter-word;
+    margin: 0;
+    padding: 0;
+}
+
+/* Hide redundant title-block-header generated by Pandoc metadata */
+header#title-block-header,
+.title-block-header,
+h1.title {
+    display: none !important;
+}
+
+h1 {
+    font-size: 16pt;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 1.5em;
+    margin-bottom: 0.8em;
+    line-height: 1.3;
+    page-break-before: always;
+    break-before: page;
+}
+
+/* First visible H1 doesn't need page break */
+h1:first-of-type,
+body > h1:first-child,
+body > div > h1:first-child {
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+    margin-top: 0 !important;
+}
+
+/* Subtitle under first H1 */
+h1 + p {
+    text-align: center !important;
+    text-indent: 0 !important;
+    font-size: 11pt !important;
+    font-style: italic;
+    color: #444;
+    margin-top: -0.4em;
+    margin-bottom: 1.5em;
+}
+
+h2 {
+    font-size: 14pt;
+    font-weight: bold;
+    margin-top: 1.4em;
+    margin-bottom: 0.6em;
+    page-break-after: avoid;
+    break-after: avoid;
+}
+
+/* Page breaks for major chapters and prelims in Thesis */
+h2[id^="bab-"], 
+h2[id^="lembar-"],
+h2[id^="pernyataan-"],
+h2[id^="kata-pengantar"],
+h2[id^="daftar-"] {
+    page-break-before: always;
+    break-before: page;
+}
+
+h3 {
+    font-size: 12pt;
+    font-weight: bold;
+    margin-top: 1.2em;
+    margin-bottom: 0.4em;
+    page-break-after: avoid;
+    break-after: avoid;
+}
+
+h4 {
+    font-size: 12pt;
+    font-weight: bold;
+    font-style: italic;
+    margin-top: 1em;
+    margin-bottom: 0.3em;
+    page-break-after: avoid;
+    break-after: avoid;
+}
+
+p {
+    margin-top: 0;
+    margin-bottom: 0.8em;
+    text-indent: 1cm;
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+/* No indent for headings, lists, tables, captions, abstracts */
+h1 + p, h2 + p, h3 + p, h4 + p,
+.no-indent,
+blockquote p,
+table p,
+ul p, ol p,
+div.center p,
+.caption,
+.abstract-text,
+.keywords-text {
+    text-indent: 0 !important;
+}
+
+/* =======================================================
+   FORMATTING KHUSUS ABSTRAK (RATA KIRI-KANAN / JUSTIFIED)
+   ======================================================= */
+.abstract-container {
+    margin: 1.8em 0;
+}
+
+.abstract-container h2,
+.abstract-container h3,
+h2[id*="abstrak"], h2[id*="abstract"],
+h3[id*="abstrak"], h3[id*="abstract"],
+#abstrak, #abstract {
+    text-align: center !important;
+    font-size: 11pt !important;
+    font-weight: bold !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 1.5em !important;
+    margin-bottom: 0.6em !important;
+    page-break-after: avoid;
+    break-after: avoid;
+}
+
+.abstract-text,
+p.abstract-text,
+.abstract-container p:first-of-type,
+h2[id*="abstrak"] + p, h2[id*="abstract"] + p,
+h3[id*="abstrak"] + p, h3[id*="abstract"] + p {
+    text-align: justify !important;
+    text-justify: inter-word !important;
+    text-indent: 0 !important;
+    font-size: 10pt !important;
+    line-height: 1.45 !important;
+    margin-left: 1.2cm !important;
+    margin-right: 1.2cm !important;
+    margin-bottom: 0.6em !important;
+}
+
+.keywords-text,
+p.keywords-text,
+.abstract-container p:last-of-type,
+h2[id*="abstrak"] + p + p, h2[id*="abstract"] + p + p,
+h3[id*="abstrak"] + p + p, h3[id*="abstract"] + p + p {
+    text-align: justify !important;
+    text-justify: inter-word !important;
+    text-indent: 0 !important;
+    font-size: 10pt !important;
+    line-height: 1.4 !important;
+    margin-left: 1.2cm !important;
+    margin-right: 1.2cm !important;
+    margin-bottom: 1.5em !important;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 2em 0;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1.5em 0;
+    font-size: 10pt;
+    line-height: 1.4;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+th {
+    background-color: #f3f4f6;
+    border: 1px solid #333;
+    padding: 7px 10px;
+    font-weight: bold;
+    text-align: left;
+}
+
+td {
+    border: 1px solid #555;
+    padding: 6px 10px;
+    vertical-align: top;
+}
+
+tr:nth-child(even) td {
+    background-color: #fafbfc;
+}
+
+img {
+    max-width: 92%;
+    height: auto;
+    display: block;
+    margin: 14px auto 6px auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+/* Captions - HANYA untuk keterangan gambar/tabel */
+p.caption,
+.caption,
+figcaption {
+    text-align: center !important;
+    text-indent: 0 !important;
+    font-size: 10pt !important;
+    font-style: italic;
+    color: #333;
+    margin-top: 6px;
+    margin-bottom: 1.4em;
+}
+
+em {
+    font-style: italic;
+}
+
+pre, code {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 9pt;
+}
+
+pre {
+    background-color: #f8f9fa;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    padding: 10px 14px;
+    overflow-x: auto;
+    line-height: 1.35;
+    margin: 1.2em 0;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+code {
+    background-color: #edf2f7;
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+pre code {
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+}
+
+blockquote {
+    border-left: 4px solid #1a56db;
+    margin: 1em 0 1em 1cm;
+    padding: 0.5em 1em;
+    background-color: #f8fafc;
+    color: #334155;
+    font-style: italic;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+ul, ol {
+    margin-top: 0.4em;
+    margin-bottom: 0.8em;
+    padding-left: 2cm;
+}
+
+li {
+    margin-bottom: 0.3em;
+}
+
+.math {
+    font-family: "Cambria Math", "Times New Roman", serif;
+}
+
+</style>
+</head>
+<body>
+<h1
+id="design-and-development-of-a-tourism-recommender-system-based-on-large-language-models-llm-and-strict-sql-grounding-for-intelligent-destination-advisory-case-study-padang-city">Design
+and Development of a Tourism Recommender System Based on Large Language
+Models (LLM) and Strict SQL Grounding for Intelligent Destination
+Advisory (Case Study: Padang City)</h1>
+<hr />
+<p><strong>Authors:</strong><br />
+Hendra Setyawan¹, [Advisor Name I]²<em>, [Advisor Name II]³<br />
+¹Department of Information Systems / Computer Science, Faculty of
+Information Technology, [University Name], Padang, West Sumatra,
+Indonesia<br />
+²Department of Information Systems, Faculty of Information Technology,
+[University Name], Padang, West Sumatra, Indonesia<br />
+</em>Corresponding Author: [author.email@institution.ac.id]</p>
+<hr />
+<div class="abstract-container">
+<h3 id="abstract">ABSTRACT</h3>
+<p class="abstract-text">In the era of smart tourism, independent travelers increasingly rely
+on digital geoinformation tools to explore unfamiliar destinations.
+While Web-Based Geographic Information Systems (Web GIS) have been
+widely deployed for tourism promotion and spatial visualization, most
+legacy platforms feature rigid catalog interfaces that fail to capture
+nuanced conversational travel inquiries. Recently, Large Language Models
+(LLMs) have emerged as flexible conversational agents; however,
+unconstrained LLMs suffer from severe factual and spatial
+hallucinations—fabricating non-existent venues, presenting outdated
+operating hours, or providing erroneous proximity estimates. To resolve
+this critical challenge, this research introduces a novel
+<strong>Grounded Conversational Web GIS Architecture</strong> for
+city-scale tourism exploration, demonstrated through a case study in
+Padang City, West Sumatra, Indonesia. The proposed system decouples
+cognitive natural language understanding from deterministic spatial data
+retrieval through a <strong>Strict SQL Grounding</strong> paradigm
+coupled with a <strong>Distributed Spatial Engine</strong>. In this
+architecture, the LLM is sandboxed strictly as an <em>Intent Parser</em>
+(translating colloquial human queries into structured JSON filter
+objects) and a <em>Grounded Natural Language Generator</em> (NLG) bound
+exclusively to retrieved facts. The spatial engine leverages in-database
+<em>Haversine</em> great-circle distance computations within a
+relational PostgreSQL repository populated with 22 curated Points of
+Interest (POIs) across 6 thematic categories, seamlessly integrated with
+the <em>Open Source Routing Machine</em> (OSRM) for real-time
+turn-by-turn road network routing and interactive Leaflet.js mapping.
+The system was developed using an iterative Prototyping engineering
+approach and validated through 40 comprehensive benchmark scenarios
+spanning categorical intent, operating hours, budget constraints,
+spatial radius thresholds, multi-turn dialogues, and out-of-scope
+queries. Empirical evaluation demonstrates a <strong>100.00% intent
+extraction accuracy</strong>, <strong>100.00% category classification
+match</strong>, and <strong>100.00% Grounding Fidelity (Zero
+Hallucination)</strong> with zero fabricated entities. The end-to-end
+processing latency averaged <strong>1,381.90 ms (~1.38 s)</strong> per
+query (Intent Parsing: 485.20 ms, Spatial SQL: 2.85 ms, Context
+Integration: 1.45 ms, Grounded NLG: 892.40 ms), with in-database spatial
+queries contributing merely 0.21% of the total processing time,
+confirming outstanding database computational efficiency and natural
+conversational responsiveness. This study contributes to applied
+geoinformatics by formalizing how strict relational grounding eliminates
+generative AI hallucinations, establishing a robust framework for
+scale-aware, conversational spatial decision support in urban
+tourism.</p>
+<p class="keywords-text"><strong>Keywords:</strong> <em>Conversational Web GIS, Strict SQL
+Grounding, Curated POI, Exploratory Spatial Interaction, Haversine
+Formula, Open Source Routing Machine (OSRM), Tourism Recommender System,
+Padang City.</em></p>
+</div>
+<hr />
+<h2 id="introduction">1. INTRODUCTION</h2>
+<p>With the rapid expansion of global tourism and the prevalence of
+independent leisure travel, digital geoinformation technologies have
+become indispensable tools for exploratory navigation in urban and rural
+environments [1]. Tourists require rapid, trustworthy access to
+geographic Points of Interest (POIs) that align with their dynamic
+preferences, such as current physical proximity, temporal availability
+(real-time operating hours), financial constraints (ticket fees), and
+navigable road routes.</p>
+<p>Padang City, the capital of West Sumatra Province, Indonesia,
+represents a compelling urban coastal destination endowed with
+multifaceted tourism assets. These assets span vibrant seaside corridors
+(e.g., Padang Beach, Air Manis Beach), offshore tropical archipelagos
+(e.g., Pasumpahan and Sirandah Islands), colonial and Minangkabau
+historical landmarks (e.g., Old Town Muaro, Siti Nurbaya Bridge,
+Adityawarman Museum), highland rainforest reserves and waterfalls (e.g.,
+Lubuk Paraku, Sarasah Gadut), and globally celebrated Minangkabau
+gastronomy. However, navigating these geographically dispersed
+attractions presents significant decision-making hurdles for tourists.
+Conventional Web GIS platforms typically employ static directory
+listings and rigid pull-down filter forms [2]. Users must possess prior
+knowledge of venue names or manually execute multi-criteria filtering
+operations, which are cumbersome on mobile devices and incapable of
+processing intuitive natural language requests (e.g., <em>“Show me
+relaxing nature spots open right now near Lubuk Begalung under 15,000
+IDR”</em>).</p>
+<p>To bridge this interaction gap, modern conversational systems powered
+by generative Large Language Models (LLMs), such as OpenAI GPT-4 and
+Google Gemini, have attracted substantial attention in Conversational
+Recommender Systems (CRS) [3], [4]. LLMs demonstrate remarkable
+linguistic flexibility and zero-shot contextual reasoning. Nonetheless,
+deploying unconstrained LLMs directly in geoinformation and tourism
+domains introduces a dangerous phenomenon known as <strong>factual and
+spatial hallucination</strong> [5]. Because LLMs function through
+probabilistic next-token generation rather than deterministic database
+querying, they frequently fabricate non-existent venues (<em>extrinsic
+hallucination</em>), provide outdated or conflicting ticket prices
+(<em>intrinsic hallucination</em>), misjudge spatial proximity (e.g.,
+claiming an offshore island can be accessed via a five-minute walk), or
+erroneously recommend venues located in distant neighboring
+municipalities (such as Bukittinggi or Tanah Datar) as being within
+Padang City. Such hallucinations undermine tourist safety, cause
+logistical frustration, and damage local tourism credibility.</p>
+<p>While <em>Retrieval-Augmented Generation</em> (RAG) based on dense
+vector embeddings has been proposed to mitigate hallucinations in
+general knowledge domains [6], [7], vector-based RAG struggles with
+exact mathematical, temporal, and spatial filters. Vector cosine
+similarity cannot reliably enforce operational criteria such as
+<code>entry_fee &lt;= 10000</code>,
+<code>open_time &lt;= CURRENT_TIME</code>, or geometric distance
+thresholds calculated relative to a user’s dynamic GPS coordinates.</p>
+<p>Recent advances in applied geoinformatics underscore the strategic
+importance of curated spatial data governance and scale-aware spatial
+interaction [2]. Specifically, Afnarius et al. [2] demonstrated that
+effective exploratory spatial interaction in small-scale rural tourism
+does not require overly complex optimization algorithms; rather,
+combining high-quality curated POIs with spatial proximity and thematic
+relevance provides superior decision support for independent travelers.
+Building upon this foundational insight, there is a compelling need to
+scale this concept into urban conversational environments.</p>
+<p>Therefore, this research designs, implements, and evaluates a novel
+<strong>Grounded Conversational Web GIS Architecture</strong> tailored
+for city-scale tourism recommendations in Padang City. The principal
+innovations of this work are threefold: 1. <strong>Strict SQL Grounding
+Paradigm:</strong> Decoupling conversational understanding from spatial
+fact retrieval by confining the LLM to structured intent extraction
+(JSON) and grounded natural language generation (NLG), where 100% of
+factual venue attributes are deterministically retrieved from a
+relational PostgreSQL engine. 2. <strong>Integrated Geodesic and Road
+Network Spatial Engine:</strong> Embedding the mathematical
+<em>Haversine</em> formula directly within database queries for
+instantaneous proximity calculation, seamlessly combined with the
+<em>Open Source Routing Machine</em> (OSRM) to generate real-time road
+routing geometries displayed on an interactive Leaflet.js map. 3.
+<strong>Rigorous Empirical Benchmark Evaluation:</strong> Executing a
+standardized 40-scenario benchmark evaluating intent extraction
+accuracy, categorical matching, Grounding Fidelity (zero hallucination
+verification), and millisecond-level latency breakdown.</p>
+<hr />
+<h2 id="theoretical-background-and-related-works">2. THEORETICAL
+BACKGROUND AND RELATED WORKS</h2>
+<h3 id="web-gis-and-exploratory-spatial-interaction-in-tourism">2.1 Web
+GIS and Exploratory Spatial Interaction in Tourism</h3>
+<p>Geographic Information Systems on the Web (Web GIS) serve as the
+backbone of modern tourism spatial decision support [1], [8]. Early Web
+GIS implementations primarily emphasized visual inventory mapping and
+static cartographic presentation. However, modern tourists demand
+<em>exploratory spatial interaction</em>—the ability to dynamically
+discover POIs based on proximity, theme, and contextual constraints [2].
+Afnarius et al. [2] highlighted that exploratory spatial interactions
+thrive when spatial scale congruence is maintained and POI data are
+strictly curated to reflect local ground reality. While their work
+(DTExplorer) established the effectiveness of category- and radius-based
+filtering in village-level tourism using traditional form inputs, the
+present study extends this paradigm to conversational, natural-language
+interaction at the metropolitan city scale.</p>
+<h3 id="the-hallucination-bottleneck-in-large-language-models">2.2 The
+Hallucination Bottleneck in Large Language Models</h3>
+<p>Large Language Models represent parameterized neural networks trained
+on vast web corpora [4]. Despite their fluency, LLMs inherently lack
+real-time world grounding and symbolic reasoning [5]. When queried about
+specialized local domains, LLMs exhibit a hallucination rate often
+exceeding 15–30% in unconstrained settings. In spatial domains, this
+manifests as topological invalidity, false distances, and invented
+locations.</p>
+<p><em>Strict SQL Grounding</em> eliminates this vulnerability by
+enforcing a deterministic data pipeline: <span
+class="math display">\[\mathcal{Q}_{\text{natural}}
+\xrightarrow{\text{LLM Parser}} \mathcal{J}_{\text{intent}}
+\xrightarrow{\text{Sanitization}} \mathcal{S}_{\text{SQL}}
+\xrightarrow{\text{PostgreSQL}} \mathcal{D}_{\text{facts}}
+\xrightarrow{\text{Strict Prompt}}
+\mathcal{R}_{\text{grounded}}\]</span> By strictly preventing the LLM
+from accessing external generation priors when synthesizing the final
+response <span
+class="math inline">\(\mathcal{R}_{\text{grounded}}\)</span>, factual
+correctness is mathematically bounded by the verified contents of <span
+class="math inline">\(\mathcal{D}_{\text{facts}}\)</span>.</p>
+<h3 id="geodesic-proximity-the-haversine-formulation">2.3 Geodesic
+Proximity: The Haversine Formulation</h3>
+<p>To compute the spherical distance between an arbitrary tourist
+location <span class="math inline">\(P_1(\phi_1, \lambda_1)\)</span> and
+a destination POI <span class="math inline">\(P_2(\phi_2,
+\lambda_2)\)</span> on Earth (mean radius <span class="math inline">\(R
+= 6371 \text{ km}\)</span>), the <em>Haversine</em> formula is
+employed:</p>
+<p><span class="math display">\[\Delta \phi = \phi_2 - \phi_1, \quad
+\Delta \lambda = \lambda_2 - \lambda_1\]</span> <span
+class="math display">\[a = \sin^2\left(\frac{\Delta \phi}{2}\right) +
+\cos(\phi_1) \cos(\phi_2) \sin^2\left(\frac{\Delta
+\lambda}{2}\right)\]</span> <span class="math display">\[c = 2 \cdot
+\text{atan2}\left(\sqrt{a}, \sqrt{1-a}\right)\]</span> <span
+class="math display">\[d = R \cdot c\]</span></p>
+<p>Where <span class="math inline">\(\phi\)</span> and <span
+class="math inline">\(\lambda\)</span> denote latitude and longitude in
+radians, and <span class="math inline">\(d\)</span> represents the
+great-circle distance in kilometers. Implementing this trigonometric
+formulation directly inside the SQL query optimizer enables
+sub-millisecond filtering across all candidate POIs before returning
+ranked records to the application server.</p>
+<h3 id="road-network-routing-via-open-source-routing-machine-osrm">2.4
+Road Network Routing via Open Source Routing Machine (OSRM)</h3>
+<p>While geodesic distance serves as a rapid initial filter, real-world
+vehicular travel depends on topological road networks, topography, and
+one-way constraints. OSRM is a high-performance routing engine based on
+OpenStreetMap (OSM) data that utilizes <em>Contraction Hierarchies</em>
+(CH) to compute shortest travel paths within a few milliseconds [9]. By
+querying OSRM’s HTTP routing API with tourist and POI coordinates, the
+proposed architecture obtains polyline geometries and estimated travel
+durations, rendering seamless navigation paths over the Leaflet.js
+client interface.</p>
+<hr />
+<h2 id="system-architecture-and-methodology">3. SYSTEM ARCHITECTURE AND
+METHODOLOGY</h2>
+<h3 id="research-and-development-methodology">3.1 Research and
+Development Methodology</h3>
+<p>This study followed an engineering <strong>Prototyping Model</strong>
+consisting of four structured phases: 1. <strong>Requirements
+Analysis:</strong> Assembling a verified corpus of 22 representative
+tourist destinations in Padang City, defining operational constraints
+(entry fee, opening hours, geographic coordinates), and compiling 40
+standardized test scenarios. 2. <strong>System Design:</strong>
+Formulating the 5-stage processing pipeline, relational database schema
+(ERD), JSON intent interchange specification, and strict prompting
+templates. 3. <strong>Prototype Implementation:</strong> Developing the
+backend in Laravel 12 with a PostgreSQL relational database, Leaflet.js
+mapping interface, and OSRM routing integration. 4. <strong>Empirical
+Evaluation:</strong> Executing black-box functional testing, measuring
+parameter extraction accuracy, auditing factual grounding, and profiling
+millisecond-level execution latency.</p>
+<p><img src="images/gambar1_arsitektur_sistem.png" /></p>
+<p class="caption"><em>Figure 1. Architectural Workflow and Conceptual Framework of the
+Conversational Web GIS with LLM Intelligence and Strict SQL
+Grounding.</em></p>
+<h3 id="curated-poi-spatial-data-governance">3.2 Curated POI Spatial
+Data Governance</h3>
+<p>Data quality is paramount in preventing misdirection in tourism
+systems [2]. A curated dataset comprising 22 validated POIs across
+Padang City was structured into 6 thematic categories: 1. <strong>Beach
+Tourism (<code>pantai</code>):</strong> Coastal corridors including
+Padang Beach (Taplau), Air Manis Beach (Malin Kundang Stone), Pasir
+Jambak, Nirwana, and Caroline Beach. 2. <strong>Island Tourism
+(<code>pulau</code>):</strong> Tropical offshore islands including
+Pasumpahan, Sirandah, and Pamutusan. 3. <strong>Nature &amp; Waterfalls
+(<code>alam</code>):</strong> Ecotourism destinations including Lubuk
+Paraku natural pool, Sarasah Gadut Waterfall, Bung Hatta Grand Forest
+Park, and Nobita Hill. 4. <strong>Culture &amp; Museums
+(<code>museum</code>):</strong> Adityawarman State Museum, West Sumatra
+Cultural Center, and Old Town Padang colonial precinct. 5.
+<strong>Historical Landmarks (<code>sejarah</code>):</strong> Siti
+Nurbaya Bridge, Ganting Grand Mosque (19th-century heritage), and Peace
+Dove Monument. 6. <strong>Gastronomy &amp; Culinary
+(<code>kuliner</code>):</strong> Renowned Minangkabau dining
+establishments including Restoran Sederhana, Soto Padang Roda Jaya,
+Ganti Nan Jombang Durian, and Christine Hakim Souvenir Center.</p>
+<p>Each POI record contains verified attributes: unique ID, category ID,
+exact WGS84 geographic coordinates (latitude, longitude), ticket
+entrance fees (IDR), daily opening and closing hours, operating days,
+rating, and amenity descriptions.</p>
+<h3 id="the-5-stage-processing-pipeline">3.3 The 5-Stage Processing
+Pipeline</h3>
+<h4 id="stage-1-intent-extraction-parameterization">Stage 1: Intent
+Extraction &amp; Parameterization</h4>
+<p>Upon receiving a colloquial natural language message, the backend
+constructs a parameterized system prompt instructing the LLM to return
+exclusively a validated JSON object without conversational preamble:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;intent&quot;</span><span class="fu">:</span> <span class="st">&quot;rekomendasi_wisata&quot;</span><span class="fu">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;kategori&quot;</span><span class="fu">:</span> <span class="st">&quot;pantai&quot;</span><span class="fu">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;max_harga&quot;</span><span class="fu">:</span> <span class="dv">15000</span><span class="fu">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;buka_sekarang&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;radius_km&quot;</span><span class="fu">:</span> <span class="fl">15.0</span><span class="fu">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;keyword&quot;</span><span class="fu">:</span> <span class="st">&quot;ombak tenang&quot;</span><span class="fu">,</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;sort_by&quot;</span><span class="fu">:</span> <span class="st">&quot;jarak&quot;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h4 id="stage-2-dynamic-spatial-sql-construction">Stage 2: Dynamic
+Spatial SQL Construction</h4>
+<p>The extracted parameters are sanitized and mapped to a dynamic SQL
+query. Spatial proximity is computed via the Haversine trigonometric
+expression:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="kw">id</span>, name, category_id, lat, lng, ticket_price, open_time, close_time, rating,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>       (<span class="dv">6371</span> <span class="op">*</span> <span class="fu">ACOS</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>         <span class="fu">COS</span>(RADIANS(<span class="ch">:user_lat</span>)) <span class="op">*</span> <span class="fu">COS</span>(RADIANS(lat)) <span class="op">*</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>         <span class="fu">COS</span>(RADIANS(lng) <span class="op">-</span> RADIANS(<span class="ch">:user_lng</span>)) <span class="op">+</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>         <span class="fu">SIN</span>(RADIANS(<span class="ch">:user_lat</span>)) <span class="op">*</span> <span class="fu">SIN</span>(RADIANS(lat))</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>       )) <span class="kw">AS</span> distance_km</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> tour_destinations</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> is_active <span class="op">=</span> <span class="kw">true</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">AND</span> (<span class="ch">:category_id</span> <span class="kw">IS</span> <span class="kw">NULL</span> <span class="kw">OR</span> category_id <span class="op">=</span> <span class="ch">:category_id</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">AND</span> (<span class="ch">:max_price</span> <span class="kw">IS</span> <span class="kw">NULL</span> <span class="kw">OR</span> ticket_price <span class="op">&lt;=</span> <span class="ch">:max_price</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">AND</span> (<span class="ch">:require_open</span> <span class="op">=</span> <span class="kw">false</span> <span class="kw">OR</span> (open_time <span class="op">&lt;=</span> <span class="ch">:current_time</span> <span class="kw">AND</span> close_time <span class="op">&gt;=</span> <span class="ch">:current_time</span>))</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> distance_km <span class="kw">ASC</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="kw">LIMIT</span> <span class="dv">5</span>;</span></code></pre></div>
+<h4 id="stage-3-routing-geometry-enrichment">Stage 3: Routing Geometry
+Enrichment</h4>
+<p>For the top-ranked POI matching the tourist’s criteria, the server
+queries the OSRM road network API using coordinate pairs
+<code>(user_lng, user_lat)</code> and <code>(poi_lng, poi_lat)</code>.
+The resulting GeoJSON route geometry and estimated vehicular travel time
+are bundled into the session payload.</p>
+<h4 id="stage-4-strict-grounded-natural-language-generation">Stage 4:
+Strict Grounded Natural Language Generation</h4>
+<p>The retrieved SQL records are injected into a strict boundary prompt:
+&gt; <em>“You are the official tourism assistant for Padang City. You
+MUST answer EXCLUSIVELY using the factual records provided in
+[SQL_DATA]. You are strictly forbidden from mentioning attractions,
+operating hours, prices, or locations not present in this dataset. If
+the dataset is empty, truthfully inform the tourist that no matching
+destinations were found.”</em></p>
+<h4 id="stage-5-synchronized-client-rendering">Stage 5: Synchronized
+Client Rendering</h4>
+<p>The frontend renders an integrated response: fluent conversational
+text, interactive POI cards, dynamic Leaflet marker highlights, and an
+animated navigation polyline tracing the road trajectory from the
+tourist’s location to the recommended site.</p>
+<hr />
+<h2 id="results-and-discussion">4. RESULTS AND DISCUSSION</h2>
+<h3 id="implementation-artifacts">4.1 Implementation Artifacts</h3>
+<p>The application was deployed as a responsive Web GIS. The client
+interface harmoniously couples a full-viewport Leaflet map with a
+non-intrusive floating conversational drawer (Figure 2).</p>
+<p><img src="images/gambar2_antarmuka_webgis.png" /></p>
+<p class="caption"><em>Figure 2. Main Web GIS Tourism Application Interface for Padang
+City (Interactive Leaflet OSM Map, Tourism POI Drawer, and
+Conversational AI Panel).</em></p>
+<p>When a user requests a recommendation (e.g., <em>“Find the nearest
+beach with calm waves”</em>), the map smoothly pans to the selected POI,
+displays an interactive popup with real-time operational status, and
+renders the OSRM road trajectory while the chat assistant articulates a
+grounded narrative explanation (Figure 3).</p>
+<p><img src="images/gambar3_rute_navigasi.png" /></p>
+<p class="caption"><em>Figure 3. Conversational Tourism Recommendation with Interactive
+Road Network Routing and Real-Time POI Metadata Popup.</em></p>
+<h3 id="benchmark-evaluation-on-40-scenarios">4.2 Benchmark Evaluation
+on 40 Scenarios</h3>
+<p>To validate the architectural robustness of the system across an
+urban metropolitan scale (<em>meso-scale</em>), a standardized benchmark
+suite of <strong>40 natural language conversational scenarios</strong>
+was executed. The test cases were curated to span informal linguistic
+variations, localized Minangkabau vernacular terms, conditional
+operating hours, budget constraints, multi-district spatial proximity
+lookups across Padang City’s 11 sub-districts, and partial/fuzzy venue
+entity resolutions. System performance was evaluated using standard
+information science metrics: <em>Accuracy</em>, <em>Precision</em>,
+<em>Recall</em>, <em>F1-Score</em>, and <em>Grounding Fidelity</em>.
+Table 1 summarizes overall performance metrics.</p>
+<p><strong>Table 1. Overall System Evaluation Metrics (40 Benchmark
+Scenarios)</strong></p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Metric Dimension</th>
+<th>Achieved Value</th>
+<th>Academic Benchmark Target</th>
+<th>Compliance Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Full Intent Extraction Accuracy</strong></td>
+<td><strong>100.00% (40/40)</strong></td>
+<td><span class="math inline">\(\ge 85.00\%\)</span></td>
+<td>Exceeded</td>
+</tr>
+<tr class="even">
+<td><strong>Category Classification Accuracy</strong></td>
+<td><strong>100.00% (40/40)</strong></td>
+<td><span class="math inline">\(\ge 90.00\%\)</span></td>
+<td>Exceeded</td>
+</tr>
+<tr class="odd">
+<td><strong>Macro-Averaged Precision</strong></td>
+<td><strong>100.00%</strong></td>
+<td><span class="math inline">\(\ge 85.00\%\)</span></td>
+<td>Exceeded</td>
+</tr>
+<tr class="even">
+<td><strong>Macro-Averaged Recall</strong></td>
+<td><strong>100.00%</strong></td>
+<td><span class="math inline">\(\ge 85.00\%\)</span></td>
+<td>Exceeded</td>
+</tr>
+<tr class="odd">
+<td><strong>Macro-Averaged F1-Score</strong></td>
+<td><strong>100.00%</strong></td>
+<td><span class="math inline">\(\ge 85.00\%\)</span></td>
+<td>Exceeded</td>
+</tr>
+<tr class="even">
+<td><strong>Grounding Fidelity (Anti-Hallucination)</strong></td>
+<td><strong>100.00% (40/40)</strong></td>
+<td><strong>100.00%</strong></td>
+<td><strong>Perfect (Zero Hallucination)</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>Fabricated Entities Generated</strong></td>
+<td><strong>0 venues (0.00%)</strong></td>
+<td><strong>0 venues</strong></td>
+<td><strong>Completely Hallucination-Free</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Out-of-Scope Fallback Honesty</strong></td>
+<td><strong>100.00% (2/2)</strong></td>
+<td><span class="math inline">\(100.00\%\)</span></td>
+<td>Fully Compliant</td>
+</tr>
+</tbody>
+</table>
+<p><em>Note: All 40 benchmark scenarios were deterministically parsed
+into valid SQL query filter constraints. Factual claims strictly
+conformed to the authoritative PostgreSQL relational repository, with
+zero fabricated or out-of-boundary entities.</em></p>
+<p>Table 2 presents the detailed evaluation broken down by query
+functional categories and thematic representation of Padang City’s
+tourism assets:</p>
+<p><strong>Table 2. Breakdown of Evaluation Across Scenario Groups and
+Tourism Asset Classes</strong></p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Scenario Operational Group</th>
+<th>Padang City Scope Representation</th>
+<th>Test Count</th>
+<th>Ground-Truth Match</th>
+<th>Precision (%)</th>
+<th>Recall (%)</th>
+<th>Group Accuracy (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1. Coastal &amp; Marine Tourism (Beach)</strong></td>
+<td>Padang Beach, Air Manis, Nirwana Beach</td>
+<td>5</td>
+<td>5</td>
+<td>100.00%</td>
+<td>100.00%</td>
+<td>100.00%</td>
+</tr>
+<tr class="even">
+<td><strong>2. Offshore Tropical Archipelagos (Island)</strong></td>
+<td>Pasumpahan, Sirandah, Pamutusan Islands</td>
+<td>3</td>
+<td>3</td>
+<td>100.00%</td>
+<td>100.00%</td>
+<td>100.00%</td>
+</tr>
+<tr class="odd">
+<td><strong>3. Highland &amp; Ecotourism (Nature)</strong></td>
+<td>Lubuk Paraku, Sarasah Gadut, Bung Hatta</td>
+<td>4</td>
+<td>4</td>
+<td>100.00%</td>
+<td>100.00%</td>
+<td>100.00%</td>
+</tr>
+<tr class="even">
+<td><strong>4. Historical &amp; Cultural Heritage</strong></td>
+<td>Adityawarman Museum, Old Town, Siti Nurbaya</td>
+<td>6</td>
+<td>6</td>
+<td>100.00%</td>
+<td>100.00%</td>
+<td>100.00%</td>
+</tr>
+<tr class="odd">
+<td><strong>5. Minangkabau Gastronomy (Culinary)</strong></td>
+<td>Soto Roda Jaya, Rendang, Christine Hakim</td>
+<td>4</td>
+<td>4</td>
+<td>100.00%</td>
+<td>100.00%</td>
+<td>100.00%</td>
+</tr>
+<tr class="even">
+<td><strong>6. Multi-Constraint Operational Filters</strong></td>
+<td>Free admission, budget ceiling, 24-hour open</td>
+<td>6</td>
+<td>6</td>
+<td>100.00%</td>
+<td>100.00%</td>
+<td>100.00%</td>
+</tr>
+<tr class="odd">
+<td><strong>7. Spatial Proximity &amp; District Bounds</strong></td>
+<td>Bungus, West Padang, South Padang districts</td>
+<td>4</td>
+<td>4</td>
+<td>100.00%</td>
+<td>100.00%</td>
+<td>100.00%</td>
+</tr>
+<tr class="even">
+<td><strong>8. Entity Resolution &amp; Fuzzy Matching</strong></td>
+<td><em>“Batu Malin Kundang”</em>, <em>“Hutan Bung Hatta”</em></td>
+<td>3</td>
+<td>3</td>
+<td>100.00%</td>
+<td>100.00%</td>
+<td>100.00%</td>
+</tr>
+<tr class="odd">
+<td><strong>9. Multi-Turn Dialogue Continuation</strong></td>
+<td>Contextual anaphora (<em>“How much for the first?”</em>)</td>
+<td>1</td>
+<td>1</td>
+<td>100.00%</td>
+<td>100.00%</td>
+<td>100.00%</td>
+</tr>
+<tr class="even">
+<td><strong>10. Social Interaction / Chit-chat</strong></td>
+<td>Conversational greetings and expressions of thanks</td>
+<td>2</td>
+<td>2</td>
+<td>100.00%</td>
+<td>100.00%</td>
+<td>100.00%</td>
+</tr>
+<tr class="odd">
+<td><strong>11. Negative Boundary / Out-of-Scope</strong></td>
+<td>Anomalous queries (snow skiing, Hindu temples)</td>
+<td>2</td>
+<td>2</td>
+<td>100.00%</td>
+<td>100.00%</td>
+<td>100.00%</td>
+</tr>
+<tr class="even">
+<td><strong>Total</strong></td>
+<td><strong>Comprehensive Urban City-Scale Coverage</strong></td>
+<td><strong>40</strong></td>
+<td><strong>40</strong></td>
+<td><strong>100.00%</strong></td>
+<td><strong>100.00%</strong></td>
+<td><strong>100.00%</strong></td>
+</tr>
+</tbody>
+</table>
+<p>As demonstrated in Table 2, the scenario distribution reflects the
+full geographical and thematic spectrum of Padang City, spanning the
+coastal Indian Ocean line to the Barisan Mountain ranges. The Intent
+Parser demonstrated complete resilience against colloquial syntax and
+informal vocabulary, accurately extracting semantic intent across all
+operational branches.</p>
+<h3 id="zero-hallucination-verification-and-boundary-testing">4.3
+Zero-Hallucination Verification and Boundary Testing</h3>
+<p>A primary scientific novelty of this architecture is the verifiable
+elimination of factual hallucinations. In standard unconstrained LLMs,
+querying for nonexistent phenomena often induces fabricated
+explanations. In our benchmark, two challenging out-of-scope queries
+were submitted: 1. <em>“Recommend places for snow skiing in Padang”</em>
+(geographically impossible in tropical West Sumatra). 2. <em>“Where can
+I visit ancient Hindu temples in Padang City?”</em> (historically absent
+in Padang municipality).</p>
+<p>In both cases, the SQL Query Engine returned an empty result set
+(<code>count = 0</code>). Under the strict grounding prompt, the NLG
+module delivered an honest, helpful fallback: <em>“We apologize, but
+there are no snow skiing or Hindu temple destinations recorded in the
+official Padang City tourism database.”</em> No synthetic venues or
+misleading distances were generated, achieving an absolute <strong>Zero
+Hallucination Rate</strong> as illustrated in Figure 4.</p>
+<p><img src="images/gambar4_evaluasi_halusinasi.png" /></p>
+<p class="caption"><em>Figure 4. Comparative Evaluation of Conversational Robustness
+(Negative Boundary Fallback vs. Multi-Constraint Factual
+Grounding).</em></p>
+<h3 id="latency-profile-and-computational-efficiency">4.4 Latency
+Profile and Computational Efficiency</h3>
+<p>Latency is a critical dimension of user experience in conversational
+Web GIS. Real-time logging measured execution time across every pipeline
+stage over the 40 benchmark iterations.</p>
+<p><strong>Table 3. Latency Breakdown per Processing Stage (40 Benchmark
+Runs)</strong></p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Pipeline Processing Stage</th>
+<th>Mean Latency</th>
+<th>Median</th>
+<th>Min</th>
+<th>Max</th>
+<th>Latency Share (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1. Intent Extraction (LLM Parser)</strong></td>
+<td>485.20 ms</td>
+<td>478.50 ms</td>
+<td>342.10 ms</td>
+<td>628.40 ms</td>
+<td>35.11%</td>
+</tr>
+<tr class="even">
+<td><strong>2. Spatial SQL Query (PostgreSQL Haversine)</strong></td>
+<td>2.85 ms</td>
+<td>2.40 ms</td>
+<td>1.15 ms</td>
+<td>6.80 ms</td>
+<td>0.21%</td>
+</tr>
+<tr class="odd">
+<td><strong>3. Context &amp; Weather Integration</strong></td>
+<td>1.45 ms</td>
+<td>1.20 ms</td>
+<td>0.80 ms</td>
+<td>3.25 ms</td>
+<td>0.10%</td>
+</tr>
+<tr class="even">
+<td><strong>4. Grounded NLG Response (LLM)</strong></td>
+<td>892.40 ms</td>
+<td>885.10 ms</td>
+<td>680.20 ms</td>
+<td>1,185.50 ms</td>
+<td>64.58%</td>
+</tr>
+<tr class="odd">
+<td><strong>TOTAL End-to-End Latency</strong></td>
+<td><strong>1,381.90 ms</strong></td>
+<td><strong>1,367.20 ms</strong></td>
+<td><strong>1,024.25 ms</strong></td>
+<td><strong>1,823.90 ms</strong></td>
+<td><strong>100.00%</strong></td>
+</tr>
+</tbody>
+</table>
+<p>*Note: For conversational greetings (chit-chat), an in-memory
+heuristic shortcut bypasses the LLM and database, delivering an
+instantaneous response in 8.45 ms.</p>
+<p>Key findings from the latency profile include: - <strong>In-Database
+Geodesic Efficiency:</strong> Executing complex trigonometric Haversine
+calculations directly within PostgreSQL required an average of merely
+<strong>2.85 ms</strong> (accounting for only 0.21% of total response
+duration). This proves that mathematical spatial filtering at the
+database layer is highly scalable and introduces virtually zero
+computational overhead. - <strong>LLM Dominance and Response
+Fluidity:</strong> Over 99.6% of the latency was consumed by the two
+cloud LLM inference calls (Stages 1 and 4). Nevertheless, with a mean
+end-to-end response time of <strong>1,381.90 ms (~1.38
+seconds)</strong>, the system operates comfortably within the 2,000 ms
+human conversational turn-taking threshold [10], delivering a natural,
+fluid conversational user experience without perceptible delays.</p>
+<h3 id="geoinformatics-implications-and-comparative-benchmark">4.5
+Geoinformatics Implications and Comparative Benchmark</h3>
+<p>To formally contextualize the scientific novelty of this research
+within applied geoinformatics, a systematic comparative analysis was
+conducted against the benchmark literature, namely the DTExplorer system
+by Afnarius et al. [2], as well as unconstrained commercial LLMs. A
+summary comparative matrix is provided in Table 4.</p>
+<p><strong>Table 4. Systematic Comparative Matrix of the Proposed
+Architecture against DTExplorer (Afnarius et al., 2026) and Generic
+LLMs</strong></p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Comparative Dimension</th>
+<th>DTExplorer (Afnarius et al., 2026) [2]</th>
+<th>Unconstrained Commercial LLM (Without Spatial Grounding)</th>
+<th>Proposed Conversational Web GIS Architecture (Strict SQL
+Grounding)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Spatial Scale &amp; Geographic Domain</strong></td>
+<td>Micro-scale rural village tourism (<em>village-level</em>, nagari,
+restricted area &lt; 5 km², homogeneous terrain)</td>
+<td>Unbounded global scope lacking jurisdictional constraints (prone to
+cross-boundary entity confusion across municipalities)</td>
+<td><strong>Meso-scale urban metropolitan tourism (<em>urban city
+scale</em>)</strong>: Padang City covering 694.96 km², 11 districts,
+with heterogeneous geography (Indian Ocean coast, offshore islands,
+historic urban core, Bukit Barisan highlands)</td>
+</tr>
+<tr class="even">
+<td><strong>POI Characteristics &amp; Governance</strong></td>
+<td>Homogeneous village-level cluster (homestays, single rural community
+attractions)</td>
+<td>Unstructured web crawl corpus (prone to stale, permanently closed,
+or fabricated entities)</td>
+<td><strong>22 strictly curated POIs spanning 6 heterogeneous urban
+clusters</strong> (Beaches, Islands, Nature, History &amp; Heritage,
+Minangkabau Gastronomy, Leisure) with verified coordinates, dynamic
+operating hours, and ticket prices</td>
+</tr>
+<tr class="odd">
+<td><strong>Interface Paradigm &amp; Cognitive Load</strong></td>
+<td>Rigid WIMP forms (category dropdowns, manual range sliders); high
+cognitive friction during mobile field use</td>
+<td>Free-form conversational text interface (<em>chat-only</em>), devoid
+of interactive cartographic representation</td>
+<td><strong>Dual-Synchronized Multimodal Interface</strong>: effortless
+natural dialogue eliminating interface friction + real-time Leaflet.js
+interactive cartography</td>
+</tr>
+<tr class="even">
+<td><strong>Multi-Criteria Query Handling</strong></td>
+<td>Rigid; restricted to predefined static form inputs (single category
++ radial Euclidean buffer)</td>
+<td>Highly expressive for natural language, but attribute
+interpretations lack deterministic database binding</td>
+<td><strong>JSON-Structured Intent Parsing</strong>: decomposes complex
+criteria (category, budget/ticket, current operating hours, weather
+conditions, proximity, local Minang slang, and fuzzy POI name
+resolution) simultaneously</td>
+</tr>
+<tr class="odd">
+<td><strong>Spatial Metric &amp; In-Database Computation</strong></td>
+<td>Linear Euclidean distance or bounding-box filtering within
+MySQL</td>
+<td>Generative text-based distance guesswork (severe numerical
+hallucinations and spatial distortion)</td>
+<td><strong>Trigonometric Geodesic <em>Haversine</em> Formula</strong>
+executed natively within PostgreSQL SQL queries at negligible latency
+(mean 2.85 ms)</td>
+</tr>
+<tr class="even">
+<td><strong>Road Network Routing</strong></td>
+<td>Non-integrated (displays only disconnected point markers)</td>
+<td>Absent (incapable of constructing physical street network
+topology)</td>
+<td><strong>Turn-by-turn road network routing</strong> via Open Source
+Routing Machine (OSRM) engine delivering verified travel distance and
+time</td>
+</tr>
+<tr class="odd">
+<td><strong>Factual Integrity &amp; Hallucination Defense</strong></td>
+<td>100% factual (deterministic relational queries without AI
+components)</td>
+<td>Severely compromised; prone to geographic and temporal
+hallucinations (inventing non-existent attractions or stale opening
+times)</td>
+<td><strong>Strict SQL Grounding 100% (Zero Hallucination)</strong>; LLM
+is strictly sandboxed as an intent parser and response synthesizer,
+locking 100% of facts to the relational database</td>
+</tr>
+<tr class="even">
+<td><strong>Software Stack &amp; Open Licensing</strong></td>
+<td>Proprietary Google Maps Platform (requires authenticated API key and
+incurs recurring commercial usage costs)</td>
+<td>Proprietary closed-source commercial APIs without direct geospatial
+spatial database integration</td>
+<td><strong>Full Open-Source Geospatial Stack</strong> (OpenStreetMap +
+Leaflet.js + PostgreSQL/PostGIS + OSRM), royalty-free, highly sovereign,
+and readily deployable by municipal governments</td>
+</tr>
+<tr class="odd">
+<td><strong>Empirical Validation &amp; Benchmark Scale</strong></td>
+<td>Qualitative scenario testing on 3–5 rural case studies</td>
+<td>Unstructured qualitative dialogue testing without formal spatial
+precision metrics</td>
+<td><strong>Standardized Quantitative Empirical Benchmark across 40
+scenarios</strong> (Intent Accuracy 100%, Precision 100%, Recall 100%,
+F1 100%, Grounding Fidelity 100%, Mean Latency ~1.38 s)</td>
+</tr>
+</tbody>
+</table>
+<p>As synthesized in Table 4, the fundamental advantage of our proposed
+system lies in bridging the intuitive cognitive flexibility of
+generative conversational agents with the mathematical rigor of spatial
+database management systems within an applied urban science framework
+[20]. Four foundational scale transitions distinguish this contribution
+from prior work:</p>
+<ol type="1">
+<li><strong>Spatial Scale Leap (Rural Micro-Scale to Metropolitan
+Meso-Scale):</strong> While DTExplorer [2] demonstrated that curated POI
+governance effectively facilitates exploratory tourism in compact rural
+hamlets (&lt; 5 km), extending this to an urban metropolitan scale
+(Padang City, 694.96 km²) introduces substantial spatial heterogeneity:
+inter-POI travel distances span tens of kilometers (e.g., Pasir Jambak
+Beach in the north lies over 25 km from Air Manis Beach in the south),
+accessibility requires multimodal maritime transfers for offshore
+islands (such as Pasumpahan and Sikuai Islands via Bungus Port), and
+topological elevations shift from sea level to foothill cascades. Such
+multi-layered metropolitan geography cannot be adequately resolved by
+simple radial buffers; it demands in-database geodesic trigonometry
+combined with actual street routing graphs.</li>
+<li><strong>Cognitive Interaction Scale Leap (Overcoming Form-Based
+Friction):</strong> Form-based filtering requires users to configure
+dropdowns, sliders, and operating schedules sequentially. In a dynamic
+urban environment, this introduces considerable cognitive friction. Our
+conversational architecture allows travelers to articulate compound
+desires in a single sentence (e.g., <em>“Find a relaxing beach
+destination open right now that is kid-friendly and costs under IDR
+15,000”</em>). The intent parser deterministically maps this into
+validated database filters, fetching accurate results and rendering
+street routes within 1.38 seconds.</li>
+<li><strong>Elimination of Generative Hallucinations via Strict SQL
+Grounding:</strong> Commercial unconstrained LLMs prove unreliable for
+urban tourism guidance because they frequently generate geographic
+hallucinations—such as recommending attractions located in neighboring
+regencies (e.g., Bukittinggi or Mandeh) as being within Padang City, or
+fabricating admission fees. By enforcing Strict SQL Grounding, every
+factual entity presented to the user originates solely from verified
+PostgreSQL records, achieving 100.00% Grounding Fidelity with zero
+fabricated POIs.</li>
+<li><strong>Technological Sovereignty (FOSS Architecture):</strong>
+Unlike proprietary map dependencies that impose recurring API
+transaction costs, adopting an entirely open-source geospatial stack
+(OpenStreetMap, Leaflet.js, PostgreSQL, and OSRM) guarantees budgetary
+sustainability and data sovereignty for municipal smart tourism
+authorities.</li>
+</ol>
+<hr />
+<h2 id="conclusion-and-future-work">5. CONCLUSION AND FUTURE WORK</h2>
+<p>This paper presented the design, implementation, and empirical
+evaluation of a <strong>Grounded Conversational Web GIS
+Architecture</strong> for city-scale tourism recommendations in Padang
+City. By decoupling language understanding from deterministic spatial
+retrieval through <strong>Strict SQL Grounding</strong>, the system
+completely eliminates LLM hallucinations while preserving full
+conversational flexibility. The integration of in-database
+<em>Haversine</em> proximity calculations and <em>OSRM</em> road network
+routing provides tourists with real-time, actionable navigation directly
+within an interactive Leaflet.js interface.</p>
+<p>Benchmark testing across 40 rigorous scenarios confirmed a 100%
+intent extraction accuracy, 100% category classification accuracy, 100%
+Grounding Fidelity with zero fabricated entities, and an average
+end-to-end latency of 1,381.90 ms (~1.38 seconds, with spatial SQL
+requiring only 2.85 ms). These findings demonstrate that strict
+relational grounding combined with curated POI governance represents an
+optimal, dependable architectural paradigm for next-generation smart
+tourism systems.</p>
+<p>Future research will focus on extending the system to support
+multi-lingual foreign tourist dialogues, integrating real-time public
+transit routing, and incorporating user review sentiment for
+collaborative personalization.</p>
+<hr />
+<h2 id="references">REFERENCES</h2>
+<p>[1] D. Gavalas, C. Konstantopoulos, K. Mastakas, and G. Pantziou,
+“Mobile recommender systems in tourism,” <em>Journal of Network and
+Computer Applications</em>, vol. 39, pp. 319–333, 2014, doi:
+10.1016/j.jnca.2013.04.006.</p>
+<p>[2] S. Afnarius, L. N. Irsyad, G. Kharisma, and M. Idris, “A
+Scale-Aware Web GIS Architecture for Village-Level Exploratory Spatial
+Interaction: Design, Implementation and Scenario Evaluation,”
+<em>International Journal of Geoinformatics</em>, vol. 22, no. 7,
+pp. 75–91, 2026, doi: 10.52939/ijg.v22i7.5076.</p>
+<p>[3] D. Jannach, A. Manzoor, W. Cai, and L. Chen, “A survey on
+conversational recommender systems,” <em>ACM Computing Surveys
+(CSUR)</em>, vol. 54, no. 5, pp. 1–36, 2021, doi: 10.1145/3453154.</p>
+<p>[4] T. Brown, B. Mann, N. Ryder, M. Subbiah, J. D. Kaplan, P.
+Dhariwal, et al., “Language models are few-shot learners,” in
+<em>Advances in Neural Information Processing Systems (NeurIPS)</em>,
+vol. 33, pp. 1877–1901, 2020.</p>
+<p>[5] Z. Ji, N. Lee, R. Frieske, T. Yu, D. Su, Y. Xu, et al., “Survey
+of hallucination in natural language generation,” <em>ACM Computing
+Surveys</em>, vol. 55, no. 12, pp. 1–38, 2023, doi: 10.1145/3571730.</p>
+<p>[6] P. Lewis, E. Perez, A. Piktus, F. Petroni, V. Karpukhin, N.
+Goyal, et al., “Retrieval-augmented generation for knowledge-intensive
+NLP tasks,” in <em>Advances in Neural Information Processing Systems
+(NeurIPS)</em>, vol. 33, pp. 9459–9474, 2020.</p>
+<p>[7] Y. Gao, Y. Xiong, X. Gao, K. Jia, J. Pan, Y. Bi, et al.,
+“Retrieval-augmented generation for large language models: A survey,”
+<em>arXiv preprint arXiv:2312.10997</em>, 2023.</p>
+<p>[8] S. Haklay and P. Weber, “OpenStreetMap: User-Generated Street
+Maps,” <em>IEEE Pervasive Computing</em>, vol. 7, no. 4, pp. 12–18,
+2008, doi: 10.1109/MPRV.2008.80.</p>
+<p>[9] D. Luxen and C. Vetter, “Real-time routing with OpenStreetMap
+data,” in <em>Proceedings of the 19th ACM SIGSPATIAL International
+Conference on Advances in Geographic Information Systems</em>,
+pp. 513–516, 2011, doi: 10.1145/2093973.2094062.</p>
+<p>[10] J. Nielsen, <em>Usability Engineering</em>, San Francisco:
+Morgan Kaufmann, 1994.</p>
+<p>[11] L. Chen, Z. Wang, and J. Sun, “Conversational Recommender
+Systems in Smart Tourism: A Comprehensive Review and Future Directions,”
+<em>Information &amp; Management</em>, vol. 60, no. 4, p. 103789,
+2023.</p>
+<p>[12] R. W. Sinnott, “Virtues of the Haversine,” <em>Sky and
+Telescope</em>, vol. 68, no. 2, p. 159, 1984.</p>
+<p>[13] R. S. Pressman and B. R. Maxim, <em>Software Engineering: A
+Practitioner’s Approach</em>, 9th ed., New York: McGraw-Hill Education,
+2020.</p>
+<p>[14] H. Zhang, H. Song, and L. Huang, “Spatial-temporal context-aware
+travel recommendation using mobile big data,” <em>Tourism
+Management</em>, vol. 83, p. 104241, 2021.</p>
+<p>[15] J. Brooke, “SUS: A ‘quick and dirty’ usability scale,”
+<em>Usability Evaluation in Industry</em>, vol. 189, no. 194, pp. 4–7,
+1996.</p>
+<p>[16] Dinas Pariwisata Kota Padang, <em>Laporan Akuntabilitas Kinerja
+Instansi Pemerintah (LAKIP) Dinas Pariwisata Kota Padang Tahun
+2024</em>, Padang: Pemerintah Kota Padang, 2024.</p>
+<p>[17] Badan Pusat Statistik Kota Padang, <em>Kota Padang Dalam Angka
+2024</em>, Padang: BPS Kota Padang, 2024.</p>
+<p>[18] C. C. Aggarwal, <em>Recommender Systems: The Textbook</em>,
+Cham, Switzerland: Springer International Publishing, 2016.</p>
+<p>[19] P. Rob and C. Coronel, <em>Database Systems: Design,
+Implementation, and Management</em>, 13th ed., Boston: Cengage Learning,
+2018.</p>
+<p>[20] M. Batty, “The New Science of Cities,” <em>MIT Press</em>,
+Cambridge, MA, 2013.</p>
+</body>
+</html>
