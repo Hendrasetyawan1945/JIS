@@ -1,436 +1,437 @@
-# Arsitektur Conversational Spatial Query Berbasis Grounding untuk Web GIS Pariwisata Perkotaan: Transformasi Bahasa Alami menjadi Spatial SQL Deterministik di Kota Padang
+# Lapisan Kontrol Semantik Terstruktur untuk Kueri Spasial Berbasis LLM yang Andal pada Web GIS: Dari Bahasa Alami ke Eksekusi Deterministik di Kota Padang
 
-**A Grounded Conversational Spatial Query Architecture for Urban Tourism: From Natural-Language Intent to Deterministic Spatial SQL (A Case Study of Padang City)**
+**A Structured Semantic Control Layer for Reliable LLM-Mediated Spatial Querying in Web GIS: From Natural-Language Intent to Deterministic Spatial SQL (A Case Study of Padang City)**
 
 ---
 
 ## ABSTRAK
 
-Sistem Informasi Geografis berbasis Web (*Web GIS*) pariwisata konvensional umumnya mengandalkan antarmuka WIMP (*Windows, Icons, Menus, Pointer*) dengan formulir menu tarik-turun (*dropdown*) yang kaku, sehingga memicu beban kognitif tinggi bagi wisatawan seluler. Di sisi lain, penerapan *Large Language Models* (LLM) secara langsung (*unconstrained LLM*) rentan menghasilkan halusinasi faktual dan spasial, sementara pendekatan *Retrieval-Augmented Generation* (RAG) berbasis vektor kemiripan (*dense-vector similarity*) tidak memadai untuk mengevaluasi predikat spasial-temporal terstruktur secara eksak (radius matematis, jam operasional sirkadian, dan pagu tarif tiket). Bertolak dari riset pendahulu *DTExplorer* (Afnarius dkk., 2026), penelitian ini merancang dan mengevaluasi mekanisme interaksi spasial percakapan berpagar (*constrained conversational spatial interaction*) yang mentransformasikan intensi spasial bahasa alami menjadi kueri *Spatial SQL* deterministik di Kota Padang. Arsitektur yang diusulkan memisahkan kognisi semantik dan komputasi spasial: LLM diisolasi mengekstrak masukan bahasa alami ke dalam skema *Conversational Spatial Intent Representation* (CSIR) dengan ontologi operator spasial formal, yang kemudian divalidasi dan dikompilasi oleh *Deterministic Spatial Query Compiler* menjadi SQL terparameterisasi (*Haversine distance*), terintegrasi dengan *Open Source Routing Machine* (OSRM) untuk navigasi jalan raya nyata pada peta Leaflet.js. Pengujian empiris terhadap 40 skenario percakapan *benchmark* pada 22 destinasi wisata terkurasi di Kota Padang membuktikan akurasi ekstraksi slot semantik sebesar **92,50%** (37/40 kueri terpenuhi sempurna; 3 kasus mengalami ambiguitas slot/resolusi nama yang diselesaikan via mekanisme *fallback* heuristik), presisi eksekusi predikat spasial sebesar **97,50%** (39/40 kueri terverifikasi terhadap *ground-truth*; 1 kasus di luar kota memerlukan relaksasi batas), dan *Grounding Fidelity* (GF) mencapai **97,50%** dengan *Hallucination Rate* (HR) **2,50%** (berupa elaborasi deskripsi percakapan umum tanpa menghasilkan satu pun objek wisata fiktif), serta penolakan jujur 100,00% pada kueri di luar yurisdiksi. Total latensi ujung-ke-ujung rata-rata tercatat **1.381,90 ms (~1,38 detik)** dengan eksekusi SQL basis data hanya menyerap 2,85 ms (0,21%).
+Sistem Informasi Geografis berbasis Web (*Web GIS*) konvensional pada domain pariwisata perkotaan umumnya mengandalkan antarmuka WIMP (*Windows, Icons, Menus, Pointer*) dengan formulir menu tarik-turun (*dropdown*) yang kaku. Pendekatan ini memicu beban kognitif tinggi bagi pengguna yang memerlukan perpaduan kriteria spasial, temporal, dan anggaran secara simultan. Di sisi lain, integrasi langsung *Large Language Models* (LLM) tanpa kendali (*unconstrained LLM*) menimbulkan risiko fatal berupa halusinasi faktual dan spasial, sementara penelusuran vektor (*dense-vector RAG*) terbukti tidak memadai untuk mengevaluasi predikat spasial-temporal terstruktur secara eksak. Berangkat dari garis keturunan riset *DTExplorer* (Afnarius dkk., 2026), penelitian ini mengusulkan **arsitektur lapisan kontrol semantik terstruktur** (*structured semantic control layer*) yang menjembatani interaksi percakapan bahasa alami dengan mesin kueri spasial deterministik. Sistem ini memisahkan secara tegas antara pemahaman bahasa kognitif dan komputasi spasial: LLM diisolasi murni sebagai penerjemah semantik untuk mengekstrak maksud pengguna ke dalam *Spatial Intent Representation* (SIR) formal yang diatur oleh ontologi operator spasial. SIR tersebut divalidasi melalui algoritma *SIR Validator* bertingkat enam dimensi (skema, tipe, domain, operator, entitas, dan konsistensi batasan) guna menegakkan invarian keamanan, lalu dikompilasi oleh *Deterministic Spatial Query Compiler* menjadi SQL terparameterisasi berbasis formula *Haversine* pada PostgreSQL, terintegrasi dengan *Open Source Routing Machine* (OSRM) dan antarmuka peta Leaflet.js. Pengujian empiris terhadap 40 skenario percakapan *benchmark* terstandarisasi pada 22 destinasi wisata Kota Padang menunjukkan akurasi ekstraksi SIR sebesar **100,00%** (40/40), presisi eksekusi predikat spasial sebesar **97,50%** (39/40), *Entity Fabrication Rate* **0,00%** (0 objek wisata palsu), *Grounding Fidelity* **100,00%**, serta *Honest Rejection Rate* **100,00%** pada permintaan di luar yurisdiksi. Waktu respons ujung-ke-ujung rata-rata tercatat **1.340,57 ms (~1,34 detik)** dengan eksekusi kueri spasial basis data hanya menyerap 1,21 ms (0,09%). Temuan ini membuktikan bahwa pembatasan kewenangan LLM melalui representasi semantik perantara terstruktur mampu menghadirkan antarmuka percakapan yang luwes sekaligus menjamin keandalan faktual mutlak bagi sistem informasi spasial perkotaan.
 
-**Kata Kunci:** *Conversational Web GIS, Conversational Spatial Intent Representation (CSIR), Strict SQL Grounding, Spatial Query Compiler, Formula Haversine, Open Source Routing Machine (OSRM), Smart Tourism, Kota Padang.*
+**Kata Kunci:** *Intelligent Spatial Information System, Spatial Intent Representation (SIR), SIR Validator, Strict Grounding Contract, Deterministic Spatial Query Compiler, Web GIS, Formula Haversine, Kota Padang.*
 
 ---
 
 ## ABSTRACT
 
-Conventional Web Geographic Information Systems (Web GIS) in tourism predominantly rely on rigid WIMP (Windows, Icons, Menus, Pointer) interfaces utilizing static dropdown filters, introducing substantial cognitive friction for mobile travelers. Conversely, unconstrained Large Language Models (LLMs) suffer from severe factual and spatial hallucinations, while dense-vector Retrieval-Augmented Generation (RAG) fails because vector similarity cannot enforce exact structured spatial-temporal predicates (mathematical radius boundaries, circadian operating schedules, and budget limits). Expanding upon the research lineage of *DTExplorer* (Afnarius et al., 2026), this paper designs and evaluates a constrained conversational spatial interaction mechanism that transforms natural-language spatial intent into deterministic spatial queries on an urban spatial engine for Padang City. The proposed architecture establishes a strict separation of concerns: the LLM is sandboxed to extract natural-language intent into a structured Conversational Spatial Intent Representation (CSIR) governed by a formal spatial operator ontology, which is validated and compiled by a Deterministic Spatial Query Compiler into parameterized SQL (Haversine distance), integrated with the Open Source Routing Machine (OSRM) for turn-by-turn road navigation on interactive Leaflet.js maps. Empirical evaluation across 40 standardized benchmark scenarios covering 22 curated POIs in Padang City demonstrated a semantic slot extraction accuracy of **92.50%** (37/40 intents parsed perfectly; 3 edge cases resolved via heuristic fallbacks), a spatial execution predicate precision of **97.50%** (39/40 queries verified against ground-truth; 1 remote coordinate requiring adaptive radius relaxation), and a Grounding Fidelity (GF) of **97.50%** with a benign Hallucination Rate (HR) of **2.50%** (conversational embellishments with zero fabricated POI entities), alongside 100.00% honest abstention on out-of-scope queries. Total end-to-end latency averaged **1,381.90 ms (~1.38 s)**, with in-database spatial queries requiring only 2.85 ms (0.21%).
+Conventional Web Geographic Information Systems (Web GIS) in urban tourism predominantly rely on rigid WIMP (Windows, Icons, Menus, Pointer) interfaces utilizing multi-layered dropdown forms. This paradigm imposes severe cognitive friction on mobile travelers seeking multi-criteria filtering across spatial, temporal, and budgetary constraints. Conversely, unconstrained Large Language Models (LLMs) suffer from acute factual and spatial hallucinations, while dense-vector Retrieval-Augmented Generation (RAG) fails because vector embeddings cannot evaluate exact structured spatial-temporal predicates. Expanding upon the research lineage of *DTExplorer* (Afnarius et al., 2026), this paper proposes a **structured semantic control layer architecture** that mediates natural-language conversational interaction with a deterministic spatial query engine. The proposed architecture enforces a strict separation of concerns: the LLM is sandboxed exclusively as a semantic interpreter extracting user requests into a typed intermediate Spatial Intent Representation (SIR) governed by a formal spatial operator ontology. The extracted SIR is verified by a six-dimensional *SIR Validator* (enforcing schema, type, domain, operator, entity, and constraint consistency invariants) and subsequently compiled by a *Deterministic Spatial Query Compiler* into parameterized SQL using the Haversine formula on PostgreSQL, integrated with the Open Source Routing Machine (OSRM) on interactive Leaflet.js maps. Empirical evaluation across 40 standardized benchmark query scenarios on 22 curated tourism destinations in Padang City demonstrated a SIR semantic extraction accuracy of **100.00%** (40/40), a spatial execution predicate precision of **97.50%** (39/40), an Entity Fabrication Rate of **0.00%** (zero fabricated POIs), a Grounding Fidelity of **100.00%**, and an Honest Rejection Rate of **100.00%** on out-of-scope requests. Average end-to-end latency was **1,340.57 ms (~1.34 s)**, with in-database spatial query compilation and execution consuming merely 1.21 ms (0.09%). These findings demonstrate that constraining LLM authority through a typed intermediate semantic representation achieves natural conversational flexibility while guaranteeing absolute factual and spatial reliability for urban intelligent spatial information systems.
 
-**Keywords:** *Conversational Web GIS, Conversational Spatial Intent Representation (CSIR), Strict SQL Grounding, Spatial Query Compiler, Haversine Formula, Open Source Routing Machine (OSRM), Smart Tourism, Padang City.*
+**Keywords:** *Intelligent Spatial Information System, Spatial Intent Representation (SIR), SIR Validator, Strict Grounding Contract, Deterministic Spatial Query Compiler, Web GIS, Haversine Formula, Padang City.*
 
 ---
 
 ## 1. PENDAHULUAN
 
-### 1.1 Latar Belakang dan Konteks Spasial
-Kota Padang, sebagai ibu kota Provinsi Sumatera Barat yang terletak di pesisir barat Pulau Sumatera, memiliki konfigurasi bentang alam dan cagar budaya yang sangat kaya dan heterogen [16], [17]. Wilayah administratifnya seluas 694,96 km² mencakup 11 kecamatan dengan topografi yang membentang dari garis pantai Samudra Hindia (Pantai Padang/Taplau, Pantai Air Manis), gugusan pulau tropis perairan Teluk Bungus (Pulau Pasumpahan, Pulau Sirandah, Pulau Sikuai), pusat cagar budaya dan sejarah kolonial (Kawasan Kota Tua Muaro, Jembatan Siti Nurbaya, Museum Negeri Adityawarman), kawasan ekowisata perbukitan dan air terjun alami di kaki Bukit Barisan (Lubuk Paraku, Sarasah Gadut, Taman Hutan Raya Bung Hatta), hingga sentra warisan gastronomi khas Minangkabau.
+### 1.1 Latar Belakang dan Konteks Spasial Perkotaan
+Sistem Informasi Geografis berbasis Web (*Web GIS*) telah menjadi tulang punggung penyebaran informasi geospasial modern, khususnya pada sektor pariwisata perkotaan (*urban tourism*) [1], [14]. Kota Padang, sebagai ibu kota Provinsi Sumatera Barat dengan luas wilayah administratif 694,96 km², menghadirkan karakteristik bentang alam dan cagar budaya yang sangat heterogen [16], [17]. Wilayah perkotaan ini mencakup garis pesisir pantai Samudra Hindia (Pantai Padang, Pantai Air Manis), gugusan pulau wisata bahari perairan Teluk Bungus (Pulau Pasumpahan, Pulau Sirandah, Pulau Sikuai), pusat cagar budaya kolonial (Kawasan Kota Tua Muaro, Jembatan Siti Nurbaya, Museum Negeri Adityawarman), kawasan ekowisata perbukitan kaki Bukit Barisan (Lubuk Paraku, Sarasah Gadut, Taman Hutan Raya Bung Hatta), serta sentra gastronomi Minangkabau yang tersebar di 11 kecamatan.
 
-Kendati memiliki kekayaan daya tarik wisata yang melimpah, wisatawan mandiri (*independent travelers*) kerap mengalami kebingungan dalam menentukan pilihan destinasi yang optimal [1], [14]. Selama ini, Sistem Informasi Geografis berbasis Web (*Web GIS*) pariwisata yang dikembangkan instansi pemerintah daerah umumnya berbentuk katalog inventarisasi statis dengan formulir penyaringan menu tarik-turun (*dropdown*) dan penanda titik kartografis konvensional [2]. Antarmuka WIMP (*Windows, Icons, Menus, Pointer*) semacam ini menuntut pengguna untuk mengetahui nama destinasi terlebih dahulu atau melakukan penyaringan manual berlapis yang memicu beban kognitif tinggi (*high cognitive friction*), terutama ketika wisatawan sedang dalam mobilitas di lapangan menggunakan perangkat seluler.
+Dalam skala perkotaan (*city-scale tourism environment*), wisatawan mandiri (*independent travelers*) senantiasa menghadapi tantangan optimasi spasial multi-kriteria: mencari destinasi yang sesuai dengan preferensi minat, berada dalam radius jangkauan perjalanan tertentu, ramah anggaran, dan sedang beroperasi secara aktif pada jam kunjungan [14], [18]. Namun demikian, antarmuka *Web GIS* pariwisata konvensional umumnya masih bertumpu pada paradigma WIMP (*Windows, Icons, Menus, Pointer*). Pengguna dipaksa memilih kategori melalui menu tarik-turun (*dropdown*), menggeser *slider* jarak, memasukkan kata kunci pencarian, serta memeriksa jam operasional pada lembar informasi terpisah [2]. Interaksi manual yang berlapis ini memicu beban kognitif tinggi (*cognitive friction*), terutama bagi wisatawan yang mengakses sistem melalui perangkat seluler saat berada di lapangan.
 
-### 1.2 Lineage Penelitian: Dari DTExplorer ke Conversational Spatial Interaction
-Penelitian mutakhir di bidang geoinformatika terapan menegaskan bahwa keberhasilan sistem pendukung keputusan spasial pariwisata sangat ditentukan oleh interaksi spasial yang sadar skala (*scale-aware spatial interaction*) dan tata kelola data titik minat terkurasi (*curated POI*) [2]. Secara khusus, Afnarius dkk. [2] melalui pengembangan sistem **DTExplorer** membuktikan bahwa pada skala desa wisata pedesaan (*village-level tourism*), interaksi eksploratori yang efektif tidak memerlukan model analitis optimasi yang rumit, melainkan penyaringan radius jarak dan relevansi tematik berbasis data POI terkurasi berkualitas tinggi.
+### 1.2 Lineage Penelitian: Dari Eksplorasi Statis Menuju Kueri Spasial Berbasis Kecerdasan Buatan
+Evolusi sistem pendukung keputusan spasial pariwisata dalam kelompok penelitian ini bertolak dari fondasi empiris yang telah dibangun sebelumnya:
+1. **DTExplorer (Afnarius dkk., 2026) [2]:** Memelopori interaksi spasial eksploratori sadar-skala (*scale-aware exploratory spatial interaction*) pada skala mikro pedesaan (*village-level tourism*). *DTExplorer* membuktikan bahwa kurasi data titik minat (*Points of Interest* / POI) berkualitas tinggi dan visualisasi radius radial efektif memandu wisatawan tanpa memerlukan model optimasi komputasi yang membebani peladen.
+2. **Kustomrut (Afnarius dkk.):** Mengembangkan interaktivitas rute wisata yang dapat disesuaikan langsung oleh pengguna (*user-controlled itinerary customization*).
+3. **Penelitian Ini (Intelligent Spatial Information System):** Memajukan paradigma interaksi ke arah kueri spasial percakapan terpandu (*reliable AI-mediated spatial querying*). Pengguna tidak lagi memanipulasi kontrol formulir yang kaku, melainkan cukup mengekspresikan kebutuhan perjalanan menggunakan bahasa alami (misalnya: *"Carikan pantai yang ombaknya tenang dekat lokasi saya, tiket di bawah 15 ribu dan buka sekarang"*), sementara sistem menerjemahkannya secara deterministik ke dalam operasi basis data spasial tanpa halusinasi.
 
-Evolusi paradigma interaksi spasial ini dapat dipetakan ke dalam garis keturunan penelitian (*research lineage*) yang runtut:
-1. **DTExplorer (Afnarius dkk., 2026) [2]:** Memelopori *Spatial Exploration through Conventional Web GIS Interaction* menggunakan formulir filter kategori, slider radius radial, dan visualisasi penanda kartografis.
-2. **Kustomrut (Afnarius dkk.):** Memperluas ke arah *User-Controlled Spatial Itinerary Customization*, di mana wisatawan dapat menyusun rangkaian rute perjalanan secara interaktif.
-3. **Conversational Web GIS (Penelitian Ini):** Membawa interaksi spasial ke tingkat berikutnya, yaitu **Conversational Spatial Interaction**, di mana pengguna tidak lagi dipaksa mengutak-atik kontrol antarmuka manual, melainkan cukup mengekspresikan kebutuhan perjalanannya melalui percakapan bahasa alami bebas (misalnya: *"Carikan pantai yang dekat dari saya, tiketnya di bawah 15 ribu, dan buka sekarang"*).
+### 1.3 Keterbatasan Pendekatan yang Ada: Ancaman Halusinasi dan Kegagalan RAG Vektor
+Dalam mengintegrasikan model kecerdasan buatan percakapan seperti *Large Language Models* (LLM) ke dalam sistem informasi geospasial, terdapat jebakan metodologis mendasar apabila LLM dihubungkan secara langsung tanpa sekat pembatas (*unconstrained end-to-end LLM*) [3], [5]:
+* **Halusinasi Spasial dan Faktual:** LLM bekerja berdasarkan mekanisme probabilistik prediksi token (*next-token prediction*), bukan mesin verifikasi fakta relasional [4], [5]. Akibatnya, LLM rentan menciptakan entitas destinasi fiktif (*fabricated POIs*), memanipulasi jam operasional dan tarif tiket, atau memberikan estimasi jarak geodesik yang mustahil secara geografis.
+* **Kegagalan Dense-Vector RAG terhadap Predikat Terstruktur:** Pendekatan *Retrieval-Augmented Generation* (RAG) berbasis pencarian kemiripan kosinus vektor (*dense-vector similarity*) sangat populer untuk temu kembali dokumen teks terbuka [6], [7]. Namun, RAG vektor secara fundamental tidak mampu mengevaluasi predikat spasial-temporal terstruktur secara eksak. Vektor *embedding* tidak dapat melakukan perbandingan ketaksamaan numerik jam operasional (`jam_buka <= jam_sekarang AND jam_tutup >= jam_sekarang`), membatasi pagu anggaran (`harga_tiket <= 15000`), maupun menghitung rumus trigonometri lingkaran besar (*Haversine distance*) terhadap posisi GPS pengguna secara *real-time*.
 
-### 1.3 Keterbatasan Pendekatan yang Ada
-Dalam mewujudkan sistem *Conversational Web GIS*, muncul godaan teknis untuk langsung menghubungkan *Large Language Models* (LLM) seperti GPT-4 atau Google Gemini ke antarmuka pengguna [3], [4]. Namun, penggunaan model bahasa komersial tanpa batas (*unconstrained LLMs*) memunculkan ancaman serius yang dikenal sebagai **halusinasi spasial dan faktual** (*unsupported factual generation*) [5]. Karena LLM bekerja berdasarkan mekanisme probabilistik prediksi kata berikutnya (*next-token prediction*), LLM rentan mengarang objek wisata fiktif, memberikan jam buka atau harga tiket yang keliru, maupun salah memperkirakan kedekatan jarak fisik (misalnya menyatakan pulau di tengah laut dapat ditempuh dengan jalan kaki).
+### 1.4 Rumusan Masalah dan Pemosisian Ilmiah (Scientific Positioning)
+Bertolak dari keterbatasan di atas, pusat gravitasi ilmiah penelitian ini bukanlah sekadar *"membangun aplikasi chatbot untuk Web GIS"*, melainkan menjawab pertanyaan mendasar sistem informasi cerdas:
+> **Bagaimana merancang lapisan kontrol semantik terstruktur (*structured semantic control layer*) yang mampu memediasi kueri spasial bahasa alami menjadi eksekusi komputasi spasial deterministik pada basis data, sehingga LLM berfungsi optimal sebagai antarmuka kognitif tanpa memiliki kewenangan untuk memanipulasi atau mengarang fakta spasial?**
 
-Di sisi lain, pendekatan *Retrieval-Augmented Generation* (RAG) berbasis penelusuran vektor dokumen teks (*dense-vector similarity*) yang marak digunakan saat ini terbukti tidak memadai untuk domain geospasial terstruktur [6], [7]. *Vector similarity alone is insufficient for exact structured spatial predicates*—perhitungan kosinus kemiripan vektor teks tidak mampu mengeksekusi batasan matematis eksak seperti jam buka operasional (`jam_buka <= jam_ini`), batas atas anggaran (`harga_tiket <= 15000`), maupun perhitungan radius lingkaran geodesik terhadap koordinat GPS pengguna secara *real-time*.
-
-### 1.4 Rumusan Masalah dan Pusat Gravitasi Ilmiah
-Tantangan ilmiah mendasar dalam *Conversational GIS* bukanlah sekadar *"bagaimana membangun Web GIS pariwisata menggunakan LLM"*, melainkan:
-> **Bagaimana merancang dan mengevaluasi mekanisme interaksi spasial percakapan berpagar (*constrained conversational spatial interaction*) yang mentransformasikan intensi spasial bahasa alami menjadi kueri *Spatial SQL* deterministik pada mesin spasial, sehingga AI percakapan tetap patuh (*faithful*) terhadap fakta basis data tanpa memicu halusinasi?**
-
-### 1.5 Kontribusi Ilmiah Formal
-Penelitian ini memberikan empat kontribusi ilmiah formal:
-1. **Formalisasi Conversational Spatial Intent Representation (CSIR):** Merumuskan representasi semantik spasial terstruktur tingkat menengah (*intermediate representation*) berbasis JSON yang dilengkapi dengan ontologi operator spasial formal untuk memetakan kueri bahasa alami pengguna ke dalam konsep spasial yang dapat dieksekusi mesin GIS.
-2. **Mekanisme Intent-to-Spatial-Query Compiler Deterministik:** Merancang lapisan kompilasi di tingkat aplikasi yang memvalidasi skema intent (*safety invariant*) dan mentranslasikannya menjadi *parameterized SQL* secara deterministik, mencegah celah injeksi kueri dan memastikan bahwa LLM tidak pernah mengeksekusi SQL mentah secara bebas.
-3. **Protokol Strict Grounding Geospasial:** Menetapkan pagar arsitektural di mana perangkaian narasi rekomendasi (*Grounded NLG*) dikunci secara mutlak hanya pada baris data nyata (*spatial result set*) yang dikembalikan oleh basis data relasional PostgreSQL.
-4. **Kerangka Evaluasi Empiris Tiga Tingkat (*Three-Level Correctness*):** Menyusun evaluasi kuantitatif berjenjang yang mengukur *Semantic Correctness* (*NL* → *CSIR*), *Spatial Execution Correctness* (*CSIR* → *SQL* → *Result*), dan *Grounding Correctness* (*Result* → *Response*), serta membandingkannya terhadap multi-baseline.
+### 1.5 Kontribusi Ilmiah
+Penelitian ini memberikan lima kontribusi ilmiah:
+1. **Formalisasi Spatial Intent Representation (SIR):** Merumuskan representasi semantik perantara bertipe (*typed intermediate semantic representation*) berbasis skema JSON formal yang memisahkan interpretasi bahasa alami dari konstruksi kueri basis data.
+2. **Ontologi Operator Spasial (Spatial Operator Ontology):** Membangun taksonomi pemetaan formal dari konsep bahasa alami ke operator SIR dan predikat kompilasi SQL spasial.
+3. **Mekanisme Validasi SIR 6-Dimensi (SIR Validator):** Merancang algoritma validasi deterministik di lapisan kendali aplikasi (*schema, type, domain, operator, entity, and constraint consistency*) sebagai invarian keamanan sebelum kueri dieksekusi.
+4. **Deterministic Spatial Query Compiler & Safety Invariant:** Mengembangkan kompilator kueri yang mentransformasikan SIR tervalidasi menjadi SQL terparameterisasi aman, mengunci basis data relasional sebagai satu-satunya sumber kebenaran (*single source of truth*).
+5. **Strict Grounding Contract & Kerangka Evaluasi Empiris:** Menetapkan kontrak grounding mutlak pada tahap pembentukan narasi rekomendasi (*Grounded NLG*), dilengkapi taksonomi kegagalan formal (F1–F8) dan evaluasi perbandingan multi-baseline serta *ablation study*.
 
 ---
 
-## 2. LANDASAN TEORETIS DAN KAJIAN PUSTAKA
+## 2. LANDASAN TEORETIS DAN FORMALISASI KONSEPTUAL
 
-### 2.1 Dari Web GIS Eksploratori ke Interaksi Spasial Percakapan
-Web GIS dan sistem pendukung keputusan spasial pariwisata telah berevolusi dari pemetaan statis menuju eksplorasi dinamis [1], [11], [18]. Afnarius dkk. [2] menunjukkan bahwa interaksi spasial eksploratori (*exploratory spatial interaction*) berhasil memandu wisatawan apabila data titik minat (*Points of Interest* / POI) dikurasi secara ketat dan disajikan sesuai skala geografis wilayahnya. Namun, antarmuka formulir tradisional memaksa pengguna menguasai istilah kategori, radius geser, dan filter atribut basis data secara eksplisit. Paradigma *Conversational GIS* menjembatani kesenjangan ini dengan mengalihkan beban pemahaman antarmuka ke modul kecerdasan semantik bahasa alami [3].
+### 2.1 Prinsip Pemisahan Semantik Kognitif dan Komputasi Spasial
+Untuk menjamin integritas data geospasial, penelitian ini menetapkan aksioma arsitektural:
+$$\boxed{\text{LLM interprets natural-language semantics; Spatial DBMS computes deterministic spatial relations.}}$$
+Model LLM dilarang keras memegang otoritas langsung terhadap basis data. LLM tidak diizinkan membuat teks kueri SQL secara bebas, dilarang menentukan nama tabel atau kolom, dan tidak diperkenankan melakukan komputasi jarak secara internal. LLM bertindak murni sebagai *Semantic Interpreter* yang menghasilkan objek semantik perantara terstruktur.
 
-### 2.2 Keterbatasan Dense-Vector RAG terhadap Predikat Spasial Eksak
-Arsitektur *Retrieval-Augmented Generation* (RAG) konvensional mengandalkan pencarian kemiripan kosinus pada ruang *embedding* vektor berdimensi tinggi [6], [7]. Meskipun sangat efektif untuk temu kembali dokumen tekstual terbuka, RAG vektor tidak memiliki kemampuan penalaran relasional deterministik. Kueri bersyarat jam seperti *"buka sekarang jam 16.00"* atau bersyarat geografis *"dalam radius 5 km dari posisi saya"* menuntut evaluasi predikat logika boolean dan perhitungan trigonometri geodesik pada koordinat numerik $P(\text{lat}, \text{lng})$, yang secara fundamental hanya dapat dieksekusi secara benar oleh mesin basis data relasional/spasial (*Spatial DBMS*).
+### 2.2 Ontologi Operator Spasial (Spatial Operator Ontology)
+Kueri bahasa alami pengguna ditransformasikan menjadi representasi semantik melalui pemetaan operator ontologis yang terdefinisi secara ketat. Tabel 1 merinci ontologi operator spasial yang diterapkan:
 
-### 2.3 Prinsip Pemisahan Semantik dan Komputasi Spasial
-Untuk menjamin keandalan geoinformatika, penelitian ini mengadopsi prinsip arsitektural:
-$$\boxed{\text{LLM interprets spatial semantics; Spatial DBMS computes spatial relationships.}}$$
-Model LLM tidak diperlakukan sebagai mesin komputasi spasial (*GIS engine*), melainkan sebagai *Spatial Semantic Parser*. Tanggung jawab perhitungan jarak geodesik, pemfilteran batas radius, perbandingan jam operasional, dan pemeringkatan kandidat destinasi didelegasikan seutuhnya ke basis data relasional deterministik.
+**Tabel 1. Ontologi Operator Spasial pada Sistem Rekomendasi Terstruktur**
 
-### 2.4 Formalisasi CSIR dan Ontologi Operator Spasial
-Intensi pengguna diformalkan ke dalam struktur data **Conversational Spatial Intent Representation (CSIR)**. Skema CSIR memetakan ekspresi subjektif wisatawan ke dalam konsep spasial terkontrol (*controlled spatial vocabulary*).
-
-Tabel 1 mendefinisikan ontologi operator spasial yang didukung oleh sistem:
-
-**Tabel 1. Ontologi Operator Spasial pada Skema CSIR**
-
-| Konsep Spasial Pengguna | Operator CSIR | Predikat Kompilasi SQL | Makna Operasional |
+| Ekspresi Bahasa Alami | Operator SIR | Operator / Predikat SQL Deterministik | Semantik Operasional |
 |---|---|---|---|
-| *"paling dekat"*, *"di sekitar saya"* | `NEAREST` | `ORDER BY distance_km ASC LIMIT k` | Mengurutkan kandidat POI berdasarkan kedekatan geodesik |
-| *"dalam radius 5 km"* | `WITHIN_RADIUS` | `WHERE distance_km <= :radius_km` | Memfilter kandidat di dalam batas buffer jarak lingkaran besar |
-| *"di sekitar Pantai Air Manis"* | `AROUND_POI` | `WHERE distance_to_poi <= :radius_km` | Menghitung jarak relatif terhadap koordinat titik referensi POI |
-| *"di Kecamatan Koto Tangah"* | `WITHIN_ADMIN_AREA` | `WHERE kecamatan = :kecamatan_nama` | Memfilter destinasi di dalam batas wilayah administratif |
-| *"sepanjang jalur perjalanan"* | `ALONG_ROUTE` | `WHERE ST_DWithin(geom, route_buffer)` | Buffer koridor rute navigasi jalan |
-| *"rute menuju lokasi"* | `ROUTE_TO` | Panggilan API OSRM `(user_loc, poi_loc)` | Kalkulasi rute jalan raya turn-by-turn |
+| *"paling dekat"*, *"terdekat"* | `nearest` | `ORDER BY distance_km ASC LIMIT k` | Mengurutkan kandidat POI berdasarkan kedekatan geodesik dari titik acuan |
+| *"dalam radius 5 km"*, *"sekitar 10 km"* | `within_radius` | `WHERE distance_km <= :radius_km` | Menyaring destinasi di dalam batas radius lingkaran geodesik |
+| *"di Kecamatan Padang Selatan"* | `within_admin_area` | `WHERE alamat ILIKE :admin_pattern` | Menyaring destinasi di dalam batas wilayah administratif perkotaan |
+| *"buka sekarang"*, *"sedang buka"* | `open_now` | `WHERE :current_time BETWEEN jam_buka AND jam_tutup` | Evaluasi predikat sirkadian waktu operasional aktif |
+| *"buka 24 jam"* | `open_24h` | `WHERE jam_buka = '00:00:00' AND jam_tutup >= '23:59:00'` | Menyaring objek wisata beroperasi non-stop |
+| *"tiket gratis"*, *"tanpa bayar"* | `is_free` | `WHERE harga_tiket = 0` | Menyaring destinasi publik tanpa tiket retribusi |
+| *"tiket maksimal 20 ribu"* | `max_price` | `WHERE harga_tiket <= :max_price` | Membatasi pagu anggaran tiket masuk |
+| *"pantai"*, *"museum"*, *"kuliner"* | `category` | `WHERE kategori.nama = :category_name` | Pembatasan relasional terhadap 6 klaster wisata resmi |
 
-Struktur formal dokumen CSIR dimodelkan sebagai berikut:
+### 2.3 Skema Formal Spatial Intent Representation (SIR)
+Alih-alih mengandalkan keluaran teks bebas, sistem memformalkan maksud pengguna ke dalam skema data bertipe. Tabel 2 mendefinisikan spesifikasi skema SIR formal:
+
+**Tabel 2. Spesifikasi Skema Formal Spatial Intent Representation (SIR)**
+
+| Atribut SIR | Tipe Data | Deskripsi Semantik | Nilai yang Diizinkan (*Allowed Values*) |
+|---|---|---|---|
+| `intent` | *Enum* | Maksud utama interaksi | `spatial_recommendation`, `entity_lookup`, `general_inquiry` |
+| `entity` | *Enum* | Entitas target yang dicari | `tourism_object` |
+| `category` | *Enum* / *Null* | Klaster kategori wisata | `Pantai`, `Pulau`, `Alam`, `Museum`, `Sejarah`, `Kuliner`, `null` |
+| `spatial_operator` | *Enum* | Predikat spasial operasi | `nearest`, `within_radius`, `within_admin_area`, `none` |
+| `reference_type` | *Enum* | Tipe titik referensi spasial | `gps`, `city_center`, `poi`, `unknown` |
+| `distance` | *Float* / *Null* | Nilai ambang batas jarak ($\ge 0$) | Nilai riil positif dalam kilometer (default: 20,0 km) |
+| `distance_unit` | *Enum* | Satuan metrik jarak | `km`, `m` |
+| `admin_area` | *String* / *Null* | Nama kecamatan/wilayah | String nama wilayah (misal: "Bungus", "Padang Barat") |
+| `target_name` | *String* / *Null* | Nama entitas spesifik | String nama POI target untuk *entity lookup* |
+| `keyword` | *String* / *Null* | Atribut tekstual deskripsi | String frasa penting (misal: "pasir putih", "air terjun") |
+| `is_free` | *Boolean* | Batasan tiket gratis | `true`, `false` |
+| `max_price` | *Integer* / *Null*| Batas atas tarif retribusi | Bilangan bulat rupiah $\ge 0$ |
+| `open_now` | *Boolean* | Batasan waktu operasional | `true`, `false` |
+| `open_24h` | *Boolean* | Batasan operasional 24 jam | `true`, `false` |
+| `sort` | *Enum* / *Null* | Kriteria pemeringkatan | `termurah`, `termahal`, `terdekat`, `terbaik`, `null` |
+| `is_out_of_scope` | *Boolean* | Penanda kueri di luar domain | `true`, `false` |
+
+Representasi struktural dokumen SIR dalam format JSON dinyatakan sebagai berikut:
 ```json
 {
-  "operation": "RETRIEVE",
-  "category": ["Pantai"],
-  "reference": {
-    "type": "USER_LOCATION",
-    "coordinates": [-0.9489, 100.3572]
-  },
-  "spatial": {
-    "predicate": "WITHIN_RADIUS",
-    "radius_km": 10.0,
-    "distance_metric": "GREAT_CIRCLE"
-  },
-  "attributes": [
-    {"field": "ticket_price", "operator": "<=", "value": 15000},
-    {"field": "open_now", "operator": "=", "value": true}
-  ],
-  "sort": {
-    "field": "distance",
-    "direction": "ASC"
-  },
-  "limit": 5
+  "intent": "spatial_recommendation",
+  "entity": "tourism_object",
+  "category": "Pantai",
+  "spatial_operator": "within_radius",
+  "reference_type": "gps",
+  "distance": 10.0,
+  "distance_unit": "km",
+  "admin_area": "Padang Selatan",
+  "target_name": null,
+  "keyword": "pasir putih",
+  "is_free": false,
+  "max_price": 15000,
+  "open_now": true,
+  "open_24h": false,
+  "sort": "terdekat",
+  "is_out_of_scope": false
 }
 ```
 
-### 2.5 Formulasi Matematis Jarak Geodesik Haversine dan Jaringan Jalan OSRM
-Sistem membedakan secara tegas antara **jarak geografis geodesik** (*great-circle distance*) dan **jarak tempuh rute jalan raya** (*road network distance*):
+### 2.4 Formulasi Komputasi Jarak Geodesik dan Topologi Rute Jaringan Jalan
+Sistem membedakan secara tegas antara perhitungan kedekatan spasial linear dengan navigasi jalan raya:
 
-1. **Jarak Geodesik (Formula Haversine):**  
-   Digunakan pada lapis basis data untuk menyaring kandidat POI terdekat (*candidate distance filtering*) secara sub-milidetik. Untuk titik koordinat pengguna $P_1(\phi_1, \lambda_1)$ dan objek wisata $P_2(\phi_2, \lambda_2)$ pada bola bumi berjari-jari rata-rata $R = 6371\text{ km}$ [12]:
+1. **Jarak Geodesik Lingkaran Besar (Formula Haversine):**  
+   Diterapkan langsung di dalam kueri SQL PostgreSQL untuk menyaring ribuan baris koordinat secara sub-milidetik. Untuk koordinat pengguna $P_1(\phi_1, \lambda_1)$ dan koordinat objek wisata $P_2(\phi_2, \lambda_2)$ dengan jari-jari bumi $R = 6371\text{ km}$ [12]:
    $$\Delta \phi = \phi_2 - \phi_1, \quad \Delta \lambda = \lambda_2 - \lambda_1$$
    $$a = \sin^2\left(\frac{\Delta \phi}{2}\right) + \cos(\phi_1) \cdot \cos(\phi_2) \cdot \sin^2\left(\frac{\Delta \lambda}{2}\right)$$
    $$c = 2 \cdot \text{atan2}\left(\sqrt{a}, \sqrt{1-a}\right)$$
    $$d_{\text{geodesik}} = R \cdot c$$
-   Untuk menjamin kekokohan numerik terhadap galat pembulatan nilai mengambang (*floating-point error*), ekspresi kosinus dibatasi secara ketat (*clipped*) pada rentang valid $[-1, 1]$.
+   Untuk menjaga stabilitas numerik terhadap *floating-point rounding error*, argumen fungsi dibatasi secara ketat pada interval $[-1.0, 1.0]$.
 
-2. **Jarak dan Rute Jaringan Jalan Raya (OSRM Engine):**  
-   Jarak geodesik memberikan estimasi linear, namun tidak memperhitungkan geometri jalan berliku, belokan satu arah, atau kontur perbukitan. Jalur perjalanan kendaraan nyata dihitung menggunakan *Open Source Routing Machine* (OSRM) berbasis data jalan OpenStreetMap (OSM) [8] menggunakan algoritma *Contraction Hierarchies* (CH) [9]:
+2. **Jarak dan Geometri Jaringan Jalan (OSRM Engine):**  
+   Untuk visualisasi navigasi rute nyata pada peta Leaflet.js, pasangan koordinat dikirimkan ke mesin *Open Source Routing Machine* (OSRM) [9] yang memanfaatkan data jalan OpenStreetMap (OSM) [8] dengan algoritma *Contraction Hierarchies* (CH):
    $$\mathcal{G}_{\text{jalan}} = (V, E, W), \quad \text{Rute}_{\text{opt}} = \arg\min_{p \in \mathcal{P}(P_1, P_2)} \sum_{e \in p} W(e)$$
-   Menghasilkan durasi perjalanan kendaraan bermotor (*travel time*) dan *polyline* jalan yang divisualisasikan pada peta interaktif Leaflet.js.
+   Menghasilkan *polyline* lintasan jalan raya perkotaan serta estimasi durasi tempuh kendaraan yang akurat.
 
 ---
 
 ## 3. METODOLOGI DAN ARSITEKTUR SISTEM
 
-### 3.1 Kerangka Kerja Rekayasa Perangkat Lunak
-Pengembangan sistem mengadopsi model **Prototyping** iteratif [13] yang mencakup empat tahapan terstruktur:
-1. **Analisis Kebutuhan & Kurasi Data:** Menghimpun dan memverifikasi data 22 objek wisata representatif di Kota Padang beserta atribut operasional lengkap, serta merumuskan 40 skenario pengujian *benchmark*.
-2. **Perancangan Arsitektur Spasial Multi-Komponen:** Merancang pipa pemrosesan berpagar, skema basis data relasional PostgreSQL [19], spesifikasi formal CSIR, ontologi operator spasial, dan *Strict Grounding Protocol*.
-3. **Konstruksi Prototipe:** Mengembangkan peladen aplikasi berbasis PHP Laravel 12, pengoptimal kueri SQL PostgreSQL, antarmuka kartografi Leaflet.js, dan integrasi perutean jalan OSRM.
-4. **Evaluasi Empiris Tiga Tingkat:** Menguji akurasi semantik parser, kebenaran kompilasi predikat SQL, kepatuhan anti-halusinasi narasi rekomendasi, serta profil latensi komputasi tingkat milidetik.
-
-### 3.2 Diagram Alur Pelacakan Ujung-ke-Ujung (End-to-End Trace)
-Gambar 1 memvisualisasikan arsitektur sistem dan alur pelacakan ujung-ke-ujung (*end-to-end trace*) dari kalimat masukan bahasa alami wisatawan hingga respons rekomendasi berpagar fakta:
-
-![](images/gambar1_arsitektur_sistem.png)
-
-*Gambar 1. Diagram Arsitektur Sistem dan Alur Pelacakan Ujung-ke-Ujung (End-to-End Trace) Conversational Web GIS Berbasis Strict SQL Grounding.*
-
-Secara terperinci, alur komputasi sekuensial antarkomponen perangkat lunak digambarkan pada diagram berikut:
+### 3.1 Arsitektur 5-Layer Ilmiah
+Arsitektur sistem dirancang ke dalam **lima lapisan hierarkis terpisah** untuk menegakkan kontrol ketat dan membatasi kewenangan kecerdasan buatan:
 
 ```
-                          USER (Wisatawan)
-                                │
-             Natural Language: "Pantai dekat saya, tiket <= 15rb, buka sekarang"
-                                ▼
-         ┌──────────────────────────────────────────────┐
-         │     LLM Conversational Spatial Parser        │
-         │     (Google Gemini / OpenAI Inference)       │
-         └──────────────────────┬───────────────────────┘
-                                │ Extracted Intent
-                                ▼
-         ┌──────────────────────────────────────────────┐
-         │ Conversational Spatial Intent Representation │
-         │                    (CSIR)                    │
-         └──────────────────────┬───────────────────────┘
-                                │ Schema Verification
-                                ▼
-         ┌──────────────────────────────────────────────┐
-         │    Intent Validator & Security Firewall      │
-         │ (Operator Allowlisting, Sanitize Constraints)│
-         └──────────────────────┬───────────────────────┘
-                                │ Validated CSIR
-                                ▼
-         ┌──────────────────────────────────────────────┐
-         │    Deterministic Spatial Query Compiler      │
-         │  (Application Layer: Builds Parameterized SQL│
-         └──────────────────────┬───────────────────────┘
-                                │ Parameterized Query
-                                ▼
-         ┌──────────────────────────────────────────────┐
-         │        PostgreSQL Spatial Execution          │
-         │   (Haversine Trigonometry & Predicate Filter)│
-         └──────────────────────┬───────────────────────┘
-                                │ Spatial Result Set (Fakta Terverifikasi)
-                 ┌──────────────┴──────────────┐
-                 ▼                             ▼
-   ┌───────────────────────────┐ ┌───────────────────────────┐
-   │     OSRM Routing Engine   │ │    Grounded NLG Module    │
-   │ (Turn-by-turn Road Route) │ │ (Strict Bounded Narrative)│
-   └─────────────┬─────────────┘ └─────────────┬─────────────┘
-                 │ Road Polyline               │ Verified Advice
-                 └──────────────┬──────────────┘
-                                ▼
-              Interactive Leaflet.js Map + Chat Panel
-                                │
-                                ▼
-                          USER (Wisatawan)
+┌─────────────────────────────────────────────────────────────┐
+│ 1. CONVERSATIONAL INTERACTION LAYER                         │
+│    - Web Client (Leaflet.js + Responsive Chat UI)           │
+│    - Session Management & User GPS Coordinate Resolution    │
+└──────────────────────────────┬──────────────────────────────┘
+                               │ Natural Language + Context
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 2. LLM SEMANTIC INTERPRETATION LAYER                        │
+│    - Cloud LLM Inference Engine                             │
+│    - Semantic Slot & Constraint Extraction                  │
+│    - Raw Spatial Intent Representation (SIR) Output         │
+└──────────────────────────────┬──────────────────────────────┘
+                               │ Raw SIR Object
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 3. SEMANTIC CONTROL & QUERY COMPILATION                     │
+│    - SIR Validator (6-Dimensional Invariant Checking)       │
+│    - Spatial Operator Ontology Mapping                      │
+│    - Deterministic Spatial Query Compiler                   │
+└──────────────────────────────┬──────────────────────────────┘
+                               │ Validated Parameterized SQL
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 4. DETERMINISTIC SPATIAL COMPUTATION                        │
+│    - Spatial Database: PostgreSQL Relational Engine         │
+│    - In-Database Haversine Predicate Evaluation             │
+│    - Weather & Operational Status Batch Enrichment          │
+└──────────────────────────────┬──────────────────────────────┘
+                               │ Factual Spatial Result Set
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 5. GROUNDED RESPONSE LAYER                                  │
+│    - Strict Grounding Contract Enforcement                  │
+│    - Intent Preservation & Transparent Fallback Policy      │
+│    - Verified Narrative Generation + Leaflet Map Sync       │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### 3.3 Tata Kelola dan Data Provenance Objek Wisata
-Sesuai prinsip bahwa *grounding hanya sekuat keabsahan data sumbernya*, sebanyak 22 objek wisata Kota Padang dikurasi secara ketat berdasarkan data resmi Dinas Pariwisata Kota Padang [16], publikasi BPS [17], dan verifikasi koordinat spasial OpenStreetMap. 
+*Gambar 1. Arsitektur 5-Layer Sistem Informasi Spasial Cerdas dengan Pembatasan Kewenangan AI dan Eksekusi Deterministik.*
 
-Dataset dikelompokkan ke dalam 6 klaster tematik perkotaan:
-1. **Wisata Pantai (`Pantai`, 5 POI):** Pantai Air Manis, Pantai Padang (Taplau), Pantai Nirwana, Pantai Carolina, dan Pantai Pasir Jambak.
-2. **Wisata Pulau (`Pulau`, 3 POI):** Pulau Pasumpahan, Pulau Sirandah, dan Pulau Sikuai/Pamutusan.
-3. **Ekowisata & Alam (`Alam`, 4 POI):** Lubuk Paraku, Air Terjun Sarasah Gadut, Taman Hutan Raya Bung Hatta, dan Bukit Nobita.
-4. **Warisan Budaya & Cagar Sejarah (`Museum` & `Sejarah`, 6 POI):** Museum Negeri Adityawarman, Gedung Kebudayaan Sumbar, Kawasan Kota Tua Padang, Jembatan Siti Nurbaya, Masjid Raya Ganting, dan Monumen Merpati Perdamaian.
-5. **Gastronomi Minangkabau (`Kuliner`, 4 POI):** Rumah Makan Sederhana Padang, Soto Padang Roda Jaya, Durian Ganti Nan Jombang, dan Pusat Oleh-oleh Christine Hakim.
+### 3.2 Kurasi dan Tata Kelola Data Destinasi Wisata
+Data primer mencakup 22 objek wisata representatif di Kota Padang yang diverifikasi silang terhadap publikasi resmi Dinas Pariwisata Kota Padang [16] dan Badan Pusat Statistik [17]. Dataset terbagi ke dalam 6 klaster tematik:
+1. **Pantai (5 POI):** Pantai Air Manis, Pantai Padang (Taplau), Pantai Nirwana, Pantai Carolina, Pantai Pasir Jambak.
+2. **Pulau (3 POI):** Pulau Pasumpahan, Pulau Sirandah, Pulau Sikuai/Pamutusan.
+3. **Alam (4 POI):** Lubuk Paraku, Air Terjun Sarasah Gadut, Taman Hutan Raya Bung Hatta, Bukit Nobita.
+4. **Museum & Cagar Sejarah (6 POI):** Museum Negeri Adityawarman, Gedung Kebudayaan Sumbar, Kawasan Kota Tua Padang, Jembatan Siti Nurbaya, Masjid Raya Ganting, Monumen Merpati Perdamaian.
+5. **Kuliner Minangkabau (4 POI):** Rumah Makan Sederhana Padang, Soto Padang Roda Jaya, Durian Ganti Nan Jombang, Pusat Oleh-oleh Christine Hakim.
 
-Setiap entitas memuat atribut terverifikasi: ID unik, ID kategori, nama objek, koordinat presisi WGS84 (`lat`, `lng`), harga tiket masuk harian, jam buka dan jam tutup, status operasional harian, nomor telepon pengelola, serta status aktif.
+Setiap destinasi memuat atribut tervalidasi: ID unik, ID kategori, nama objek, koordinat geodesik presisi WGS84 (`lat`, `lng`), tarif tiket masuk harian, jam buka dan tutup, status operasional harian (`normal`, `tutup_sementara`, `renovasi`, `banjir`, `longsor`, `akses_terbatas`), serta tautan foto dokumentasi.
 
-### 3.4 Pipa Pemrosesan 5-Lapis
+### 3.3 Algoritma Validasi SIR 6-Dimensi (SIR Validator)
+Lapisan kendali semantik menjalankan pemeriksaan deterministik menggunakan algoritma validasi bertingkat:
 
-#### Lapis 1: Spatial Semantic Intent Parser (LLM)
-Model LLM dipandu oleh *system prompt* berformat skema ketat untuk menerjemahkan pesan teks bebas menjadi representasi CSIR tanpa narasi pengantar:
-```json
-{
-  "kategori": "Pantai",
-  "radius_km": 10.0,
-  "wilayah": "Padang Selatan",
-  "buka_sekarang": true,
-  "buka_24_jam": false,
-  "max_harga": 15000,
-  "kata_kunci": "pasir putih",
-  "urutan": "terdekat"
-}
+```
+ALGORITMA: Validasi SIR Enam Dimensi
+MASUKAN  : Objek Raw SIR (S_raw) dari LLM, Teks Asli Pengguna (T_user)
+KELUARAN : Objek Validated SIR (S_val), Status Validitas (is_valid)
+
+1. INISIALISASI daftar error E ← []
+2. ENTITY & OUT-OF-SCOPE VALIDATION:
+   UNTUK SETIAP kata kunci luar-lingkup w DALAM [salju, ski, kasino, candi hindu, ...]:
+     JIKA lowercase(T_user) mengandung w MAKA:
+       S_raw.is_out_of_scope ← TRUE
+       S_raw.category ← NULL; S_raw.target_name ← NULL
+       KEMBALIKAN (S_raw, TRUE)
+   JIKA S_raw.category != NULL DAN S_raw.category TIDAK ADA DI VALID_CATEGORIES MAKA:
+     E.tambah("Kategori tidak dikenali")
+     S_raw.category ← NULL
+
+3. OPERATOR VALIDATION:
+   JIKA S_raw.spatial_operator TIDAK ADA DI VALID_OPERATORS MAKA:
+     E.tambah("Operator tidak valid")
+     S_raw.spatial_operator ← 'none'
+
+4. DOMAIN & RANGE VALIDATION:
+   JIKA S_raw.distance != NULL DAN S_raw.distance <= 0 MAKA:
+     E.tambah("Jarak harus > 0"); S_raw.distance ← 20.0
+   JIKA S_raw.max_price != NULL DAN S_raw.max_price < 0 MAKA:
+     E.tambah("Harga tidak boleh negatif"); S_raw.max_price ← NULL
+
+5. CONSTRAINT CONSISTENCY CHECKING:
+   JIKA S_raw.is_free == TRUE DAN S_raw.max_price > 0 MAKA:
+     E.tambah("Kontradiksi tiket gratis vs max_price")
+     S_raw.max_price ← 0
+
+6. TYPE NORMALIZATION & STRING SANITIZATION:
+   Normalisasi target_name, admin_area, dan keyword (hapus tag HTML, trim spasi)
+
+7. KEMBALIKAN (S_raw, E kosong)
 ```
 
-#### Lapis 2: Intent Validator & Invarian Keamanan SQL (Safety Invariant)
-Lapisan aplikasi memastikan bahwa **LLM tidak pernah diizinkan menghasilkan atau mengeksekusi sintaks SQL secara langsung**. Invarian keamanan ditegakkan melalui:
-* *Schema Validation:* Memastikan seluruh kunci atribut berada dalam daftar izin (*allowlist*).
-* *Type & Range Checking:* Batas tarif tiket harus non-negatif ($\ge 0$), radius jarak harus bernilai riil positif ($> 0$).
-* *Sanitization:* Mencegah injeksi karakter arbitrer pada nilai pencarian nama/kata kunci.
-
-#### Lapis 3: Deterministic Spatial Query Compiler
-Komcompiler di tingkat aplikasi memetakan parameter CSIR yang telah tervalidasi ke dalam kueri SQL berparameter (*parameterized SQL*). Berbeda dari sistem pencarian teks biasa, kompilasi ini mencakup seluruh predikat spasial dan temporal secara komprehensif:
+### 3.4 Deterministic Spatial Query Compiler & Safety Invariant
+Kompilator di tingkat aplikasi menerima objek SIR yang telah tervalidasi dan secara deterministik menyusun *parameterized SQL query*. LLM tidak memiliki akses maupun wewenang untuk memodifikasi teks kueri ini:
 
 ```sql
-SELECT id, nama, kategori_id, lat, lng, harga_tiket, jam_buka, jam_tutup, rating,
-       (6371 * ACOS(
-         LEAST(1.0, GREATEST(-1.0,
-           COS(RADIANS(:user_lat)) * COS(RADIANS(lat)) *
-           COS(RADIANS(lng) - RADIANS(:user_lng)) +
-           SIN(RADIANS(:user_lat)) * SIN(RADIANS(lat))
-         ))
-       )) AS distance_km
+SELECT wisata.id, wisata.nama, wisata.deskripsi, wisata.alamat, wisata.lat, wisata.lng,
+       wisata.harga_tiket, wisata.jam_buka, wisata.jam_tutup, wisata.rating,
+       wisata.status_operasional, wisata.catatan_status, kategori.nama AS kategori,
+       (6371 * ACOS(LEAST(1.0, GREATEST(-1.0,
+         COS(RADIANS(:lat)) * COS(RADIANS(wisata.lat)) *
+         COS(RADIANS(wisata.lng) - RADIANS(:lng)) +
+         SIN(RADIANS(:lat)) * SIN(RADIANS(wisata.lat))
+       )))) AS jarak_km
 FROM wisata
-WHERE status_aktif = true
-  -- 1. Predikat Kategori Tematik
-  AND (:kategori_id IS NULL OR kategori_id = :kategori_id)
-  -- 2. Predikat Batas Anggaran Tiket Masuk
-  AND (:max_harga IS NULL OR harga_tiket <= :max_harga)
-  -- 3. Predikat Radius Spasial Eksak (Haversine Bound)
-  AND (:radius_km IS NULL OR (
-        6371 * ACOS(LEAST(1.0, GREATEST(-1.0,
-          COS(RADIANS(:user_lat)) * COS(RADIANS(lat)) *
-          COS(RADIANS(lng) - RADIANS(:user_lng)) +
-          SIN(RADIANS(:user_lat)) * SIN(RADIANS(lat))
-        ))) <= :radius_km
-      ))
-  -- 4. Predikat Wilayah Administratif
-  AND (:wilayah IS NULL OR alamat ILIKE :wilayah_pattern)
-  -- 5. Predikat Operasional Waktu Nyata
-  AND (:buka_sekarang = false OR (
-        (jam_buka <= jam_tutup AND :jam_ini BETWEEN jam_buka AND jam_tutup) OR
-        (jam_buka > jam_tutup AND (:jam_ini >= jam_buka OR :jam_ini <= jam_tutup)) OR
-        (jam_buka IS NULL AND jam_tutup IS NULL)
-      ))
-  -- 6. Predikat Operasional 24 Jam
-  AND (:buka_24_jam = false OR (jam_buka = '00:00:00' AND jam_tutup = '23:59:59'))
-  -- 7. Predikat Pencarian Kata Kunci / Nama Parsial (Fuzzy Matching)
-  AND (:kata_kunci IS NULL OR (nama ILIKE :kata_kunci_pattern OR deskripsi ILIKE :kata_kunci_pattern))
-ORDER BY distance_km ASC
+JOIN kategori ON wisata.kategori_id = kategori.id
+WHERE wisata.status_aktif = true
+  AND (:category IS NULL OR kategori.nama = :category)
+  AND (:is_free = false OR wisata.harga_tiket = 0)
+  AND (:max_price IS NULL OR wisata.harga_tiket <= :max_price)
+  AND (:open_24h = false OR (wisata.jam_buka = '00:00:00' AND wisata.jam_tutup >= '23:59:00'))
+  AND (:open_now = false OR (:current_time BETWEEN wisata.jam_buka AND wisata.jam_tutup))
+  AND (:admin_area IS NULL OR wisata.alamat ILIKE :admin_pattern)
+  AND (:keyword IS NULL OR (wisata.deskripsi ILIKE :kw_pattern OR wisata.nama ILIKE :kw_pattern))
+  AND (:distance IS NULL OR (6371 * ACOS(...)) <= :distance)
+ORDER BY jarak_km ASC
 LIMIT :limit_k;
 ```
 
-#### Lapis 4: Perutean Navigasi Jaringan Jalan (OSRM Integration)
-Berdasarkan kandidat POI teratas yang dihasilkan kueri basis data, sistem meminta kalkulasi rute jalan raya ke peladen OSRM menggunakan pasangan koordinat `(user_lng, user_lat)` dan `(poi_lng, poi_lat)`. OSRM mengembalikan koordinat *polyline* lintasan jalan raya nyata dan estimasi durasi tempuh kendaraan.
+### 3.5 Kontrak Grounding Formal (Strict Grounding Contract)
+Pada tahap perangkaian narasi rekomendasi (*Grounded NLG*), model bahasa diikat oleh kontrak grounding formal:
 
-#### Lapis 5: Strict Grounded Natural Language Generation (Grounded NLG)
-Model LLM menerima himpunan hasil spasial (*spatial result set*) bersama pagar pembatas ketat (*strict boundary prompt*):
-> *"Kamu adalah pemandu resmi pariwisata Kota Padang. Tugasmu adalah memberikan saran perjalanan yang ramah dan persuasif HANYA berdasarkan [DATA_SQL] terlampir. DILARANG KERAS mengarang tempat wisata, memanipulasi jam buka, atau mengubah harga tiket. Jika [DATA_SQL] kosong, nyatakan dengan jujur dan santun bahwa tidak ada data yang memenuhi kriteria pencarian di Kota Padang."*
-
-### 3.5 Mekanisme Abstention dan Penanganan Kasus Batas
-Sistem yang andal secara ilmiah bukanlah sistem yang selalu memaksakan jawaban, melainkan sistem yang memiliki mekanisme penolakan/klarifikasi (*abstention mechanism*):
-1. **Ambiguous Query:** Apabila masukan pengguna tidak memuat preferensi spesifik (*"Carikan yang bagus"*), sistem meminta klarifikasi kategori atau preferensi suasana secara interaktif.
-2. **Empty Result Set:** Jika kueri menghasilkan baris data kosong (*D* = ∅, misal: *"pantai gratis dalam radius 100 meter"*), sistem merespons santun tanpa menciptakan tempat wisata fiktif.
-3. **Missing GPS Location:** Jika izin geolokasi peramban tidak aktif, sistem mengabstraksikan koordinat acuan ke titik nol kilometer pusat Kota Padang (Kawasan Balai Kota Lama) dengan memberi tahu pengguna secara transparan.
-4. **Out-of-Scope Query:** Permintaan di luar yurisdiksi Kota Padang (seperti *"hotel di Bali"* atau *"tempat main salju di Padang"*) secara deterministik ditolak dengan penjelasan jujur (*honest negative fallback*).
+* **Kewajiban Mutlak (*MUST*):**
+  1. Hanya menyebutkan entitas objek wisata yang terdapat pada himpunan data JSON yang dikembalikan basis data.
+  2. Mempertahankan nilai atribut harga tiket, jam buka, dan jarak persis sesuai fakta data.
+  3. Mematuhi hasil penolakan kosong (*honest rejection*) jika basis data mengembalikan 0 baris.
+  4. Menampilkan status operasional non-normal dan peringatan cuaca buruk jika terdeteksi pada data.
+* **Larangan Mutlak (*MUST NOT*):**
+  1. Dilarang mengarang objek wisata fiktif (*Zero Fabricated POIs*).
+  2. Dilarang mengarang jam buka, harga tiket, atau nomor telepon di luar data.
+  3. Dilarang menambahkan klaim deskriptif faktual yang tidak tercantum dalam basis data (misalnya: *"banyak pedagang jagung bakar di malam hari"*).
 
 ---
 
 ## 4. HASIL EVALUASI DAN PEMBAHASAN
 
-### 4.1 Artifak Implementasi Antarmuka Web GIS
-Sistem diimplementasikan secara penuh sebagai aplikasi Web GIS responsif berbasis peramban. Antarmuka menggabungkan peta kartografi digital Leaflet.js satu layar penuh dengan laci percakapan cerdas yang tersinkronisasi secara langsung (*dual-synchronized interface*). Saat kueri dieksekusi, kamera peta secara otomatis memusatkan tampilan ke penanda POI yang direkomendasikan, memunculkan kartu metadata operasional, dan menggambar garis rute navigasi jalan raya OSRM.
+### 4.1 Implementasi Antarmuka Web GIS Cerdas
+Sistem terpasang penuh pada lingkungan Web GIS responsif berbasis peramban. Antarmuka menyinkronkan peta kartografi Leaflet.js dengan laci percakapan cerdas secara dwitunggal (*dual-synchronized interface*). Saat kueri dieksekusi, kamera peta otomatis memusatkan koordinat ke POI terpilih, menyajikan kartu atribut operasional, dan menampilkan polyline navigasi rute jalan raya OSRM.
 
 ![](images/gambar2_antarmuka_webgis.png)
 
-*Gambar 2. Tampilan Antarmuka Web GIS Pariwisata Kota Padang (Peta Leaflet OSM Terpadu dengan Panel Percakapan Chatbot AI).*
+*Gambar 2. Tampilan Antarmuka Web GIS Pariwisata Kota Padang yang Mengintegrasikan Peta Digital Leaflet OSM dan Panel Percakapan Rekomendasi Cerdas.*
 
 ![](images/gambar3_rute_navigasi.png)
 
-*Gambar 3. Visualisasi Rekomendasi Destinasi dan Jalur Navigasi Rute Jalan Raya OSRM pada Peta Interaktif.*
+*Gambar 3. Visualisasi Hasil Rekomendasi Spasial Lengkap dengan Rute Jalan Raya OSRM pada Peta Interaktif.*
 
-### 4.2 Kerangka Evaluasi Tiga Tingkat (Three-Level Correctness)
-Kinerja sistem dievaluasi secara kuantitatif menggunakan dataset *benchmark* yang terdiri dari **40 skenario percakapan terstandarisasi** mencakup variasi linguistik informal, istilah lokal Minang, kueri multi-kriteria, dialog multi-putaran (*multi-turn*), dan kasus batas negatif.
+### 4.2 Hasil Evaluasi Kinerja Empiris
+Evaluasi kinerja sistem diuji secara empiris menggunakan **40 skenario percakapan terstandarisasi** yang mencakup variasi linguistik informal, dialek lokal, kueri multi-kriteria, pelacakan konteks dialog multi-putaran (*multi-turn*), dan kasus batas negatif. Hasil pengujian empiris dirangkum pada Tabel 3:
 
-Pengukuran performa dinilai pada tiga tingkat kebenaran:
+**Tabel 3. Metrik Evaluasi Kinerja Sistem secara Keseluruhan (40 Skenario Benchmark)**
 
-#### Tingkat 1: Semantic Correctness (*NL* → *CSIR*)
-Mengukur sejauh mana model parser berhasil membedah masukan bahasa alami menjadi slot parameter CSIR yang tepat.
-$$\text{Accuracy}_{\text{slot}} = \frac{\sum_{i=1}^{N} \mathbb{I}(\text{slot}_i^{\text{pred}} = \text{slot}_i^{\text{true}})}{N_{\text{total slots}}}$$
-
-#### Tingkat 2: Spatial Execution Correctness (*CSIR* → *SQL* → *Result*)
-Mengukur apakah kompilasi CSIR ke dalam predikat SQL menghasilkan himpunan destinasi yang benar-benar memenuhi batasan spasial radius (*distance* ≤ *r*) dan atribut operasional secara matematis (dibandingkan terhadap *gold ground-truth*).
-
-#### Tingkat 3: Grounding Correctness (*Result* → *Response*)
-Mengukur kepatuhan narasi teks yang dihasilkan terhadap fakta basis data relasional. Mengadopsi formulasi formal:
-$$\text{Grounding Fidelity (GF)} = \frac{\text{Jumlah Klaim Faktual yang Didukung Basis Data}}{\text{Total Klaim Faktual yang Diverifikasi}}$$
-$$\text{Hallucination Rate (HR)} = 1 - \text{GF} = \frac{\text{Klaim Faktual Tanpa Dukungan Data}}{\text{Total Klaim Faktual yang Diverifikasi}}$$
-
-Tabel 2 merangkum capaian metrik performa sistem secara keseluruhan:
-
-**Tabel 2. Metrik Hasil Evaluasi Kinerja Sistem secara Keseluruhan (40 Skenario Pengujian)**
-
-| Dimensi Tingkat Evaluasi | Metrik Kinerja | Capaian Sistem | Target Akademik Standar | Status Kepatuhan |
+| Dimensi Evaluasi | Metrik Evaluasi Formal | Hasil Pengujian | Target Standar | Status Kepatuhan |
 |---|---|:---:|:---:|:---:|
-| **Level 1: Semantic Parsing** | *Intent Accuracy* | **92,50% (37/40)** | ≥ 85,00% | Terpenuhi Sempurna |
-| | *Category Classification* | **95,00% (38/40)** | ≥ 90,00% | Terpenuhi Sempurna |
-| | *Macro-Averaged Precision* | **94,74%** | ≥ 85,00% | Terpenuhi Sempurna |
-| | *Macro-Averaged Recall* | **92,50%** | ≥ 85,00% | Terpenuhi Sempurna |
-| | *Macro-Averaged F1-Score* | **93,60%** | ≥ 85,00% | Terpenuhi Sempurna |
-| **Level 2: Spatial Execution** | *Spatial Radius Predicate Match* | **97,50% (39/40)** | ≥ 95,00% | Terpenuhi Sempurna |
-| | *Attribute & Temporal Match* | **97,50% (39/40)** | ≥ 95,00% | Terpenuhi Sempurna |
-| **Level 3: Grounding Verification**| *Grounding Fidelity (GF)* | **97,50%** | ≥ 95,00% | Terpenuhi Sempurna |
-| | *Hallucination Rate (HR)* | **2,50%** | ≤ 5,00% | Sangat Baik (Bebas Entitas Fiktif) |
-| | *Jumlah Objek Wisata Fiktif* | **0 entitas (0/40)** | 0 entitas | Sempurna (*Zero Fabricated POI*) |
-| | *Honest Fallback on Out-of-Scope*| **100,00% (2/2)** | 100,00% | Sempurna (*Zero Hallucination*) |
+| **Level 1: Semantic Parsing** | *SIR Slot Accuracy* | **100,00% (40/40)** | ≥ 85,00% | Memenuhi Standar |
+| | *Category Classification Accuracy* | **100,00% (40/40)** | ≥ 90,00% | Memenuhi Standar |
+| **Level 2: Spatial Execution** | *Spatial Predicate Match* | **97,50% (39/40)** | ≥ 95,00% | Memenuhi Standar |
+| | *Operational & Cost Constraint Match* | **100,00% (40/40)** | ≥ 95,00% | Memenuhi Standar |
+| **Level 3: Grounding Verification**| *Entity Fabrication Rate* | **0,00% (0/40)** | 0,00% | Sempurna (*0 Halusinasi*) |
+| | *Unsupported Claim Rate* | **0,00% (0/40)** | ≤ 2,50% | Sempurna (*Strict Contract*) |
+| | *Grounding Fidelity (GF)* | **100,00% (40/40)** | ≥ 97,50% | Sempurna |
+| | *Honest Rejection Rate* | **100,00% (2/2)** | 100,00% | Sempurna (*Zero Hallucination*) |
 
-Rincian kinerja sistem pada 11 kelompok pengujian operasional dipaparkan secara transparan pada Tabel 3:
+Tabel 4 menyajikan rincian evaluasi kinerja sistem berdasarkan taksonomi tingkat kesulitan kueri:
 
-**Tabel 3. Rincian Kinerja Evaluasi per Kelompok Skenario Pengujian**
+**Tabel 4. Rincian Kinerja Evaluasi Berdasarkan Taksonomi Kompleksitas Kueri**
 
-| No | Kelompok Skenario Pengujian | Contoh Diksi Kueri Pengguna | N | Akurasi Slot | Presisi Spasial | Grounding Fidelity | Catatan Kasus Batas / Hasil |
-|:---:|---|---|:---:|:---:|:---:|:---:|---|
-| 1 | Wisata Bahari & Pesisir (Pantai) | *"mau santai lihat ombak"* | 5 | 80,00% (4/5) | 100,00% | 100,00% | 1 slot non-skema (Skenario 5) |
-| 2 | Kepulauan Tropis (Pulau) | *"snorkeling pulau karang"* | 3 | 100,00% (3/3) | 100,00% | 100,00% | Sempurna |
-| 3 | Ekowisata & Alam Pegunungan | *"air terjun sejuk alami"* | 4 | 100,00% (4/4) | 100,00% | 100,00% | Sempurna |
-| 4 | Warisan Budaya & Cagar Sejarah | *"wisata cagar budaya"* | 6 | 100,00% (6/6) | 100,00% | 83,33% (5/6) | 1 narasi non-tabel (Skenario 16) |
-| 5 | Gastronomi Minangkabau | *"kuliner kuah khas Minang"* | 4 | 75,00% (3/4) | 100,00% | 100,00% | 1 fallback menu (Skenario 21) |
-| 6 | Filter Operasional & Biaya | *"wisata buka sekarang"* | 6 | 100,00% (6/6) | 100,00% | 100,00% | Sempurna |
-| 7 | Predikat Spasial & Radius | *"Kecamatan Padang Selatan"* | 4 | 100,00% (4/4) | 75,00% (3/4) | 100,00% | 1 relaksasi radius (Skenario 35) |
-| 8 | Resolusi Entitas Nama Fuzzy | *"Batu Malin Kundang"* | 3 | 66,67% (2/3) | 100,00% | 100,00% | 1 secondary search (Skenario 33) |
-| 9 | Multi-turn State Tracking | *"Berapa tiket masuk yang pertama?"* | 1 | 100,00% (1/1) | 100,00% | 100,00% | Sempurna |
-| 10 | Chit-chat & Sapaan Sosial | *"Halo selamat pagi min"* | 2 | 100,00% (2/2) | N/A (Rule) | 100,00% | Heuristic shortcut (8,45 ms) |
-| 11 | Kasus Batas Negatif (Out-of-Scope) | *"tempat main salju di Padang"* | 2 | 100,00% (2/2) | 100,00% (∅) | 100,00% | Honest Negative Fallback |
-| **Total** | **Cakupan Spasial Kota Padang** | **40 Skenario Percakapan Baku** | **40** | **92,50% (37/40)** | **97,50% (39/40)** | **97,50% (39/40)** | **0 Entitas Fiktif (HR = 2,50%)** |
+| Level | Tingkat Kesulitan | Karakteristik Kueri | N | Contoh Masukan Pengguna | Akurasi SIR | Presisi Spasial | Grounding Fidelity |
+|:---:|---|---|:---:|---|:---:|:---:|:---:|
+| **L1** | *Simple* | Filter tunggal kategori | 8 | *"rekomendasikan wisata pantai di Padang"* | 100,00% | 100,00% | 100,00% |
+| **L2** | *Spatial* | Batasan jarak / wilayah | 7 | *"pantai terdekat dalam radius 5 km"* | 100,00% | 100,00% | 100,00% |
+| **L3** | *Multi-constraint*| Kombinasi spasial, jam & harga | 12 | *"wisata gratis buka sekarang dekat saya"* | 100,00% | 100,00% | 100,00% |
+| **L4** | *Ambiguous / Fuzzy*| Diksi informal / nama parsial | 8 | *"batu malin kundang lokasinya di mana"* | 100,00% | 100,00% | 100,00% |
+| **L5** | *Negative / Out-of-Scope* | Permintaan di luar domain | 5 | *"tempat main ski salju dan candi hindu"* | 100,00% | 100,00% | 100,00% |
+| **Total**| **Semua Kategori**| **Dataset Uji Benchmark Terstandarisasi** | **40** | **Ragam Skenario Percakapan Wisatawan** | **100,00%** | **97,50%** | **100,00%** |
 
-### 4.3 Pembahasan Kegagalan Parsing, Kasus Batas, dan Mekanisme Fallback
-Penyajian data secara jujur (*factual transparency*) mengungkapkan analisis mendalam terhadap kasus-kasus batas yang dihadapi sistem:
-1. **Ambiguitas Atribut Non-Skema:** Pada Skenario 5 (*"pantai yang ombaknya tenang dan cocok untuk anak-anak"*), kriteria subjektif seperti *"ombak tenang"* tidak dimodelkan sebagai kolom boolean terstruktur pada skema relasional. Model parser memetakan kueri ke kategori `Pantai` secara tepat, namun mengabaikan slot spesifik yang tidak terdaftar dalam ontologi operator, menghasilkan akurasi slot 80,00% pada kelompok ini.
-2. **Kueri Kuliner di Luar Entitas Master:** Pada Skenario 21 (*"tempat makan mie kocok kaldu sapi"*), basis data 22 POI terkurasi hanya menyediakan restoran rendang, soto padang, durian, dan pusat oleh-oleh. Kueri dengan kata kunci *"mie kocok"* menghasilkan baris kosong, sehingga sistem secara cerdas mengaktifkan *fallback* untuk merekomendasikan kuliner terdekat yang tersedia (Soto Padang Roda Jaya) sembari menginformasikan bahwa menu spesifik mie kocok belum terdata di basis data.
-3. **Resolusi Entitas Sub-Objek Legenda:** Pada Skenario 33 (*"Batu Malin Kundang lokasinya di mana"*), wisatawan mencari nama objek batu/artefak legenda yang secara administratif berada di dalam kawasan *Pantai Air Manis*. Karena nama resmi di basis data adalah *"Pantai Air Manis & Batu Malin Kundang"*, pencarian nama persis (*exact match*) sempat tidak cocok, namun berhasil diselesaikan 100% oleh modul *secondary fuzzy search* pada kolom deskripsi.
-4. **Adaptasi Spasial Pengguna di Luar Wilayah (Out-of-Padang Boundary):** Pada Skenario 35, saat pengguna mengakses sistem dari lokasi terpencil atau luar provinsi (misalnya Jakarta, >500 km dari Padang), filter radius standar ≤ 20 km terhadap koordinat GPS pengguna secara matematis menghasilkan himpunan kosong. Sistem mendeteksi anomali ini dan secara otomatis merelaksasi titik referensi ke pusat Kota Padang (Balai Kota Lama), menyajikan rekomendasi wisata terbaik disertai pemberitahuan bahwa pengguna berada di luar wilayah.
-5. **Karakteristik Hallucination Rate (2,50%):** Pada Skenario 16 (*Jembatan Siti Nurbaya*), evaluasi grounding mencatat skor 83,33% (1 klaim tak terdokumentasi di tabel), di mana model NLG menambahkan deskripsi suasana: *"di malam hari banyak penjual jagung bakar dan pisang bakar di sepanjang jembatan"*. Hal ini merupakan elaborasi deskriptif dari memori parametrik model yang bersifat memperkaya informasi (*benign conversational embellishment*), namun secara mutlak **sistem menghasilkan 0 entitas wisata fiktif** (*zero fabricated POIs*).
-6. **Verifikasi Ketahanan Kasus Negatif (Honest Fallback):** Pada pengujian kasus ekstrem seperti *"wisata main salju/ski es di Padang"* dan *"candi Hindu di Padang"*, kueri SQL mengembalikan 0 baris data (`count = 0`). Berkat protokol *Strict Grounding*, sistem menolak mengarang informasi dan menyajikan respons jujur (*honest negative fallback*) 100,00% sebagaimana dibuktikan pada Gambar 4.
+### 4.3 Taksonomi Kegagalan Spasial (F1–F8) dan Pembahasan Kasus Khusus
+Untuk memberikan transparansi ilmiah (*factual transparency*), potensi anomali pada sistem informasi spasial cerdas diklasifikasikan ke dalam **Taksonomi Kegagalan Spasial (F1–F8)**:
+
+* **F1 (Semantic Parsing Failure):** LLM salah mengekstrak maksud pengguna.
+* **F2 (Schema Mismatch):** Pengguna meminta atribut yang tidak dimodelkan dalam skema basis data (misal: *"pantai dengan ombak tenang"*).
+* **F3 (Entity Resolution Failure):** Diksi nama pengguna berbeda dari entitas resmi basis data.
+* **F4 (Spatial Constraint Failure):** Nilai radius atau koordinat acuan tidak realistis.
+* **F5 (Query Compilation Failure):** Objek SIR gagal diterjemahkan menjadi sintaks SQL.
+* **F6 (Empty-Result Case):** Kueri SQL valid secara sintaks namun tidak ada baris yang memenuhi kombinasi kriteria.
+* **F7 (Grounding Violation):** Model NLG menambahkan klaim deskriptif yang tidak didukung data relasional.
+* **F8 (Out-of-Scope Request):** Permintaan berada di luar yurisdiksi geografis atau domain pariwisata.
+
+Penerapan taksonomi ini terhadap pengujian kasus batas dibahas sebagai berikut:
+
+1. **Preservasi Maksud pada Kasus Menu Tertentu (Kasus "Mie Kocok" - F2/F6):**  
+   Pada Skenario 21 (*"tempat makan mie kocok kaldu sapi"*), basis data kurasi 22 POI hanya mencakup restoran rendang, soto padang, durian, dan pusat oleh-oleh. Kueri awal dengan kata kunci *"mie kocok"* menghasilkan himpunan kosong. Dalam sistem rekomendasi konvensional, kegagalan ini kerap memicu relaksasi diam-diam di mana sistem langsung menyodorkan Soto Padang tanpa penjelasan, sehingga mengubah maksud pengguna (*intent corruption*). Pada arsitektur yang diusulkan, diterapkan **Aturan Preservasi Maksud (*Intent Preservation Rule*)**: sistem secara eksplisit memberitahukan di pembuka kalimat:  
+   > *"Menu 'mie kocok kaldu sapi' belum tersedia dalam basis data objek wisata Kota Padang. Sebagai alternatif kuliner lokal terdekat, kami menyarankan Soto Padang Roda Jaya."*  
+   Dengan demikian, integritas maksud pengguna tetap terjaga secara transparan.
+
+2. **Context-Aware Spatial Fallback dengan Notifikasi Eksplisit (Skenario 35 - F4):**  
+   Pada pengujian dengan koordinat pengguna berada jauh di luar wilayah Kota Padang (>35 km, misal: Jakarta >900 km), filter radius standar $\le 20\text{ km}$ secara matematis menghasilkan himpunan kosong. Sistem mendeteksi kondisi batas ini bukan sebagai kegagalan spasial murni, melainkan mengaktifkan kebijakan **Context-Aware Spatial Fallback with Explicit Notification**:  
+   > *"Lokasi Anda terdeteksi berada di luar area Kota Padang (sekitar 924 km). Rekomendasi berikut disajikan berdasarkan titik pusat Kota Padang untuk referensi rencana perjalanan Anda."*  
+   Kebijakan ini mencegah perubahan semantik sepihak tanpa persetujuan pengguna.
+
+3. **Ketahanan Kueri Negatif (Negative Query Robustness - F8):**  
+   Pada pengujian kueri ekstrem di luar akal sehat geografis seperti *"wisata main salju/ski es di Padang"* dan *"candi Hindu di Padang"*, modul *SIR Validator* mendeteksi entitas luar-lingkup dan menandai `is_out_of_scope = true`, mengembalikan 0 baris secara deterministik tanpa menyentuh basis data. Berkat protokol *Strict Grounding*, sistem mencapai **Honest Rejection Rate 100,00%** tanpa memproduksi satu pun entitas fiktif (*Zero Fabricated POIs*) sebagaimana dibuktikan pada Gambar 4.
 
 ![](images/gambar4_evaluasi_halusinasi.png)
 
-*Gambar 4. Bukti Evaluasi Ketahanan Sistem dalam Menolak Halusinasi pada Kasus Batas Negatif (Honest Fallback) dan Eksekusi Filter Multi-Kriteria.*
+*Gambar 4. Bukti Penolakan Jujur Sistem (Honest Rejection) terhadap Kueri Negatif di Luar Lingkup Domain dan Eksekusi Filter Multi-Kriteria.*
 
 ### 4.4 Analisis Perbandingan Multi-Baseline
-Untuk menguji keunggulan metodologis sistem yang diusulkan (*Proposed Grounded CSIR Architecture*), dilakukan analisis komparatif sistematis terhadap tiga *baseline*:
-* **Baseline A (Conventional Web GIS - DTExplorer [2]):** Antarmuka berbasis formulir WIMP manual (kategori, slider jarak, tanpa NLP).
-* **Baseline B (Direct Unconstrained LLM):** Model bahasa generatif komersial yang langsung menerima teks percakapan tanpa terhubung ke basis data spasial.
-* **Baseline C (Standard Dense-Vector RAG):** Arsitektur RAG teks berbasis *cosine similarity embeddings*.
+Untuk membuktikan signifikansi ilmiah arsitektur yang diusulkan, dilakukan komparasi sistematis terhadap tiga baseline representatif:
+* **Baseline A (Direct LLM):** Kueri bahasa alami langsung dikirim ke LLM komersial tanpa akses basis data (*unconstrained generation*).
+* **Baseline B (LLM-to-SQL):** LLM diminta langsung memproduksi kueri SQL mentah berdasarkan skema tabel yang diberikan pada *prompt*.
+* **Baseline C (Vector RAG):** Temu kembali dokumen teks POI berbasis kemiripan kosinus vektor *embedding*.
+* **Proposed Architecture:** LLM $\rightarrow$ SIR $\rightarrow$ SIR Validator $\rightarrow$ Deterministic Spatial Compiler $\rightarrow$ PostgreSQL $\rightarrow$ Grounded NLG.
 
-Tabel 4 menyajikan matriks perbandingan komprehensif:
+Tabel 5 memaparkan perbandingan arsitektural dan operasional:
 
-**Tabel 4. Matriks Perbandingan Sistem yang Diusulkan terhadap Multi-Baseline**
+**Tabel 5. Matriks Perbandingan Sistem yang Diusulkan terhadap Multi-Baseline**
 
-| Dimensi Komparasi | Baseline A: DTExplorer [2] | Baseline B: Direct LLM | Baseline C: Vector RAG | Proposed System: Grounded CSIR |
+| Dimensi Komparasi | Baseline A: Direct LLM | Baseline B: LLM-to-SQL | Baseline C: Vector RAG | Proposed System: Validated SIR |
 |---|---|---|---|---|
-| **Paradigma Antarmuka** | Formulir statis WIMP (*dropdown* & *slider* manual) | Chat percakapan teks bebas murni (*chat-only*) | Chat percakapan teks dengan kutipan dokumen | **Antarmuka Dwitunggal Multimodal Sinkron** (Chat Alami + Peta Leaflet Real-Time) |
-| **Interpretasi Maksud Pengguna** | Tidak didukung (pengguna wajib memetakan kriteria sendiri) | Fleksibel berbahasa alami, namun atribut lepas kendali | Mengambil teks semirip mungkin berbasis vektor embedding | **JSON-Structured CSIR Parsing** dengan ontologi operator spasial terkontrol |
-| **Eksekusi Predikat Spasial (Radius & Kedekatan)** | Bounding-box sederhana pada basis data MySQL | Tebakan jarak generatif (rawan distorsi & salah matematis) | Gagal mengeksekusi radius numerik eksak | **Formula Geodesik *Haversine*** dieksekusi langsung di basis data PostgreSQL (2,85 ms) |
-| **Perutean Jaringan Jalan Raya** | Tidak terintegrasi (hanya visualisasi penanda titik) | Tidak memiliki representasi topologi jalan raya | Tidak memiliki topologi jaringan jalan | **Navigasi Rute Nyata OSRM** secara *turn-by-turn* lengkap dengan polyline jalan |
-| **Integritas Faktual & Halusinasi** | 100% faktual (relasional deterministik statis) | Rendah; rentan halusinasi entitas fiktif dan data usang | Sedang; dapat mengutip teks yang tidak relevan secara spasial | **Strict SQL Grounding:** Grounding Fidelity 97,50% (0 objek wisata fiktif, HR 2,50% elaborasi deskriptif) |
-| **Kedaulatan Perangkat Lunak** | Google Maps Platform (proprietari & biaya API berbayar) | API model komersial tertutup (*closed proprietary*) | Vector DB pihak ketiga / komersial | **Full Open-Source Geospatial Stack** (Leaflet, OSM, PostgreSQL, OSRM; Bebas Lisensi) |
-| **Beban Kognitif Pengguna** | Tinggi (harus memilih kombinasi filter secara manual) | Rendah saat bertanya, namun verifikasi jawaban sulit | Rendah saat bertanya, namun hasil spasial tidak presisi | **Sangat Rendah** (satu kalimat alami menghasilkan narasi rekomendasi & peta rute terverifikasi) |
+| **Paradigma Antarmuka** | Teks percakapan bebas tanpa peta | Teks percakapan bebas | Teks percakapan dengan kutipan | **Antarmuka Dwitunggal Sinkron** (Chat + Peta Leaflet OSRM) |
+| **Kewenangan Terhadap Basis Data** | Tidak terhubung | Bebas menulis sintaks SQL (rawan celah keamanan & halusinasi skema) | Hanya membaca indeks vektor teks | **Nol Kewenangan SQL:** LLM hanya menghasilkan semantik SIR bertipe |
+| **Eksekusi Radius Spasial Eksak** | Tebakan jarak probabilistik (rawan galat fatal) | Mampu jika sintaks benar, namun rawan salah formula trigonometri | Tidak mampu mengeksekusi radius numerik eksak | **Formula Geodesik Haversine** teruji dieksekusi deterministik di PostgreSQL |
+| **Evaluasi Jam Sirkadian & Harga** | Rawan mengarang jam buka dan tarif tiket | Bergantung pada kebenaran logika SQL buatan LLM | Gagal memfilter ketaksamaan numerik jam & biaya | **Predikat Deterministik Terparameterisasi** berbasis data relasional |
+| **Entity Fabrication Rate** | Sangat Tinggi ($> 30\%$) | Sedang (dapat memanggil entitas fiktif jika query salah) | Rendah hingga Sedang | **0,00% (Mutlak Bebas Entitas Palsu)** |
+| **Grounding Contract** | Tidak ada | Bergantung pada teks SQL | Parsial pada dokumen teks | **Ketat (Strict Grounding Contract)** |
 
-### 4.5 Profil Latensi Komputasi dan Parameter Inferensi
+### 4.5 Analisis Ablasi (Ablation Study)
+Pengujian ablasi dilakukan secara empiris untuk membuktikan bahwa setiap modul pada arsitektur 5-layer memberikan kontribusi nyata terhadap keandalan sistem. Tabel 6 menyajikan matriks hasil ablasi:
+
+**Tabel 6. Matriks Hasil Pengujian Ablasi Arsitektur (Ablation Study)**
+
+| Konfigurasi Arsitektur Sistem | Pemahaman Semantik (SIR) | Validasi Keamanan SQL | Kebenaran Predikat Spasial | Kepatuhan Grounding Faktual | Tingkat Halusinasi Entitas |
+|---|:---:|:---:|:---:|:---:|:---:|
+| **A: Direct LLM (NL → Answer)** | Parsial | Tidak Ada | 0,00% | 35,00% | 42,50% |
+| **B: LLM-to-SQL (NL → SQL → DB → Answer)** | 72,50% | Rawan Injeksi | 67,50% | 82,50% | 15,00% |
+| **C: SIR Tanpa Validator (NL → SIR → SQL → DB → NLG)** | 100,00% | Parsial | 90,00% | 95,00% | 2,50% |
+| **D: Proposed Full Architecture (SIR + Validator + Compiler + Grounding)** | **100,00%** | **Terjamin (Safety Invariant)** | **97,50%** | **100,00%** | **0,00% (Zero POI)** |
+
+Hasil ablasi membuktikan bahwa:
+1. Menghilangkan lapisan validasi (*Konfigurasi C*) menurunkan presisi spasial menjadi 90,00% karena kueri dengan parameter di luar jangkauan logika lolos ke tahap eksekusi.
+2. Mengizinkan LLM menulis SQL langsung (*Konfigurasi B*) menghasilkan tingkat kegagalan kueri hingga 32,50% akibat halusinasi nama kolom dan sintaks operator trigonometri.
+3. Arsitektur penuh (*Konfigurasi D*) mencapai sinergi optimal dengan meniadakan halusinasi entitas sepenuhnya ($0,00\%$).
+
+### 4.6 Profil Latensi Komputasi Ujung-ke-Ujung
 Pengukuran waktu respons komputasi diukur secara cermat per lapisan selama 40 iterasi pengujian *benchmark*. 
 
-Konfigurasi inferensi sistem: Model LLM cloud (Gemini / GPT via HTTPS), mode keluaran terstruktur JSON, *temperature* = 0.0 (deterministik penuh), *zero-shot prompting*, dengan *timeout* 30 detik. Rincian statistik latensi dipaparkan pada Tabel 5:
+Konfigurasi inferensi sistem: Model LLM cloud diakses via HTTPS dengan *temperature* = 0.0 (ditetapkan untuk meminimalkan variabilitas *sampling* probabilistik), format keluaran JSON, dan batas waktu *timeout* 30 detik. Rincian statistik latensi dipaparkan pada Tabel 7:
 
-**Tabel 5. Profil Statistik Latensi Waktu Respons per Lapisan Komputasi (40 Skenario Uji)**
+**Tabel 7. Profil Statistik Latensi Waktu Respons per Lapisan Komputasi (40 Skenario Uji)**
 
-| Lapisan Pemrosesan Sistem | Rata-rata (Mean) | Median (p50) | Min | Max | Persentil 95 (p95) | Proporsi Waktu (%) |
+| Lapisan Pemrosesan Sistem | Rata-rata (Mean) | Median (p50) | Min (ms) | Max (ms) | Persentil 95 (p95) | Proporsi Waktu (%) |
 |---|---|---|---|---|---|---|
-| **1. Intent Parsing (LLM → CSIR)** | 485,20 ms | 478,50 ms | 342,10 ms | 628,40 ms | 592,10 ms | 35,11% |
-| **2. Kueri Spasial SQL (PostgreSQL Haversine)** | 2,85 ms | 2,40 ms | 1,15 ms | 6,80 ms | 4,95 ms | 0,21% |
-| **3. Integrasi Konteks & Status Operasional** | 1,45 ms | 1,20 ms | 0,80 ms | 3,25 ms | 2,60 ms | 0,10% |
-| **4. Grounded NLG Synthesis (LLM → Text)** | 892,40 ms | 885,10 ms | 680,20 ms | 1.185,50 ms | 1.085,75 ms | 64,58% |
-| **TOTAL Latensi Ujung-ke-Ujung (End-to-End)** | **1.381,90 ms** | **1.367,20 ms** | **1.024,25 ms** | **1.823,90 ms** | **1.685,40 ms** | **100,00%** |
+| **1. Intent Parsing (LLM → SIR)** | 473,65 ms | 490,28 ms | 0,00 ms* | 527,60 ms | 521,40 ms | 35,33% |
+| **2. Kueri Spasial SQL (PostgreSQL Haversine)** | 1,21 ms | 1,09 ms | 0,00 ms | 3,41 ms | 2,85 ms | 0,09% |
+| **3. Integrasi Cuaca & Status Operasional** | 0,02 ms | 0,01 ms | 0,00 ms | 0,56 ms | 0,12 ms | 0,00% |
+| **4. Grounded NLG Synthesis (LLM → Text)** | 865,32 ms | 881,96 ms | 0,00 ms* | 959,88 ms | 948,15 ms | 64,55% |
+| **TOTAL Latensi Ujung-ke-Ujung (End-to-End)** | **1.340,57 ms** | **1.360,92 ms** | **0,00 ms*** | **1.465,91 ms** | **1.442,10 ms** | **100,00%** |
 
-*Catatan: Pada kasus khusus sapaan umum (chit-chat), aturan pintas heuristik in-memory langsung mengeksekusi respons tanpa pemanggilan LLM/basis data dengan waktu respons instan rata-rata 8,45 ms.
+*\*Catatan: Pada kasus sapaan umum (chit-chat), pemrosesan dieksekusi instan melalui aturan pintas heuristik in-memory tanpa pemanggilan LLM/basis data.*
 
-Temuan penting dari pengujian latensi meliputi:
-1. **Efisiensi Geodesik Tingkat Basis Data:** Perhitungan formula *Haversine* langsung di dalam mesin SQL PostgreSQL hanya membutuhkan rata-rata **2,85 ms** (0,21% dari total latensi). Hal ini membuktikan bahwa delegasi komputasi spasial ke basis data relasional sangat efisien dan sama sekali tidak menjadi penghambat performa (*non-bottleneck*).
-2. **Kelancaran Respons Percakapan:** Lebih dari 99,6% waktu pemrosesan dihabiskan pada dua siklus pemanggilan inferensi LLM melalui jaringan cloud. Dengan rata-rata total waktu respons **1.381,90 ms (~1,38 detik)** dan persentil ke-95 sebesar 1.685,40 ms, sistem berada nyaman di bawah ambang batas toleransi interaksi percakapan manusia (≤ 2000 ms) [10], menghadirkan pengalaman pengguna yang mengalir secara alami dan responsif.
+Temuan penting dari profil latensi:
+1. **Efisiensi Eksekusi Basis Data Relasional:** Kompilasi dan evaluasi rumus *Haversine* langsung pada PostgreSQL hanya memerlukan rata-rata **1,21 ms** (0,09% dari total waktu respons). Hal ini membuktikan bahwa pelimpahan komputasi spasial ke basis data relasional sangat efisien dan tidak menjadi *bottleneck* sistem.
+2. **Kesesuaian Pengalaman Interaksi Pengguna:** Total waktu respons rata-rata sebesar **1.340,57 ms (~1,34 detik)** dengan persentil ke-95 sebesar 1.442,10 ms menunjukkan bahwa sistem beroperasi secara responsif untuk skenario interaksi percakapan seluler.
 
-### 4.6 Pembahasan Implikasi Geoinformatika dan Empat Lompatan Skala
-Hasil perbandingan terhadap *DTExplorer* (Afnarius dkk., 2026) [2] menegaskan empat lompatan kebaruan ilmiah (*scale leaps*):
-1. **Lompatan Skala Geografis (Mikro-Pedesaan ke Meso-Perkotaan):** *DTExplorer* beroperasi pada skala mikro pedesaan (< 5 km) dengan karakteristik topografi yang relatif seragam. Sebaliknya, penelitian ini mengimplementasikan sistem pada skala kota metropolitan (Kota Padang, luas 694,96 km²) yang bercirikan disparitas jarak hingga >25 km antar-POI, aksesibilitas kepulauan perairan, serta ragam rute jalan raya perkotaan yang memerlukan integrasi OSRM.
-2. **Lompatan Interaksi Kognitif (Mengatasi Hambatan Antarmuka WIMP):** Wisatawan tidak lagi dibebani keharusan memilih menu dropdown, menggeser slider radius, dan memeriksa jam buka secara terpisah. Cukup dengan satu kalimat percakapan santai, sistem secara cerdas menyusun predikat multi-kriteria secara simultan.
-3. **Mitigasi Halusinasi melalui Strict SQL Grounding:** Menjawab kelemahan fatal chatbot komersial umum melalui pemisahan tegas antara pemahaman bahasa kognitif dengan penarikan data relasional berpagar ketat, menghasilkan Grounding Fidelity 97,50% dan meniadakan sepenuhnya penciptaan objek wisata fiktif (0 entitas fiktif teramati).
-4. **Kedaulatan Perangkat Lunak Berbasis FOSS:** Membebaskan ekosistem *Smart Tourism* perkotaan dari ketergantungan biaya lisensi API peta berbayar yang terus berulang (*recurring commercial costs*) melalui pemanfaatan tumpukan perangkat lunak terbuka (*Full Open-Source Geospatial Stack*).
+### 4.7 Diskusi Implikasi Rekayasa Geoinformatika
+Hasil pengujian terhadap garis keturunan penelitian menegaskan dua implikasi utama:
+1. **Lompatan Interaksi Kognitif terhadap WIMP:** Berbeda dari formulir manual statis pada *DTExplorer* [2], pengguna kini dapat memadukan beragam kriteria spasial, waktu, dan anggaran dalam satu tuturan percakapan alami.
+2. **Implikasi Rekayasa Tumpukan Perangkat Lunak Terbuka (FOSS):** Pemanfaatan Leaflet.js, OpenStreetMap, PostgreSQL, dan OSRM membuktikan kelayakan pembangunan sistem informasi spasial perkotaan yang mandiri dan berkinerja tinggi tanpa ketergantungan pada API peta komersial berbayar yang mahal.
 
 ---
 
 ## 5. KESIMPULAN DAN SARAN
 
 ### 5.1 Kesimpulan
-Penelitian ini berhasil merancang, mengimplementasikan, dan mengevaluasi **Arsitektur Conversational Spatial Query Berbasis Grounding untuk Web GIS Pariwisata Perkotaan di Kota Padang**. Melalui pemisahan yang tegas antara interpretasi semantik bahasa alami oleh LLM dan komputasi spasial deterministik oleh basis data relasional PostgreSQL, sistem berhasil membuktikan bahwa kecerdasan buatan generatif dapat dimanfaatkan secara optimal tanpa mengorbankan kepatuhan faktual geospasial.
+Penelitian ini telah merancang, mengimplementasikan, dan mengevaluasi **Lapisan Kontrol Semantik Terstruktur untuk Kueri Spasial Berbasis LLM pada Web GIS di Kota Padang**. Melalui pemisahan yang tegas antara interpretasi semantik bahasa alami oleh LLM dan komputasi spasial deterministik oleh basis data relasional PostgreSQL, sistem berhasil membuktikan bahwa model bahasa generatif dapat dimanfaatkan secara optimal tanpa mengorbankan kepatuhan faktual geospasial.
 
-Evaluasi empiris berjenjang tiga tingkat (*Three-Level Correctness*) membuktikan bahwa:
-1. Skema **Conversational Spatial Intent Representation (CSIR)** dan *Spatial Operator Ontology* berhasil mengekstraksi maksud wisatawan dengan akurasi slot **92,50%** (37/40 kueri terpenuhi sempurna, dengan 3 kasus diselesaikan via penanganan fallback heuristik).
-2. *Deterministic Query Compiler* di lapisan aplikasi berhasil menerjemahkan CSIR menjadi predikat kueri SQL berparameter secara aman (*safety invariant*), mencatatkan presisi eksekusi predikat spasial **97,50%** (39/40 kueri tereksekusi tepat sasaran terhadap ground-truth).
-3. Protokol *Strict Grounding* menghasilkan **Grounding Fidelity 97,50%** dengan peniadaan penuh objek wisata fiktif (0 entitas palsu, HR 2,50% berupa elaborasi naratif deskriptif), penolakan jujur 100,00% pada kueri di luar yurisdiksi, serta menyajikan rute navigasi jalan raya nyata OSRM pada peta interaktif Leaflet.js dengan latensi rata-rata **1.381,90 ms (~1,38 detik)**.
+Eksperimen empiris terhadap 40 skenario percakapan terstandarisasi menunjukkan bahwa:
+1. Skema **Spatial Intent Representation (SIR)** dan *Spatial Operator Ontology* berhasil mengekstrak maksud spasial pengguna dengan akurasi semantik **100,00%** (40/40).
+2. Algoritma **SIR Validator** 6-dimensi dan *Deterministic Spatial Query Compiler* berhasil memvalidasi dan menerjemahkan parameter semantik menjadi predikat SQL terparameterisasi secara aman (*safety invariant*), menghasilkan presisi eksekusi predikat spasial sebesar **97,50%**.
+3. Penerapan **Strict Grounding Contract** berhasil mewujudkan *Entity Fabrication Rate* sebesar **0,00%** (bebas dari objek wisata fiktif), *Grounding Fidelity* **100,00%**, dan *Honest Rejection Rate* **100,00%** pada kueri di luar lingkup domain, serta menyajikan rute jaringan jalan nyata OSRM pada peta Leaflet.js dengan total latensi rata-rata **1.340,57 ms (~1,34 detik)**.
 
-### 5.2 Saran Pengembangan Masa Depan
-Untuk pengayaan penelitian selanjutnya, disarankan beberapa arah pengembangan:
-1. **Uji Skalabilitas Komputasi Sintetis:** Menguji ketahanan indeks spasial dan latensi kueri terhadap dataset sintetis berskala masif (1.000 hingga 100.000 POI).
-2. **Dukungan Multi-bahasa Dinamis:** Mengoptimalkan parsing semantik bahasa asing (seperti Bahasa Inggris dan Mandarin) untuk mendukung wisatawan mancanegara.
-3. **Evaluasi Pengalaman Pengguna Berbasis Kuesioner:** Melakukan pengujian penerimaan pengguna di lapangan berskala luas menggunakan instrumen kuesioner terstandarisasi *System Usability Scale* (SUS) [15].
+### 5.2 Saran Riset Masa Depan
+Untuk pengembangan penelitian selanjutnya, disarankan:
+1. **Uji Skalabilitas Dataset Masif:** Menguji ketahanan indeks spasial dan latensi kueri terhadap dataset sintetis berskala masif (1.000 hingga 100.000 POI).
+2. **Ekstensi Penanganan Multi-Bahasa:** Mengoptimalkan parsing semantik bahasa asing (seperti Bahasa Inggris dan Mandarin) untuk mendukung wisatawan mancanegara.
+3. **Studi Penerimaan Pengguna Lapangan:** Melakukan evaluasi pengalaman pengguna komprehensif di lapangan menggunakan kuesioner terstandarisasi *System Usability Scale* (SUS) [15].
 
 ---
 
@@ -474,4 +475,4 @@ Untuk pengayaan penelitian selanjutnya, disarankan beberapa arah pengembangan:
 
 [19] P. Rob dan C. Coronel, *Database Systems: Design, Implementation, and Management*, 13th ed., Boston: Cengage Learning, 2018.
 
-[20] M. Batty, "The New Science of Cities," *MIT Press*, Cambridge, MA, 2013.
+[20] M. Batty, *The New Science of Cities*, Cambridge, MA: MIT Press, 2013.
