@@ -5,26 +5,37 @@ namespace App\Http\Controllers;
 use App\Models\ChatMessage;
 use App\Models\ChatSession;
 use App\Services\LlmService;
+use App\Services\SpatialIntent\SirValidator;
+use App\Services\SpatialIntent\SpatialIntent;
+use App\Services\SpatialIntent\SpatialQueryCompiler;
 use App\Services\WeatherService;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class ChatController extends Controller
 {
-    public const PADANG_PUSAT_LAT = -0.9471;
+    public const PADANG_PUSAT_LAT = SpatialQueryCompiler::PADANG_PUSAT_LAT;
 
-    public const PADANG_PUSAT_LNG = 100.4174;
+    public const PADANG_PUSAT_LNG = SpatialQueryCompiler::PADANG_PUSAT_LNG;
 
-    public const BATAS_LUAR_PADANG_KM = 35.0;
+    public const BATAS_LUAR_PADANG_KM = SpatialQueryCompiler::BATAS_LUAR_PADANG_KM;
+
+    private SpatialQueryCompiler $compiler;
+
+    private SirValidator $validator;
 
     public function __construct(
         private LlmService $llm,
         private WeatherService $weather,
-    ) {}
+        ?SpatialQueryCompiler $compiler = null,
+        ?SirValidator $validator = null,
+    ) {
+        $this->compiler = $compiler ?? new SpatialQueryCompiler;
+        $this->validator = $validator ?? new SirValidator;
+    }
 
     /**
      * POST /chat/session
@@ -180,11 +191,18 @@ class ChatController extends Controller
             ]);
         }
 
-        // 2. Tahap Ekstrak Intent
+        // 2. Tahap Ekstrak SIR (Spatial Intent Representation)
         $t0 = hrtime(true);
-        $intent = $this->llm->ekstrakIntent($pesanUser, $riwayat);
+        $rawIntent = $this->llm->ekstrakIntent($pesanUser, $riwayat);
+        $sir = $rawIntent instanceof SpatialIntent
+            ? $rawIntent
+            : SpatialIntent::fromArray($rawIntent, $pesanUser);
+
+        $validation = $this->validator->validate($sir);
+        $validatedSir = $validation['sir'];
+        $intent = $validatedSir->toArray();
         $tIntent = (hrtime(true) - $t0) / 1e6;
-        Log::debug('ChatController: intent', $intent);
+        Log::debug('ChatController: SIR validated', $intent);
 
         // 3. Deteksi apakah user memiliki lokasi dan apakah berada di luar Kota Padang
         $adaLokasi = $lat !== null && $lng !== null;
@@ -197,30 +215,35 @@ class ChatController extends Controller
             }
         }
 
-        // 4. Tahap Query SQL
+        // 4. Tahap Kompilasi & Eksekusi Query Spasial Deterministik
         $t1 = hrtime(true);
-        $dataWisata = $this->queryWisata($intent, $lat, $lng, $diLuarPadang);
+        $latF = $lat !== null ? (float) $lat : null;
+        $lngF = $lng !== null ? (float) $lng : null;
 
+        $dataWisata = $this->compiler->compileAndExecute($validatedSir, $latF, $lngF, $diLuarPadang);
+
+        // Relaksasi atribut terkontrol dengan preservasi maksud (intent preservation)
         $atributTakTersedia = [];
-        if ($dataWisata === [] && ($intent['kata_kunci'] ?? null)) {
-            $atributTakTersedia[] = $intent['kata_kunci'];
-            $intentRelaksasi = $intent;
-            $intentRelaksasi['kata_kunci'] = null;
-            $dataWisata = $this->queryWisata($intentRelaksasi, $lat, $lng, $diLuarPadang);
+        if ($dataWisata === [] && $validatedSir->keyword !== null) {
+            $atributTakTersedia[] = $validatedSir->keyword;
+            $sirRelaksasi = clone $validatedSir;
+            $sirRelaksasi->keyword = null;
+            $dataWisata = $this->compiler->compileAndExecute($sirRelaksasi, $latF, $lngF, $diLuarPadang);
         }
-        if ($dataWisata === [] && ($intent['wilayah'] ?? null)) {
-            $atributTakTersedia[] = 'wilayah '.$intent['wilayah'];
-            $intentRelaksasi = $intent;
-            $intentRelaksasi['wilayah'] = null;
-            $intentRelaksasi['kata_kunci'] = null;
-            $dataWisata = $this->queryWisata($intentRelaksasi, $lat, $lng, $diLuarPadang);
+
+        if ($dataWisata === [] && $validatedSir->adminArea !== null) {
+            $atributTakTersedia[] = 'wilayah '.$validatedSir->adminArea;
+            $sirRelaksasi = clone $validatedSir;
+            $sirRelaksasi->adminArea = null;
+            $sirRelaksasi->keyword = null;
+            $dataWisata = $this->compiler->compileAndExecute($sirRelaksasi, $latF, $lngF, $diLuarPadang);
         }
 
         // Relaksasi radius jika user di dalam Padang namun radius awal terlalu sempit
-        if ($dataWisata === [] && $adaLokasi && ! $diLuarPadang && (int) ($intent['radius_km'] ?? 20) < 35) {
-            $intentRelaksasi = $intent;
-            $intentRelaksasi['radius_km'] = 35;
-            $dataWisata = $this->queryWisata($intentRelaksasi, $lat, $lng, false);
+        if ($dataWisata === [] && $adaLokasi && ! $diLuarPadang && ($validatedSir->distance ?? 20.0) < 35.0) {
+            $sirRelaksasi = clone $validatedSir;
+            $sirRelaksasi->distance = 35.0;
+            $dataWisata = $this->compiler->compileAndExecute($sirRelaksasi, $latF, $lngF, false);
         }
         $tSql = (hrtime(true) - $t1) / 1e6;
 
@@ -299,8 +322,6 @@ class ChatController extends Controller
     {
         return array_map(function (array $w) use ($dataCuaca) {
             $w['cuaca'] = $dataCuaca[$w['id']] ?? null;
-            // status_operasional sudah ada dari formatWisata / query result
-            // pastikan ada default jika kolom belum ada di row lama
             $w['status_operasional'] = $w['status_operasional'] ?? 'normal';
             $w['catatan_status'] = $w['catatan_status'] ?? null;
 
@@ -313,268 +334,49 @@ class ChatController extends Controller
      */
     private function hitungJarakKm(float $lat1, float $lng1, float $lat2, float $lng2): float
     {
-        $dLat = deg2rad($lat2 - $lat1);
-        $dLng = deg2rad($lng2 - $lng1);
-        $a = sin($dLat / 2) ** 2 + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLng / 2) ** 2;
-
-        return 6371 * 2 * atan2(sqrt($a), sqrt(max(0.0, 1 - $a)));
+        return $this->compiler->calculateHaversineKm($lat1, $lng1, $lat2, $lng2);
     }
 
     /**
-     * Query wisata dari database berdasarkan intent.
-     * Semua filter fakta (kategori, harga, jam, wilayah, kata kunci) dilakukan di SQL —
-     * LLM hanya merangkai kalimat, bukan menyaring data (prinsip grounding).
+     * Query wisata dari database berdasarkan intent (mendelegasikan ke compiler).
      */
     private function queryWisata(array $intent, ?string $lat, ?string $lng, bool $diLuarPadang = false): array
     {
-        $adaLokasi = $lat !== null && $lng !== null;
-        $radiusKm = max(1, (int) ($intent['radius_km'] ?? 20));
-        $urutan = $intent['urutan'] ?? null;
+        $sir = SpatialIntent::fromArray($intent, $intent['query_bebas'] ?? '');
+        $latF = $lat !== null ? (float) $lat : null;
+        $lngF = $lng !== null ? (float) $lng : null;
 
-        // --- Pencarian nama spesifik (nama_wisata dari LLM, fallback SQL dari teks user) ---
-        $nama = trim((string) ($intent['nama_wisata'] ?? ''));
-        if ($nama !== '') {
-            $hasilNama = $this->queryBase()
-                ->where('wisata.nama', 'ilike', "%{$nama}%")
-                ->orderByDesc('wisata.rating')
-                ->limit(3)
-                ->get();
-
-            // Fallback 1: Cari di deskripsi jika nama persis tidak cocok (misal: "Malin Kundang" -> ada di deskripsi Pantai Air Manis)
-            if ($hasilNama->isEmpty()) {
-                $hasilNama = $this->queryBase()
-                    ->where('wisata.deskripsi', 'ilike', "%{$nama}%")
-                    ->orderByDesc('wisata.rating')
-                    ->limit(3)
-                    ->get();
-            }
-
-            // Fallback 2: Pecah kata kunci utama (> 3 karakter non-kata umum)
-            if ($hasilNama->isEmpty()) {
-                $kataPenting = array_filter(
-                    preg_split('/\s+/u', mb_strtolower($nama)),
-                    fn ($k) => mb_strlen($k) >= 4 && ! in_array($k, ['pantai', 'pulau', 'museum', 'taman', 'bukit', 'wisata', 'alam', 'tempat', 'jalan'])
-                );
-                if ($kataPenting !== []) {
-                    $hasilNama = $this->queryBase()
-                        ->where(function ($qq) use ($kataPenting) {
-                            foreach ($kataPenting as $kp) {
-                                $qq->orWhere('wisata.nama', 'ilike', "%{$kp}%")
-                                    ->orWhere('wisata.deskripsi', 'ilike', "%{$kp}%");
-                            }
-                        })
-                        ->orderByDesc('wisata.rating')
-                        ->limit(3)
-                        ->get();
-                }
-            }
-
-            if ($hasilNama->isNotEmpty()) {
-                return $hasilNama->map(function ($w) use ($lat, $lng) {
-                    if ($lat !== null && $lng !== null) {
-                        $w->jarak_km = round($this->hitungJarakKm((float) $lat, (float) $lng, (float) $w->lat, (float) $w->lng), 1);
-                    }
-
-                    return $this->formatRow($w);
-                })->all();
-            }
-        }
-
-        $namaCocok = $this->cariNama($intent['query_bebas'] ?? '');
-        if ($namaCocok !== []) {
-            return $this->queryBase()
-                ->whereIn('wisata.nama', $namaCocok)
-                ->orderByDesc('wisata.rating')
-                ->limit(3)
-                ->get()
-                ->map(function ($w) use ($lat, $lng) {
-                    if ($lat !== null && $lng !== null) {
-                        $w->jarak_km = round($this->hitungJarakKm((float) $lat, (float) $lng, (float) $w->lat, (float) $w->lng), 1);
-                    }
-
-                    return $this->formatRow($w);
-                })
-                ->all();
-        }
-
-        // --- Filter intent di SQL ---
-        $q = $this->queryBase();
-
-        if ($intent['kategori'] ?? null) {
-            $q->where('kategori.nama', $intent['kategori']);
-        }
-        if ($intent['gratis'] ?? false) {
-            $q->where('wisata.harga_tiket', 0);
-        }
-        if (isset($intent['max_harga']) && $intent['max_harga'] !== null && $intent['max_harga'] !== false) {
-            $q->where('wisata.harga_tiket', '<=', (int) $intent['max_harga']);
-        }
-        if ($intent['buka_24_jam'] ?? false) {
-            $q->where('wisata.jam_buka', '00:00:00')
-                ->where(function ($qq) {
-                    $qq->where('wisata.jam_tutup', '>=', '23:59:00')
-                        ->orWhere('wisata.jam_tutup', '00:00:00');
-                });
-        }
-        if ($intent['jam_sekarang'] ?? false) {
-            $jam = now()->format('H:i:s');
-            $q->where('wisata.jam_buka', '<=', $jam)
-                ->where('wisata.jam_tutup', '>=', $jam);
-        }
-        if ($intent['wilayah'] ?? null) {
-            $q->where('wisata.alamat', 'ilike', '%'.$intent['wilayah'].'%');
-        }
-        if ($intent['kata_kunci'] ?? null) {
-            $kw = $intent['kata_kunci'];
-            $q->where(fn ($qq) => $qq
-                ->where('wisata.deskripsi', 'ilike', "%{$kw}%")
-                ->orWhere('wisata.nama', 'ilike', "%{$kw}%"));
-        }
-
-        // --- Urutan + jarak (Haversine bila lokasi user diketahui) ---
-        if ($adaLokasi) {
-            $latF = (float) $lat;
-            $lngF = (float) $lng;
-            $haversineExpr = $this->haversine($latF, $lngF);
-            $q->addSelect(DB::raw("{$haversineExpr} AS jarak_km"));
-
-            // Jangan membatasi dengan radius ketat jika pengguna di luar Padang (> 35 km)
-            if (! $diLuarPadang) {
-                $q->whereRaw("{$haversineExpr} <= ?", [$radiusKm]);
-            }
-
-            $q->orderBy(match ($urutan) {
-                'termurah' => 'wisata.harga_tiket',
-                'termahal' => 'wisata.harga_tiket',
-                'terbaik' => 'wisata.rating',
-                default => $diLuarPadang ? 'wisata.rating' : 'jarak_km',
-            }, match ($urutan) {
-                'termurah' => 'asc',
-                'termahal' => 'desc',
-                'terbaik' => 'desc',
-                default => $diLuarPadang ? 'desc' : 'asc',
-            });
-        } else {
-            $q->orderBy(match ($urutan) {
-                'termurah' => 'wisata.harga_tiket',
-                'termahal' => 'wisata.harga_tiket',
-                default => 'wisata.rating',
-            }, match ($urutan) {
-                'termurah' => 'asc',
-                'termahal' => 'desc',
-                default => 'desc',
-            });
-        }
-
-        return $q->limit(5)->get()
-            ->map(fn ($w) => $this->formatRow($w))
-            ->all();
+        return $this->compiler->compileAndExecute($sir, $latF, $lngF, $diLuarPadang);
     }
 
     /** Builder dasar: join kategori, hanya wisata aktif. */
     private function queryBase(): Builder
     {
-        return DB::table('wisata')
-            ->join('kategori', 'wisata.kategori_id', '=', 'kategori.id')
-            ->where('wisata.status_aktif', true)
-            ->select(
-                'wisata.id',
-                'wisata.nama',
-                'wisata.deskripsi',
-                'wisata.alamat',
-                'wisata.telepon',
-                'wisata.lat',
-                'wisata.lng',
-                'wisata.harga_tiket',
-                'wisata.jam_buka',
-                'wisata.jam_tutup',
-                'wisata.rating',
-                'wisata.foto',
-                'wisata.status_operasional',
-                'wisata.catatan_status',
-                DB::raw('kategori.nama as kategori'),
-            );
+        return $this->compiler->queryBase();
     }
 
     private function haversine(float $latF, float $lngF): string
     {
-        return "(6371 * ACOS(LEAST(1.0,
-            COS(RADIANS({$latF})) * COS(RADIANS(wisata.lat)) *
-            COS(RADIANS(wisata.lng) - RADIANS({$lngF})) +
-            SIN(RADIANS({$latF})) * SIN(RADIANS(wisata.lat))
-        )))";
+        return $this->compiler->haversineSql($latF, $lngF);
     }
 
     /**
      * Fallback nama wisata dari teks user, tanpa LLM.
-     * Hanya dicoba bila teks (tanpa kata umum) pendek — hindari false positive.
-     * Tahap: frasa persis nama → frasa di deskripsi → rangka konsonan (tahan typo kecil).
      *
      * @return list<string> nama wisata yang cocok (kosong bila tidak ada)
      */
     private function cariNama(string $teks): array
     {
-        $stopwords = ['yang', 'di', 'ke', 'ada', 'tempat', 'wisata', 'saya', 'mau', 'untuk', 'dan', 'paling', 'gak', 'ga', 'yg', 'dong', 'wajib', 'khas', 'coba', 'tanya', 'carikan', 'info', 'nama'];
-        $kata = array_values(array_filter(
-            preg_split('/\s+/u', mb_strtolower(trim($teks))),
-            fn ($k) => $k !== '' && ! in_array($k, $stopwords)
-        ));
-        if ($kata === [] || count($kata) > 3) {
-            return [];
-        }
-        $frasa = implode(' ', $kata);
+        $reflection = new \ReflectionClass($this->compiler);
+        $method = $reflection->getMethod('cariNamaFuzzy');
+        $method->setAccessible(true);
 
-        $cocok = $this->queryBase()
-            ->where('wisata.nama', 'ilike', "%{$frasa}%")
-            ->limit(3)
-            ->get(['wisata.nama']);
-        if ($cocok->isNotEmpty()) {
-            return $cocok->pluck('nama')->all();
-        }
-
-        // Cek juga di deskripsi jika frasa ada di deskripsi (misal: "batu malin kundang")
-        $cocokDesc = $this->queryBase()
-            ->where('wisata.deskripsi', 'ilike', "%{$frasa}%")
-            ->limit(3)
-            ->get(['wisata.nama']);
-        if ($cocokDesc->isNotEmpty()) {
-            return $cocokDesc->pluck('nama')->all();
-        }
-
-        // ponytail: fuzzy konsonan sederhana — kalau butuh edit-distance penuh, pakai pg_trgm similarity()
-        $skeleton = preg_replace('/[aiueo\s]/', '', $frasa);
-        if (mb_strlen($skeleton) < 4) {
-            return [];
-        }
-
-        return $this->queryBase()
-            ->whereRaw("regexp_replace(lower(wisata.nama), '[aiueo ]', '', 'g') LIKE ?", ["%{$skeleton}%"])
-            ->limit(3)
-            ->get(['wisata.nama'])
-            ->pluck('nama')
-            ->all();
+        return $method->invoke($this->compiler, $teks);
     }
 
     /** Format baris query ke array untuk LLM & response. */
     private function formatRow(object $w): array
     {
-        return [
-            'id' => $w->id,
-            'nama' => $w->nama,
-            'kategori' => $w->kategori,
-            'alamat' => $w->alamat,
-            'telepon' => $w->telepon ?? null,
-            'deskripsi' => $w->deskripsi,
-            'lat' => (float) $w->lat,
-            'lng' => (float) $w->lng,
-            'harga_tiket' => (int) $w->harga_tiket,
-            'jam_buka' => substr($w->jam_buka ?? '', 0, 5),
-            'jam_tutup' => substr($w->jam_tutup ?? '', 0, 5),
-            'rating' => (float) $w->rating,
-            'foto' => $w->foto,
-            'jarak_km' => isset($w->jarak_km) ? round((float) $w->jarak_km, 1) : null,
-            'status_operasional' => $w->status_operasional ?? 'normal',
-            'catatan_status' => $w->catatan_status ?? null,
-        ];
+        return $this->compiler->formatRow($w);
     }
 }

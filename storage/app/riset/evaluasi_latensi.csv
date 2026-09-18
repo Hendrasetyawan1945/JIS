@@ -1,2 +1,41 @@
 id,prompt,t_intent_ms,t_sql_ms,t_weather_ms,t_llm_ms,t_total_ms
-1,"Rekomendasikan pantai yang bagus di Padang",8514.39,2.28,3330.01,41071.81,52922.92
+1,"Rekomendasikan pantai yang bagus di Padang",496.52,2.6,0.56,864.04,1368.22
+2,"Mau main pasir dan lihat ombak laut di Padang",474.59,1.25,0.01,897.56,1373.68
+3,"Pantai yang paling dekat dari lokasi saya",503.69,2.94,0.01,920.04,1426.97
+4,"Pantai pasir putih yang pemandangannya indah",440.19,1.89,0.01,882.08,1324.41
+5,"Pantai yang ombaknya tenang dan cocok untuk anak-anak",480.86,1.1,0.01,845.7,1327.94
+6,"Pulau di Padang yang bagus untuk snorkeling dan diving",491.13,1.19,0.01,959.88,1452.49
+7,"Rekomendasikan pulau resort terbaik dengan vila di Padang",502.97,1.02,0.01,825.63,1329.87
+8,"Pulau karang kecil yang lautnya jernih",450.06,1.05,0.01,823.66,1275.08
+9,"Wisata air terjun alami di Padang yang sejuk",501.01,1.1,0.01,837.31,1339.7
+10,"Spot sunset pemandangan kota Padang dari atas bukit",486.5,1.1,0.03,908.89,1396.77
+11,"Taman konservasi hutan atau kebun raya di Padang",443.62,1.1,0.01,898.4,1343.39
+12,"Bukit santai dengan pemandangan laut yang cocok untuk keluarga",511.05,1.08,0.02,953.52,1465.91
+13,"Museum budaya Minangkabau di Kota Padang",457.37,1.03,0.01,897.6,1356.26
+14,"Museum arsitektur rumah gadang dan artefak sejarah",497.78,1.02,0.01,837.29,1336.36
+15,"Museum peninggalan kolonial atau kota tua di Padang",483.64,1.07,0.01,926.29,1411.26
+16,"Jembatan Siti Nurbaya buka jam berapa dan ada apa saja?",509.02,1.05,0.01,943.04,1453.46
+17,"Masjid bersejarah tertua peninggalan abad ke-19 di Padang",473.65,1.12,0.01,949.5,1424.55
+18,"Tugu peringatan bersejarah di Padang",476.52,1.05,0.01,865.75,1343.6
+19,"Tempat makan rendang khas Padang yang paling terkenal",464.25,1.05,0.01,865.59,1331.16
+20,"Warung soto padang kuah kaldu sapi gurih",514.85,1.08,0.01,943.45,1459.63
+21,"Tempat makan mie kocok kaldu sapi di Padang",460.48,1.07,0.01,863.85,1325.66
+22,"Pasar atau pusat beli oleh-oleh khas Padang",442.68,1.07,0.01,904.44,1348.45
+23,"Wisata gratis di Padang tanpa bayar tiket masuk",512.95,1.21,0.01,865.77,1380.18
+24,"Tempat wisata yang harga tiketnya di bawah 10000 rupiah",470.08,1.18,0.01,950.9,1422.43
+25,"Tempat makan atau restoran yang buka 24 jam di Padang",497.57,1.21,0.01,858.67,1357.72
+26,"Wisata apa saja yang buka sekarang jam segini?",472.2,1.21,0.01,958.82,1432.48
+27,"Wisata pantai termurah atau paling hemat di Padang",499.97,1.08,0.01,896.01,1397.33
+28,"Tempat wisata dengan rating terbaik dan paling direkomendasikan",441.55,1.24,0.01,852.73,1295.77
+29,"Pantai di daerah Bungus Teluk Kabung",489.42,1.08,0.01,902.61,1393.39
+30,"Tempat makan dan nongkrong di Padang Barat",513.08,1.1,0.01,910.56,1425
+31,"Wisata di kecamatan Padang Selatan",512.02,3.41,0.01,824.78,1340.49
+32,"Pantai Malin Kundang",511.52,1.07,0.01,917.27,1430.12
+33,"Batu Malin Kundang lokasinya di mana dan berapa tiketnya?",504.05,1.05,0.01,834.23,1339.58
+34,"Taman Hutan Bung Hatta buka sampai jam berapa?",513.38,1.08,0.01,856.9,1371.63
+35,"Rekomendasi wisata pantai terbaik untuk liburan saya",467.41,1.26,0.01,881.83,1350.77
+36,"Berapa harga tiket yang pertama?",493.56,1.05,0.01,851.99,1346.87
+37,"Halo selamat pagi min",0,0,0,0,0
+38,"Terima kasih banyak atas infonya ya!",457.38,1.12,0.01,869.29,1328.09
+39,"Rekomendasi tempat main salju dan ski es di Padang",527.6,0,0.01,903.99,1431.86
+40,"Wisata candi peninggalan kerajaan Hindu di Kota Padang",499.69,1.1,0.01,863.06,1364.11

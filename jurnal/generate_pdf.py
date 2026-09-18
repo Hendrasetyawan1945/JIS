@@ -139,6 +139,10 @@ div.center p,
     margin: 1.8em 0;
 }
 
+.abstract-container {
+    margin: 1.2em 0 1.8em 0;
+}
+
 .abstract-container h2,
 .abstract-container h3,
 h2[id*="abstrak"], h2[id*="abstract"],
@@ -148,16 +152,16 @@ h3[id*="abstrak"], h3[id*="abstract"],
     font-size: 11pt !important;
     font-weight: bold !important;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-top: 1.5em !important;
+    letter-spacing: 1.2px;
+    margin-top: 1.2em !important;
     margin-bottom: 0.6em !important;
     page-break-after: avoid;
     break-after: avoid;
 }
 
+.abstract-container p,
 .abstract-text,
 p.abstract-text,
-.abstract-container p:first-of-type,
 h2[id*="abstrak"] + p, h2[id*="abstract"] + p,
 h3[id*="abstrak"] + p, h3[id*="abstract"] + p {
     text-align: justify !important;
@@ -170,11 +174,9 @@ h3[id*="abstrak"] + p, h3[id*="abstract"] + p {
     margin-bottom: 0.6em !important;
 }
 
-.keywords-text,
+.abstract-container p.keywords-text,
 p.keywords-text,
-.abstract-container p:last-of-type,
-h2[id*="abstrak"] + p + p, h2[id*="abstract"] + p + p,
-h3[id*="abstrak"] + p + p, h3[id*="abstract"] + p + p {
+.abstract-container p:last-of-type {
     text-align: justify !important;
     text-justify: inter-word !important;
     text-indent: 0 !important;
@@ -182,7 +184,8 @@ h3[id*="abstrak"] + p + p, h3[id*="abstract"] + p + p {
     line-height: 1.4 !important;
     margin-left: 1.2cm !important;
     margin-right: 1.2cm !important;
-    margin-bottom: 1.5em !important;
+    margin-top: 0.7em !important;
+    margin-bottom: 1.8em !important;
 }
 
 hr {
@@ -193,10 +196,20 @@ hr {
 
 table {
     border-collapse: collapse;
-    width: 100%;
-    margin: 1.5em 0;
-    font-size: 10pt;
-    line-height: 1.4;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin: 1.2em 0 1.6em 0;
+    font-size: 8.5pt !important;
+    line-height: 1.35;
+    page-break-inside: auto;
+}
+
+thead {
+    display: table-header-group;
+}
+
+tr {
     page-break-inside: avoid;
     break-inside: avoid;
 }
@@ -204,15 +217,21 @@ table {
 th {
     background-color: #f3f4f6;
     border: 1px solid #333;
-    padding: 7px 10px;
+    padding: 5px 6px !important;
     font-weight: bold;
     text-align: left;
+    font-size: 8.5pt !important;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 td {
     border: 1px solid #555;
-    padding: 6px 10px;
+    padding: 4px 6px !important;
     vertical-align: top;
+    font-size: 8.5pt !important;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 tr:nth-child(even) td {
@@ -341,18 +360,18 @@ def convert_md_to_pdf(md_filename, pdf_filename, is_journal=False):
     # 2. Tag abstract headings and their paragraphs
     pattern_abstrak = re.compile(
         r'(<h[23][^>]*id=["\'](?:abstrak|abstract)["\'][^>]*>.*?</h[23]>)\s*'
-        r'(<p>.*?</p>)\s*'
-        r'(<p>(?:<strong>(?:Kata Kunci|Keywords):?</strong>.*?</p>))',
+        r'((?:<p>.*?</p>\s*)+?)'
+        r'(<p>(?:<strong>(?:Kata Kunci|Keywords):?</strong>|<em>(?:Kata Kunci|Keywords):?</em>).*?</p>)',
         re.DOTALL | re.IGNORECASE
     )
 
     def replace_abstrak(match):
         heading = match.group(1)
-        p_abstract = match.group(2)
+        p_body = match.group(2)
         p_keywords = match.group(3)
-        p_abstract = re.sub(r'^<p>', '<p class="abstract-text">', p_abstract, flags=re.IGNORECASE)
-        p_keywords = re.sub(r'^<p>', '<p class="keywords-text">', p_keywords, flags=re.IGNORECASE)
-        return f'<div class="abstract-container">\n{heading}\n{p_abstract}\n{p_keywords}\n</div>'
+        p_body = re.sub(r'<p>', '<p class="abstract-text">', p_body, flags=re.IGNORECASE)
+        p_keywords = re.sub(r'<p>', '<p class="keywords-text">', p_keywords, flags=re.IGNORECASE)
+        return f'<div class="abstract-container">\n{heading}\n{p_body}\n{p_keywords}\n</div>'
 
     html_content = pattern_abstrak.sub(replace_abstrak, html_content)
 
