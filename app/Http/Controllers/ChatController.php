@@ -215,6 +215,57 @@ class ChatController extends Controller
             }
         }
 
+        // Penanganan Out-of-Scope eksplisit (Kejujuran domain & Zero Hallucination)
+        if ($validatedSir->isOutOfScope) {
+            $jawaban = $validatedSir->outOfScopeReason ?? 'Maaf, permintaan Anda berada di luar domain pariwisata Kota Padang.';
+            if ($sessionId !== null) {
+                ChatMessage::create(['session_id' => $sessionId, 'role' => 'assistant', 'pesan' => $jawaban, 'intent_json' => $intent]);
+            }
+            $tTotal = (hrtime(true) - $tStart) / 1e6;
+
+            return [
+                'jawaban' => $jawaban,
+                'wisata' => [],
+                'intent' => $intent,
+                'ada_lokasi' => $adaLokasi,
+                'di_luar_padang' => false,
+                'is_sapaan' => false,
+                'latensi_ms' => [
+                    'intent' => round($tIntent, 2),
+                    'sql' => 0.0,
+                    'weather' => 0.0,
+                    'llm' => 0.0,
+                    'total' => round($tTotal, 2),
+                ],
+            ];
+        }
+
+        // Penanganan SIR Invalid (Prinsip: No Validated SIR -> No SQL Execution)
+        if (! $validatedSir->isValid) {
+            $pesanError = implode(' ', $validatedSir->validationErrors);
+            $jawaban = "Maaf, permintaan Anda tidak dapat diproses karena batasan tidak valid: {$pesanError} Silakan ulangi dengan parameter yang sesuai.";
+            if ($sessionId !== null) {
+                ChatMessage::create(['session_id' => $sessionId, 'role' => 'assistant', 'pesan' => $jawaban, 'intent_json' => $intent]);
+            }
+            $tTotal = (hrtime(true) - $tStart) / 1e6;
+
+            return [
+                'jawaban' => $jawaban,
+                'wisata' => [],
+                'intent' => $intent,
+                'ada_lokasi' => $adaLokasi,
+                'di_luar_padang' => false,
+                'is_sapaan' => false,
+                'latensi_ms' => [
+                    'intent' => round($tIntent, 2),
+                    'sql' => 0.0,
+                    'weather' => 0.0,
+                    'llm' => 0.0,
+                    'total' => round($tTotal, 2),
+                ],
+            ];
+        }
+
         // 4. Tahap Kompilasi & Eksekusi Query Spasial Deterministik
         $t1 = hrtime(true);
         $latF = $lat !== null ? (float) $lat : null;

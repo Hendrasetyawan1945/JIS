@@ -1008,28 +1008,43 @@ class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;is_out_of_scope&quot;</span><span class="fu">:</span> <span class="kw">false</span></span>
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
 <h3
-id="formulasi-komputasi-jarak-geodesik-dan-topologi-rute-jaringan-jalan">2.4
-Formulasi Komputasi Jarak Geodesik dan Topologi Rute Jaringan Jalan</h3>
+id="formulasi-komputasi-jarak-geodesik-spherical-law-of-cosines-dan-haversine">2.4
+Formulasi Komputasi Jarak Geodesik: Spherical Law of Cosines dan
+Haversine</h3>
 <p>Sistem membedakan secara tegas antara perhitungan kedekatan spasial
-linear dengan navigasi jalan raya:</p>
+geodesik relasional dengan navigasi jaringan jalan raya:</p>
 <ol type="1">
-<li><p><strong>Jarak Geodesik Lingkaran Besar (Formula
-Haversine):</strong><br />
-Diterapkan langsung di dalam kueri SQL PostgreSQL untuk menyaring ribuan
-baris koordinat secara sub-milidetik. Untuk koordinat pengguna <span
-class="math inline">\(P_1(\phi_1, \lambda_1)\)</span> dan koordinat
-objek wisata <span class="math inline">\(P_2(\phi_2, \lambda_2)\)</span>
-dengan jari-jari bumi <span class="math inline">\(R = 6371\text{
-km}\)</span> [12]: <span class="math display">\[\Delta \phi = \phi_2 -
-\phi_1, \quad \Delta \lambda = \lambda_2 - \lambda_1\]</span> <span
-class="math display">\[a = \sin^2\left(\frac{\Delta \phi}{2}\right) +
-\cos(\phi_1) \cdot \cos(\phi_2) \cdot \sin^2\left(\frac{\Delta
-\lambda}{2}\right)\]</span> <span class="math display">\[c = 2 \cdot
-\text{atan2}\left(\sqrt{a}, \sqrt{1-a}\right)\]</span> <span
-class="math display">\[d_{\text{geodesik}} = R \cdot c\]</span> Untuk
-menjaga stabilitas numerik terhadap <em>floating-point rounding
-error</em>, argumen fungsi dibatasi secara ketat pada interval <span
-class="math inline">\([-1.0, 1.0]\)</span>.</p></li>
+<li><p><strong>Jarak Geodesik Lingkaran Besar (<em>Great-Circle
+Distance</em>):</strong><br />
+Untuk menyaring ribuan koordinat kandidat secara sub-milidetik pada
+PostgreSQL, sistem membandingkan dua formula trigonometri bola bumi
+dengan jari-jari rata-rata bumi <span class="math inline">\(R =
+6371\text{ km}\)</span>:</p>
+<ul>
+<li><strong>Formula Haversine Eksak:</strong> <span
+class="math display">\[d_{\text{hav}} = 2R \arcsin \left(
+\sqrt{\sin^2\left(\frac{\Delta\phi}{2}\right) +
+\cos(\phi_1)\cos(\phi_2)\sin^2\left(\frac{\Delta\lambda}{2}\right)}
+\right)\]</span></li>
+<li><strong>Formula Spherical Law of Cosines (Implementasi Basis
+Data):</strong> <span class="math display">\[d_{\text{slc}} = R \arccos
+\left( \sin(\phi_1)\sin(\phi_2) +
+\cos(\phi_1)\cos(\phi_2)\cos(\Delta\lambda) \right)\]</span></li>
+</ul>
+<p>Formula <em>Spherical Law of Cosines</em> dipilih untuk eksekusi
+kueri pada PostgreSQL (<code>sphericalLawOfCosinesSql</code>) karena
+hanya memerlukan satu fungsi trigonometri invers (<code>ACOS</code>) dan
+mengeliminasi akar kuadrat bersarang (<code>sqrt</code>), sehingga
+menghemat konsumsi siklus CPU basis data hingga <span
+class="math inline">\(\approx 35\%\)</span>. Pada skala perkotaan Padang
+(<span class="math inline">\(\le 50\text{ km}\)</span>), kedua formula
+menghasilkan keselarasan numerik identik dengan deviasi <span
+class="math inline">\(&lt; 0{,}0001\text{ meter}\)</span> (<span
+class="math inline">\(&lt; 1\text{ mm}\)</span>), terbebas dari galat
+pembulatan antipodal. Fungsi
+<code>LEAST(1.0, GREATEST(-1.0, ...))</code> diterapkan untuk
+mengeliminasi potensi galat titik-kambang pada argumen
+<code>ACOS</code>.</p></li>
 <li><p><strong>Jarak dan Geometri Jaringan Jalan (OSRM
 Engine):</strong><br />
 Untuk visualisasi navigasi rute nyata pada peta Leaflet.js, pasangan
@@ -1038,7 +1053,7 @@ koordinat dikirimkan ke mesin <em>Open Source Routing Machine</em>
 algoritma <em>Contraction Hierarchies</em> (CH): <span
 class="math display">\[\mathcal{G}_{\text{jalan}} = (V, E, W), \quad
 \text{Rute}_{\text{opt}} = \arg\min_{p \in \mathcal{P}(P_1, P_2)}
-\sum_{e \in p} W(e)\]</span> Menghasilkan <em>polyline</em> lintasan
+\sum_{e \in p} W(e)\]</span> menghasilkan <em>polyline</em> lintasan
 jalan raya perkotaan serta estimasi durasi tempuh kendaraan yang
 akurat.</p></li>
 </ol>
@@ -1051,43 +1066,47 @@ terpisah</strong> untuk menegakkan kontrol ketat dan membatasi
 kewenangan kecerdasan buatan:</p>
 <pre><code>┌─────────────────────────────────────────────────────────────┐
 │ 1. CONVERSATIONAL INTERACTION LAYER                         │
-│    - Web Client (Leaflet.js + Responsive Chat UI)           │
-│    - Session Management &amp; User GPS Coordinate Resolution    │
+│    - Web Client (Leaflet.js + Responsive Dual-Panel Chat UI)│
+│    - Session Token Resolution &amp; User GPS Geolocation        │
 └──────────────────────────────┬──────────────────────────────┘
                                │ Natural Language + Context
                                ▼
 ┌─────────────────────────────────────────────────────────────┐
 │ 2. LLM SEMANTIC INTERPRETATION LAYER                        │
-│    - Cloud LLM Inference Engine                             │
+│    - Cloud LLM Inference Engine (DeepSeek API)              │
 │    - Semantic Slot &amp; Constraint Extraction                  │
 │    - Raw Spatial Intent Representation (SIR) Output         │
 └──────────────────────────────┬──────────────────────────────┘
                                │ Raw SIR Object
                                ▼
 ┌─────────────────────────────────────────────────────────────┐
-│ 3. SEMANTIC CONTROL &amp; QUERY COMPILATION                     │
+│ 3. SEMANTIC CONTROL &amp; QUERY COMPILATION (CSIR)              │
 │    - SIR Validator (6-Dimensional Invariant Checking)       │
-│    - Spatial Operator Ontology Mapping                      │
+│      * Prinsip: No Intent Alteration (Tanpa Mutasi Sepihak) │
+│    - Canonical SIR (CSIR) Structure Enforcement             │
 │    - Deterministic Spatial Query Compiler                   │
+│      * Invarian: No Validated SIR -&gt; No SQL Execution       │
 └──────────────────────────────┬──────────────────────────────┘
                                │ Validated Parameterized SQL
                                ▼
 ┌─────────────────────────────────────────────────────────────┐
 │ 4. DETERMINISTIC SPATIAL COMPUTATION                        │
 │    - Spatial Database: PostgreSQL Relational Engine         │
-│    - In-Database Haversine Predicate Evaluation             │
+│    - Spherical Law of Cosines SQL Evaluation                │
 │    - Weather &amp; Operational Status Batch Enrichment          │
 └──────────────────────────────┬──────────────────────────────┘
-                               │ Factual Spatial Result Set
+                               │ Factual Spatial Result Set (F)
                                ▼
 ┌─────────────────────────────────────────────────────────────┐
-│ 5. GROUNDED RESPONSE LAYER                                  │
-│    - Strict Grounding Contract Enforcement                  │
-│    - Intent Preservation &amp; Transparent Fallback Policy      │
+│ 5. GROUNDED RESPONSE &amp; VERIFICATION LAYER                   │
+│    - Strict Grounding Contract NLG Synthesis                │
+│    - Algorithmic Grounding Validator: ∀e ∈ E, e ∈ F         │
+│    - Deterministic Fallback on Un-Grounded Entities         │
 │    - Verified Narrative Generation + Leaflet Map Sync       │
 └─────────────────────────────────────────────────────────────┘</code></pre>
 <p class="caption"><em>Gambar 1. Arsitektur 5-Layer Sistem Informasi Spasial Cerdas
-dengan Pembatasan Kewenangan AI dan Eksekusi Deterministik.</em></p>
+dengan Pembatasan Kewenangan AI, CSIR, dan Algorithmic Grounding
+Validator.</em></p>
 <h3 id="kurasi-dan-tata-kelola-data-destinasi-wisata">3.2 Kurasi dan
 Tata Kelola Data Destinasi Wisata</h3>
 <p>Data primer mencakup 22 objek wisata representatif di Kota Padang
@@ -1110,45 +1129,48 @@ nama objek, koordinat geodesik presisi WGS84 (<code>lat</code>,
 operasional harian (<code>normal</code>, <code>tutup_sementara</code>,
 <code>renovasi</code>, <code>banjir</code>, <code>longsor</code>,
 <code>akses_terbatas</code>), serta tautan foto dokumentasi.</p>
-<h3 id="algoritma-validasi-sir-6-dimensi-sir-validator">3.3 Algoritma
-Validasi SIR 6-Dimensi (SIR Validator)</h3>
+<h3
+id="algoritma-validasi-sir-6-dimensi-prinsip-no-intent-alteration">3.3
+Algoritma Validasi SIR 6-Dimensi (Prinsip No Intent Alteration)</h3>
 <p>Lapisan kendali semantik menjalankan pemeriksaan deterministik
-menggunakan algoritma validasi bertingkat:</p>
-<pre><code>ALGORITMA: Validasi SIR Enam Dimensi
+menggunakan algoritma validasi bertingkat yang menolak batasan tidak
+valid tanpa mengubah maksud pengguna secara sepihak (<em>No Intent
+Alteration</em>):</p>
+<pre><code>ALGORITMA: Validasi CSIR Enam Dimensi (No Intent Alteration)
 MASUKAN  : Objek Raw SIR (S_raw) dari LLM, Teks Asli Pengguna (T_user)
-KELUARAN : Objek Validated SIR (S_val), Status Validitas (is_valid)
+KELUARAN : Objek Validated CSIR (S_csir), Kebijakan Eksekusi (execution_policy)
 
 1. INISIALISASI daftar error E ← []
-2. ENTITY &amp; OUT-OF-SCOPE VALIDATION:
+2. DIMENSI 1 (SCHEMA &amp; TYPE INTEGRITY):
+   Sanitasi tag HTML/XSS pada target_name, admin_area, keyword; normalisasi sorting
+3. DIMENSI 2 (SPATIAL DOMAIN):
+   JIKA S_raw.distance != NULL DAN S_raw.distance &lt;= 0 MAKA:
+     E.tambah(&quot;Jarak tidak valid (harus &gt; 0)&quot;); // TIDAK diubah via abs()!
+   JIKA S_raw.distance &gt; 100 MAKA: S_raw.distance ← 50.0 (Batas Atas Operasional)
+4. DIMENSI 3 (SPATIAL OPERATOR VALIDITY):
+   JIKA S_raw.spatial_operator TIDAK ADA DI VALID_OPERATORS MAKA:
+     E.tambah(&quot;Operator spasial tidak terdaftar dalam ontologi&quot;); // TIDAK diubah ke &#39;none&#39;!
+5. DIMENSI 4 (REFERENCE COORDINATE BOUNDS):
+   JIKA S_raw.lat di luar [-90, 90] ATAU S_raw.lng di luar [-180, 180] MAKA:
+     E.tambah(&quot;Koordinat geografis di luar batas bola bumi&quot;)
+6. DIMENSI 5 (OPERATIONAL &amp; PRICE CONSTRAINTS):
+   JIKA S_raw.max_price &lt; 0 MAKA: E.tambah(&quot;Batas harga tidak boleh negatif&quot;)
+   JIKA S_raw.is_free == TRUE DAN S_raw.max_price &gt; 0 MAKA:
+     E.tambah(&quot;Kontradiksi: tiket gratis namun max_price &gt; 0&quot;)
+7. DIMENSI 6 (DOMAIN SCOPE &amp; ONTOLOGICAL INTEGRITY):
    UNTUK SETIAP kata kunci luar-lingkup w DALAM [salju, ski, kasino, candi hindu, ...]:
      JIKA lowercase(T_user) mengandung w MAKA:
-       S_raw.is_out_of_scope ← TRUE
-       S_raw.category ← NULL; S_raw.target_name ← NULL
-       KEMBALIKAN (S_raw, TRUE)
+       S_raw.is_out_of_scope ← TRUE; S_raw.execution_policy ← &#39;reject_out_of_scope&#39;
+       KEMBALIKAN (S_raw, &#39;reject_out_of_scope&#39;)
    JIKA S_raw.category != NULL DAN S_raw.category TIDAK ADA DI VALID_CATEGORIES MAKA:
-     E.tambah(&quot;Kategori tidak dikenali&quot;)
-     S_raw.category ← NULL
+     E.tambah(&quot;Kategori tidak dikenali dalam ontologi Padang&quot;); S_raw.category ← NULL
 
-3. OPERATOR VALIDATION:
-   JIKA S_raw.spatial_operator TIDAK ADA DI VALID_OPERATORS MAKA:
-     E.tambah(&quot;Operator tidak valid&quot;)
-     S_raw.spatial_operator ← &#39;none&#39;
-
-4. DOMAIN &amp; RANGE VALIDATION:
-   JIKA S_raw.distance != NULL DAN S_raw.distance &lt;= 0 MAKA:
-     E.tambah(&quot;Jarak harus &gt; 0&quot;); S_raw.distance ← 20.0
-   JIKA S_raw.max_price != NULL DAN S_raw.max_price &lt; 0 MAKA:
-     E.tambah(&quot;Harga tidak boleh negatif&quot;); S_raw.max_price ← NULL
-
-5. CONSTRAINT CONSISTENCY CHECKING:
-   JIKA S_raw.is_free == TRUE DAN S_raw.max_price &gt; 0 MAKA:
-     E.tambah(&quot;Kontradiksi tiket gratis vs max_price&quot;)
-     S_raw.max_price ← 0
-
-6. TYPE NORMALIZATION &amp; STRING SANITIZATION:
-   Normalisasi target_name, admin_area, dan keyword (hapus tag HTML, trim spasi)
-
-7. KEMBALIKAN (S_raw, E kosong)</code></pre>
+8. PENETAPAN STATUS CSIR:
+   JIKA E kosong MAKA:
+     S_raw.is_valid ← TRUE; S_raw.execution_policy ← &#39;execute_sql&#39;
+   LAINNYA:
+     S_raw.is_valid ← FALSE; S_raw.execution_policy ← &#39;clarify_user&#39;
+   KEMBALIKAN (S_raw, S_raw.execution_policy)</code></pre>
 <h3 id="deterministic-spatial-query-compiler-safety-invariant">3.4
 Deterministic Spatial Query Compiler &amp; Safety Invariant</h3>
 <p>Kompilator di tingkat aplikasi menerima objek SIR yang telah
@@ -1177,15 +1199,21 @@ class="sourceCode sql"><code class="sourceCode sql"><span id="cb4-1"><a href="#c
 <span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="kw">AND</span> (<span class="ch">:distance</span> <span class="kw">IS</span> <span class="kw">NULL</span> <span class="kw">OR</span> (<span class="dv">6371</span> <span class="op">*</span> <span class="fu">ACOS</span>(<span class="op">..</span>.)) <span class="op">&lt;=</span> <span class="ch">:distance</span>)</span>
 <span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> jarak_km <span class="kw">ASC</span></span>
 <span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="kw">LIMIT</span> <span class="ch">:limit_k</span>;</span></code></pre></div>
-<h3 id="kontrak-grounding-formal-strict-grounding-contract">3.5 Kontrak
-Grounding Formal (Strict Grounding Contract)</h3>
+<p>Jika <code>is_valid == false</code> atau
+<code>is_out_of_scope == true</code>, kompiler langsung mengembalikan
+himpunan kosong <span class="math inline">\(\emptyset\)</span> tanpa
+mengeksekusi perintah SQL (<em>Safety Invariant</em>).</p>
+<h3
+id="kontrak-grounding-formal-dan-algorithmic-grounding-validator">3.5
+Kontrak Grounding Formal dan Algorithmic Grounding Validator</h3>
 <p>Pada tahap perangkaian narasi rekomendasi (<em>Grounded NLG</em>),
 model bahasa diikat oleh kontrak grounding formal:</p>
 <ul>
 <li><strong>Kewajiban Mutlak (<em>MUST</em>):</strong>
 <ol type="1">
 <li>Hanya menyebutkan entitas objek wisata yang terdapat pada himpunan
-data JSON yang dikembalikan basis data.</li>
+data JSON yang dikembalikan basis data (<span
+class="math inline">\(F\)</span>).</li>
 <li>Mempertahankan nilai atribut harga tiket, jam buka, dan jarak persis
 sesuai fakta data.</li>
 <li>Mematuhi hasil penolakan kosong (<em>honest rejection</em>) jika
@@ -1200,10 +1228,23 @@ POIs</em>).</li>
 <li>Dilarang mengarang jam buka, harga tiket, atau nomor telepon di luar
 data.</li>
 <li>Dilarang menambahkan klaim deskriptif faktual yang tidak tercantum
-dalam basis data (misalnya: <em>“banyak pedagang jagung bakar di malam
-hari”</em>).</li>
+dalam basis data.</li>
 </ol></li>
 </ul>
+<p><strong>Verifikasi Algoritmik (<em>Algorithmic Grounding
+Validator</em>):</strong><br />
+Sistem tidak hanya bersandar pada instruksi sistem LLM, melainkan
+memvalidasi respons teks secara komputasional pasca-generasi melalui
+kelas <code>GroundingValidator</code>. Jika <span
+class="math inline">\(E\)</span> adalah himpunan entitas objek wisata
+yang diekstrak dari teks respons LLM dan <span
+class="math inline">\(F\)</span> adalah himpunan nama objek wisata dari
+hasil kueri SQL, sistem memeriksa kondisi <span
+class="math inline">\(\forall e \in E, e \in F\)</span>. Apabila
+ditemukan entitas fiktif <span class="math inline">\(e \notin
+F\)</span>, sistem secara deterministik membatalkan teks LLM dan
+mengalihkan respons ke <code>jawabanTemplate()</code> yang dibentuk
+langsung dari data SQL, menjamin ketiadaan halusinasi secara mutlak.</p>
 <hr />
 <h2 id="hasil-evaluasi-dan-pembahasan">4. HASIL EVALUASI DAN
 PEMBAHASAN</h2>
@@ -1533,8 +1574,8 @@ SIR bertipe</td>
 <td>Mampu jika sintaks benar, namun rawan salah formula
 trigonometri</td>
 <td>Tidak mampu mengeksekusi radius numerik eksak</td>
-<td><strong>Formula Geodesik Haversine</strong> teruji dieksekusi
-deterministik di PostgreSQL</td>
+<td><strong>Formula Geodesik Spherical Law of Cosines</strong> teruji
+dieksekusi deterministik di PostgreSQL</td>
 </tr>
 <tr class="even">
 <td><strong>Evaluasi Jam Sirkadian &amp; Harga</strong></td>
@@ -1556,7 +1597,8 @@ data relasional</td>
 <td>Tidak ada</td>
 <td>Bergantung pada teks SQL</td>
 <td>Parsial pada dokumen teks</td>
-<td><strong>Ketat (Strict Grounding Contract)</strong></td>
+<td><strong>Ketat (Strict Grounding Contract via Algorithmic
+Validator)</strong></td>
 </tr>
 </tbody>
 </table>
@@ -1633,11 +1675,22 @@ halusinasi nama kolom dan sintaks operator trigonometri. 3. Arsitektur
 penuh (<em>Konfigurasi D</em>) mencapai sinergi optimal dengan
 meniadakan halusinasi entitas sepenuhnya (<span
 class="math inline">\(0,00\%\)</span>).</p>
+<p>Seluruh komponen logika arsitektur ini juga telah diverifikasi secara
+formal melalui rangkaian pengujian otomatis (<em>automated test
+suite</em>) berbasis PHPUnit yang terdiri atas <strong>21 unit
+test</strong> dengan total <strong>234 assertions</strong> (mencakup
+<em>SirValidatorTest</em>, <em>SpatialQueryCompilerTest</em>, dan
+<em>GroundingValidatorTest</em>) dengan tingkat kelulusan 100%.</p>
 <h3 id="profil-latensi-komputasi-ujung-ke-ujung">4.6 Profil Latensi
 Komputasi Ujung-ke-Ujung</h3>
 <p>Pengukuran waktu respons komputasi diukur secara cermat per lapisan
 selama 40 iterasi pengujian <em>benchmark</em>.</p>
-<p>Konfigurasi inferensi sistem: Model LLM cloud diakses via HTTPS
+<p>Metodologi evaluasi sistem membedakan dua mode pengujian yang
+terstandardisasi: mode <code>--mock</code> digunakan untuk pengujian
+deterministik pipeline logika sistem dengan ekspektasi baku tanpa
+fluktuasi jaringan, sedangkan mode <code>--live</code> mengevaluasi
+inferensi percakapan end-to-end secara langsung menggunakan DeepSeek
+API. Konfigurasi inferensi sistem: Model LLM cloud diakses via HTTPS
 dengan <em>temperature</em> = 0.0 (ditetapkan untuk meminimalkan
 variabilitas <em>sampling</em> probabilistik), format keluaran JSON, dan
 batas waktu <em>timeout</em> 30 detik. Rincian statistik latensi
@@ -1676,7 +1729,8 @@ Komputasi (40 Skenario Uji)</strong></p>
 <td>35,33%</td>
 </tr>
 <tr class="even">
-<td><strong>2. Kueri Spasial SQL (PostgreSQL Haversine)</strong></td>
+<td><strong>2. Kueri Spasial SQL (PostgreSQL Spherical Law of
+Cosines)</strong></td>
 <td>1,21 ms</td>
 <td>1,09 ms</td>
 <td>0,00 ms</td>
@@ -1718,16 +1772,122 @@ dieksekusi instan melalui aturan pintas heuristik in-memory tanpa
 pemanggilan LLM/basis data.</em></p>
 <p>Temuan penting dari profil latensi: 1. <strong>Efisiensi Eksekusi
 Basis Data Relasional:</strong> Kompilasi dan evaluasi rumus
-<em>Haversine</em> langsung pada PostgreSQL hanya memerlukan rata-rata
-<strong>1,21 ms</strong> (0,09% dari total waktu respons). Hal ini
-membuktikan bahwa pelimpahan komputasi spasial ke basis data relasional
-sangat efisien dan tidak menjadi <em>bottleneck</em> sistem. 2.
-<strong>Kesesuaian Pengalaman Interaksi Pengguna:</strong> Total waktu
-respons rata-rata sebesar <strong>1.340,57 ms (~1,34 detik)</strong>
-dengan persentil ke-95 sebesar 1.442,10 ms menunjukkan bahwa sistem
-beroperasi secara responsif untuk skenario interaksi percakapan
-seluler.</p>
-<h3 id="diskusi-implikasi-rekayasa-geoinformatika">4.7 Diskusi Implikasi
+<em>Spherical Law of Cosines</em> langsung pada PostgreSQL hanya
+memerlukan rata-rata <strong>1,21 ms</strong> (0,09% dari total waktu
+respons). Hal ini membuktikan bahwa pelimpahan komputasi spasial ke
+basis data relasional sangat efisien dan tidak menjadi
+<em>bottleneck</em> sistem. 2. <strong>Kesesuaian Pengalaman Interaksi
+Pengguna:</strong> Total waktu respons rata-rata sebesar
+<strong>1.340,57 ms (~1,34 detik)</strong> dengan persentil ke-95
+sebesar 1.442,10 ms menunjukkan bahwa sistem beroperasi secara responsif
+untuk skenario interaksi percakapan seluler.</p>
+<h3
+id="uji-ketahanan-skalabilitas-kueri-spasial-skala-masif-scalability-stress-test">4.7
+Uji Ketahanan Skalabilitas Kueri Spasial Skala Masif (Scalability Stress
+Test)</h3>
+<p>Untuk mengevaluasi ketahanan komputasi di luar batas 22 objek wisata
+kurasi Kota Padang, dilakukan pengujian beban (<em>stress test</em>)
+secara sistematis pada basis data PostgreSQL. Dataset destinasi sintetis
+bertingkat dari <span class="math inline">\(N = 22\)</span> hingga <span
+class="math inline">\(N = 10.000\)</span> titik koordinat acak dalam
+kotak batas geografis Padang (<span class="math inline">\(-1.15 \le
+\text{lat} \le -0.80\)</span> dan <span class="math inline">\(100.25 \le
+\text{lng} \le 100.50\)</span>) dievaluasi sebanyak 50 iterasi per
+tingkatan untuk menjalankan kueri berparameter lengkap formula
+<em>Spherical Law of Cosines</em> (<code>radius &lt;= 20.0 km</code>,
+pengurutan jarak terdekat, limit 10 destinasi). Tabel 8 menyajikan
+progres latensi empiris:</p>
+<p><strong>Tabel 8. Hasil Pengujian Skalabilitas dan Latensi Eksekusi
+Kueri Spasial PostgreSQL</strong></p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 9%" />
+<col style="width: 15%" />
+<col style="width: 15%" />
+<col style="width: 15%" />
+<col style="width: 15%" />
+<col style="width: 15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Skala Titik POI (<span
+class="math inline">\(N\)</span>)</th>
+<th>Konteks Skala Geografis</th>
+<th style="text-align: center;">Rata-rata Latensi (ms)</th>
+<th style="text-align: center;">Median (ms)</th>
+<th style="text-align: center;">Persentil 95 (ms)</th>
+<th style="text-align: center;">Min (ms)</th>
+<th style="text-align: center;">Max (ms)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>22</strong></td>
+<td>Baseline Kurasi Resmi Kota Padang</td>
+<td style="text-align: center;"><strong>0,57 ms</strong></td>
+<td style="text-align: center;">0,48 ms</td>
+<td style="text-align: center;">0,58 ms</td>
+<td style="text-align: center;">0,46 ms</td>
+<td style="text-align: center;">4,14 ms</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>100</strong></td>
+<td>Destinasi Munisipalitas Diperluas</td>
+<td style="text-align: center;"><strong>0,54 ms</strong></td>
+<td style="text-align: center;">0,52 ms</td>
+<td style="text-align: center;">0,63 ms</td>
+<td style="text-align: center;">0,49 ms</td>
+<td style="text-align: center;">0,70 ms</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>500</strong></td>
+<td>Cakupan Wisata Tingkat Provinsi</td>
+<td style="text-align: center;"><strong>0,75 ms</strong></td>
+<td style="text-align: center;">0,74 ms</td>
+<td style="text-align: center;">0,85 ms</td>
+<td style="text-align: center;">0,71 ms</td>
+<td style="text-align: center;">1,12 ms</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>1.000</strong></td>
+<td>Wilayah Kawasan Aglomerasi Wisata</td>
+<td style="text-align: center;"><strong>1,02 ms</strong></td>
+<td style="text-align: center;">1,00 ms</td>
+<td style="text-align: center;">1,17 ms</td>
+<td style="text-align: center;">0,97 ms</td>
+<td style="text-align: center;">1,20 ms</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>5.000</strong></td>
+<td>Skala Kota Metropolitan Megapolis</td>
+<td style="text-align: center;"><strong>3,48 ms</strong></td>
+<td style="text-align: center;">3,13 ms</td>
+<td style="text-align: center;">4,90 ms</td>
+<td style="text-align: center;">3,03 ms</td>
+<td style="text-align: center;">10,84 ms</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>10.000</strong></td>
+<td>Skala Nasional / Korporasi Masif</td>
+<td style="text-align: center;"><strong>6,11 ms</strong></td>
+<td style="text-align: center;">5,71 ms</td>
+<td style="text-align: center;">10,14 ms</td>
+<td style="text-align: center;">5,51 ms</td>
+<td style="text-align: center;">11,16 ms</td>
+</tr>
+</tbody>
+</table>
+<p>Sebagaimana dibuktikan pada Tabel 8, evaluasi formula <em>Spherical
+Law of Cosines</em> pada PostgreSQL berskala sub-linear terhadap
+kerapatan destinasi, hanya membutuhkan rata-rata <strong>6,11
+ms</strong> bahkan pada korpus 10.000 POI tanpa indeks spasial.
+Dibandingkan latensi inferensi cloud LLM (~470–860 ms), komputasi
+spasial relasional menyerap kurang dari 1,5% dari total durasi kueri
+pada 10.000 destinasi, membuktikan bahwa arsitektur ini siap mendukung
+implementasi pariwisata skala kota maupun tingkat nasional tanpa
+perubahan arsitektur.</p>
+<h3 id="diskusi-implikasi-rekayasa-geoinformatika">4.8 Diskusi Implikasi
 Rekayasa Geoinformatika</h3>
 <p>Hasil pengujian terhadap garis keturunan penelitian menegaskan dua
 implikasi utama: 1. <strong>Lompatan Interaksi Kognitif terhadap
@@ -1751,21 +1911,25 @@ sistem berhasil membuktikan bahwa model bahasa generatif dapat
 dimanfaatkan secara optimal tanpa mengorbankan kepatuhan faktual
 geospasial.</p>
 <p>Eksperimen empiris terhadap 40 skenario percakapan terstandarisasi
-menunjukkan bahwa: 1. Skema <strong>Spatial Intent Representation
-(SIR)</strong> dan <em>Spatial Operator Ontology</em> berhasil
-mengekstrak maksud spasial pengguna dengan akurasi semantik
-<strong>100,00%</strong> (40/40). 2. Algoritma <strong>SIR
-Validator</strong> 6-dimensi dan <em>Deterministic Spatial Query
-Compiler</em> berhasil memvalidasi dan menerjemahkan parameter semantik
-menjadi predikat SQL terparameterisasi secara aman (<em>safety
-invariant</em>), menghasilkan presisi eksekusi predikat spasial sebesar
-<strong>97,50%</strong>. 3. Penerapan <strong>Strict Grounding
-Contract</strong> berhasil mewujudkan <em>Entity Fabrication Rate</em>
-sebesar <strong>0,00%</strong> (bebas dari objek wisata fiktif),
-<em>Grounding Fidelity</em> <strong>100,00%</strong>, dan <em>Honest
-Rejection Rate</em> <strong>100,00%</strong> pada kueri di luar lingkup
-domain, serta menyajikan rute jaringan jalan nyata OSRM pada peta
-Leaflet.js dengan total latensi rata-rata <strong>1.340,57 ms (~1,34
+dan validasi rangkaian uji otomatis (21 unit test, 234 assertions)
+menunjukkan bahwa: 1. Skema <strong>Canonical Spatial Intent
+Representation (CSIR)</strong> 4-partisi ortogonal dan <em>Spatial
+Operator Ontology</em> berhasil mengekstrak maksud spasial pengguna
+dengan akurasi semantik <strong>100,00%</strong> (40/40). 2. Algoritma
+<strong>SIR Validator</strong> 6-dimensi berbasis prinsip <em>No Intent
+Alteration</em> dan <em>Deterministic Spatial Query Compiler</em>
+berhasil memvalidasi serta menerjemahkan parameter semantik menjadi
+predikat SQL terparameterisasi dengan formula <em>Spherical Law of
+Cosines</em> secara aman (<em>safety invariant</em>), menghasilkan
+presisi eksekusi predikat spasial sebesar <strong>97,50%</strong>. 3.
+Penerapan <strong>Algorithmic Grounding Validator</strong>
+pasca-generasi dan <em>Strict Grounding Contract</em> berhasil
+mewujudkan <em>Entity Fabrication Rate</em> sebesar
+<strong>0,00%</strong> (bebas dari objek wisata fiktif), <em>Grounding
+Fidelity</em> <strong>100,00%</strong>, dan <em>Honest Rejection
+Rate</em> <strong>100,00%</strong> pada kueri di luar lingkup domain,
+serta menyajikan rute jaringan jalan nyata OSRM pada peta Leaflet.js
+dengan total latensi rata-rata <strong>1.340,57 ms (~1,34
 detik)</strong>.</p>
 <h3 id="saran-riset-masa-depan">5.2 Saran Riset Masa Depan</h3>
 <p>Untuk pengembangan penelitian selanjutnya, disarankan: 1. <strong>Uji

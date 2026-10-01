@@ -36,8 +36,9 @@ class SpatialQueryCompiler
         bool $diLuarPadang = false,
         int $limit = 5,
     ): array {
-        // Jika kueri sudah ditandai out-of-scope oleh validator, tolak secara deterministik (0 baris)
-        if ($sir->isOutOfScope) {
+        // Invarian Keamanan: Jika SIR ditandai out-of-scope atau tidak lolos validasi,
+        // tolak eksekusi secara deterministik (0 baris kueri). No validated SIR -> No SQL execution.
+        if ($sir->isOutOfScope || ! $sir->isValid) {
             return [];
         }
 
@@ -226,9 +227,14 @@ class SpatialQueryCompiler
     }
 
     /**
-     * Komputasi SQL Haversine untuk menghitung jarak dalam kilometer.
+     * Komputasi SQL jarak ortodromik menggunakan Spherical Law of Cosines (satuan kilometer).
+     *
+     * Landasan Matematis:
+     * d = R * arccos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lng2 - lng1))
+     * Menggunakan LEAST(1.0, ...) untuk mengeliminasi floating-point domain error pada titik berjarak sangat dekat.
+     * Dipilih untuk eksekusi SQL PostgreSQL karena efisiensi komputasi CPU dibandingkan trigonometri bertingkat Haversine.
      */
-    public function haversineSql(float $lat, float $lng): string
+    public function sphericalLawOfCosinesSql(float $lat, float $lng): string
     {
         return "(6371 * ACOS(LEAST(1.0,
             COS(RADIANS({$lat})) * COS(RADIANS(wisata.lat)) *
@@ -238,7 +244,20 @@ class SpatialQueryCompiler
     }
 
     /**
-     * Hitung jarak dua titik koordinat via formula Haversine di PHP (satuan km).
+     * Alias kompatibilitas untuk sphericalLawOfCosinesSql.
+     */
+    public function haversineSql(float $lat, float $lng): string
+    {
+        return $this->sphericalLawOfCosinesSql($lat, $lng);
+    }
+
+    /**
+     * Hitung jarak dua titik koordinat via formula Haversine eksak di PHP (satuan km).
+     *
+     * Formula:
+     * a = sin^2(dLat/2) + cos(lat1) * cos(lat2) * sin^2(dLng/2)
+     * c = 2 * atan2(sqrt(a), sqrt(1-a))
+     * d = R * c
      */
     public function calculateHaversineKm(float $lat1, float $lng1, float $lat2, float $lng2): float
     {
@@ -247,6 +266,21 @@ class SpatialQueryCompiler
         $a = sin($dLat / 2) ** 2 + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLng / 2) ** 2;
 
         return 6371 * 2 * atan2(sqrt($a), sqrt(max(0.0, 1 - $a)));
+    }
+
+    /**
+     * Hitung jarak dua titik koordinat via Spherical Law of Cosines di PHP (satuan km).
+     */
+    public function calculateSphericalCosinesKm(float $lat1, float $lng1, float $lat2, float $lng2): float
+    {
+        $radLat1 = deg2rad($lat1);
+        $radLat2 = deg2rad($lat2);
+        $radDLng = deg2rad($lng2 - $lng1);
+
+        $cosVal = sin($radLat1) * sin($radLat2) + cos($radLat1) * cos($radLat2) * cos($radDLng);
+        $cosVal = min(1.0, max(-1.0, $cosVal));
+
+        return 6371 * acos($cosVal);
     }
 
     /**

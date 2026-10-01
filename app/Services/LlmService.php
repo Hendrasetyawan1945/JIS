@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Services\SpatialIntent\GroundingValidator;
 use App\Services\SpatialIntent\SirValidator;
 use App\Services\SpatialIntent\SpatialIntent;
 use Illuminate\Support\Facades\Http;
@@ -17,12 +18,17 @@ class LlmService
 
     protected SirValidator $sirValidator;
 
-    public function __construct(?SirValidator $sirValidator = null)
-    {
+    protected GroundingValidator $groundingValidator;
+
+    public function __construct(
+        ?SirValidator $sirValidator = null,
+        ?GroundingValidator $groundingValidator = null,
+    ) {
         $this->baseUrl = rtrim((string) config('services.llm.base_url'), '/');
         $this->apiKey = (string) config('services.llm.api_key');
         $this->model = (string) config('services.llm.model', 'deepseek-v4-flash');
         $this->sirValidator = $sirValidator ?? new SirValidator;
+        $this->groundingValidator = $groundingValidator ?? new GroundingValidator;
     }
 
     /**
@@ -196,9 +202,22 @@ PROMPT;
             ['role' => 'user',   'content' => $userPrompt],
         ], 800);
 
-        return $jawaban !== ''
-            ? $jawaban
-            : $this->jawabanTemplate($dataWisata, $atributTakTersedia, $diLuarPadang, $jarakKePadangKm);
+        if ($jawaban !== '') {
+            // Verifikasi integritas faktual secara algoritmik (Zero Hallucination Verification)
+            $groundingResult = $this->groundingValidator->validate($jawaban, $dataWisata);
+            if (! $groundingResult['isGrounded']) {
+                Log::warning('LlmService: Anomali halusinasi terdeteksi oleh GroundingValidator, beralih ke fallback deterministik', [
+                    'ungrounded_entities' => $groundingResult['ungroundedEntities'],
+                    'violations' => $groundingResult['violations'],
+                ]);
+
+                return $this->jawabanTemplate($dataWisata, $atributTakTersedia, $diLuarPadang, $jarakKePadangKm);
+            }
+
+            return $jawaban;
+        }
+
+        return $this->jawabanTemplate($dataWisata, $atributTakTersedia, $diLuarPadang, $jarakKePadangKm);
     }
 
     /**

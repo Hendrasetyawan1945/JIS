@@ -38,37 +38,44 @@ erDiagram
     CHAT_SESSIONS ||--o{ CHAT_MESSAGES : "berisi"
 
     KATEGORI {
-        int id PK
+        bigint id PK
         varchar nama UK
     }
     WISATA {
-        int id PK
-        int kategori_id FK
+        bigint id PK
+        bigint kategori_id FK
         varchar nama
         text deskripsi
-        decimal lat
-        decimal lng
-        decimal harga_tiket
+        varchar alamat
+        varchar telepon
+        numeric lat
+        numeric lng
+        numeric harga_tiket
         time jam_buka
         time jam_tutup
-        decimal rating
+        numeric rating
+        text foto
+        varchar status_operasional
+        text catatan_status
+        boolean status_aktif
     }
     USERS {
-        int id PK
+        bigint id PK
+        varchar name
         varchar email UK
-        varchar password_hash
-        enum role
+        varchar password
+        varchar role
     }
     CHAT_SESSIONS {
-        int id PK
+        bigint id PK
         varchar session_token UK
-        decimal lat
-        decimal lng
+        numeric lat
+        numeric lng
     }
     CHAT_MESSAGES {
-        int id PK
-        int session_id FK
-        enum role
+        bigint id PK
+        bigint session_id FK
+        varchar role
         text pesan
         json intent_json
     }
